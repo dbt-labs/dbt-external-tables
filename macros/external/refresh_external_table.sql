@@ -18,9 +18,9 @@
     {%- set ending = [] -%}
     {%- set finals = [] -%}
     
-    {%- set partitions = source.external.partitions -%}
+    {%- set partitions = source.external.get('partitions',[]) -%}
 
-    {%- for partition in partitions -%}
+    {%- if partitions -%}{%- for partition in partitions -%}
     
         {%- if not loop.first -%}
             {%- set starting = ending -%}
@@ -65,7 +65,7 @@
             {%- endfor -%}
         {%- endif -%}
         
-    {%- endfor -%}
+    {%- endfor -%}{%- endif -%}
     
     {%- set ddl -%}
     {%- for final in finals %}
