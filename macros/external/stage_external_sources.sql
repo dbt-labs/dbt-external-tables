@@ -3,6 +3,8 @@
     {% for node in graph.nodes.values() %}
         
         {% if node.resource_type == 'source' and node.external != none %}
+        
+            {%- do log('Staging external table ' ~ node.source_name ~ '.' ~ node.name, info = true) -%}
             
             {%- set run_queue = [] -%}
             
@@ -24,7 +26,9 @@
                 {% endcall %}
                 
                 {% set status = load_result('runner')['status'] %}
-                {% do log(loop.index ~ '. ' ~ status, info = true) %}
+                {% set ts = modules.datetime.datetime.now().strftime('%H:%M:%S') %}
+                {% set msg = ts ~ ' + (' ~ loop.index ~ ') ' ~ status %}
+                {% do log(msg, info = true) %}
                 
             {% endfor %}
             
