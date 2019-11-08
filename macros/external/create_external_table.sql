@@ -64,7 +64,7 @@
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
-    create external table {{source.database}}.{{source.schema}}.{{source.identifier}} (
+    create or replace external table {{source.database}}.{{source.schema}}.{{source.identifier}} (
         {%- if partitions -%}{%- for partition in partitions %}
             {{partition.name}} {{partition.data_type}} as {{partition.expression}},
         {%- endfor -%}{%- endif -%}

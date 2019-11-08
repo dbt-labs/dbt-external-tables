@@ -24,13 +24,9 @@
 {% macro dropif(node) %}
 
     {% set fqn = [node.database, node.schema, node.identifier]|join('.') %}
-    {# snowflake returns 'externaltable' as relation type,
-    which should be 'external table' for dropping,
-    this is part of BaseRelation def #}
-    {% set reltype = 'external table' if target.type == 'snowflake' else 'table' %}
     
     {% set ddl %}
-        drop {{reltype}} if exists {{fqn}} cascade
+        drop table if exists {{fqn}} cascade
     {% endset %}
     
     {{return(ddl)}}

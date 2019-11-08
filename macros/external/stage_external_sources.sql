@@ -4,10 +4,14 @@
         
         {% if node.resource_type == 'source' and node.external != none %}
             
-            {%- set run_queue = [
-                dropif(node),
-                create_external_table(node)
-            ] -%}
+            {%- set run_queue = [] -%}
+            
+            {%- if target.type != 'snowflake' -%}
+                {# Snowflake supports "create or replace" #}
+                {%- do run_queue.append(dropif(node))  -%}
+            {%- endif -%}
+            
+            {%- do run_queue.append(create_external_table(node)) -%}
             
             {%- if node.external.partitions -%}
                 {%- set run_queue = run_queue + refresh_external_table(node).split(';') -%}
