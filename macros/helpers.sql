@@ -44,7 +44,7 @@
   to generate multiple altes when the number of partitions to add exceeds 100.
 
   Arguments:
-    - table (string): The name of the table to generate the partitions for.
+    - source (string): The name of the table to generate the partitions for.
     - source_external_location (string): Base location of the external table. Paths
         in the 'partitions' argument are specified relative to this location.
     - partitions (list): A list of partitions to be added to the external table.
@@ -56,20 +56,20 @@
           - path (string): The path to be added as a partition for the particular
               combination of columns defined in the 'partition_by'
 #}
-{% macro add_partitions(table, source_external_location, partitions) %}
+{% macro redshift__alter_table_add_partitions(source, source_external_location, partitions) %}
 
   {{ log("Generating ADD PARTITION statement for partition set \n" ~ partitions, info=True) }}
 
   {% if partitions|length > 0 %}
 
-      alter table {{ table }} add
+      alter table {{ source }} add
 
     {% for partition in partitions %}
 
-      {% if loop.index % 100 == 0 %}
+      {% if loop.index0 != 0 and loop.index0 % 100 == 0 %}
 
         ; -- close alter statement and open a new one
-        alter table {{ table }} add
+        alter table {{ source }} add
 
       {% endif %}
 

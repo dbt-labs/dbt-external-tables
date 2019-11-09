@@ -69,7 +69,7 @@
     
     {%- set ddl -%}
 
-    {{ add_partitions(
+    {{ redshift__alter_table_add_partitions(
         source.database ~ "." ~ source.schema ~ "." ~ source.identifier,
         source.external.location,
         finals
