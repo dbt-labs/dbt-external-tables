@@ -68,13 +68,14 @@
     {%- endfor -%}{%- endif -%}
     
     {%- set ddl -%}
-    {%- for final in finals %}
-    
-        alter table {{source.database}}.{{source.schema}}.{{source.identifier}}
-            add partition ({%- for part in final.partition_by -%}{{part.name}}='{{part.value}}'{{',' if not loop.last}}{%- endfor -%}) 
-            location '{{source.external.location}}{{final.path}}/' {{- ';' if not loop.last -}}
-    
-    {% endfor -%}
+
+    {{ redshift__alter_table_add_partitions(
+        source.database ~ "." ~ source.schema ~ "." ~ source.identifier,
+        source.external.location,
+        finals
+      )
+    }}
+
     {%- endset -%}
     
     {{return(ddl)}}
