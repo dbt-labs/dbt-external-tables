@@ -54,7 +54,7 @@
 #}
 {% macro redshift__alter_table_add_partitions(source, source_external_location, partitions) %}
 
-  {{ log("Generating ADD PARTITION statement for partition set \n" ~ partitions, info=True) }}
+  {{ log("Generating ADD PARTITION statement for partition set \n" ~ partitions) }}
 
   {% if partitions|length > 0 %}
 
