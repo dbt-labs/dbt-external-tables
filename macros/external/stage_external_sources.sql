@@ -2,7 +2,7 @@
     
     {% for node in graph.nodes.values() %}
         
-        {% if node.resource_type == 'source' and node.external != none %}
+        {% if node.resource_type == 'source' and node.external.location != none %}
             
             {%- set run_queue = [
                 dropif(node),
