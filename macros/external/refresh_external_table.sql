@@ -82,12 +82,6 @@
     
 {% endmacro %}
 
-{% macro spark__refresh_external_table(source) %}
-
-    {{return('-- noop')}}
-
-{% endmacro %}
-
 {% macro snowflake__refresh_external_table(source) %}
 
     {% set alter %}
