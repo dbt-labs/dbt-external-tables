@@ -8,15 +8,15 @@
 
 {% macro redshift__create_external_table(source) %}
 
-    {% set columns = source.columns %}
-    {% set external = source.external %}
-    {% set partitions = external.partitions %}
+    {%- set columns = source.columns.values() -%}
+    {%- set external = source.external -%}
+    {%- set partitions = external.partitions -%}
 
 {# https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_EXTERNAL_TABLE.html #}
 {# This assumes you have already created an external schema #}
 
     create external table {{source.database}}.{{source.schema}}.{{source.name}} (
-        {% for column in columns.values() %}
+        {% for column in columns %}
             {{adapter.quote(column.name)}} {{column.data_type}}
             {{- ',' if not loop.last -}}
         {% endfor %}
@@ -35,13 +35,13 @@
 
 {% macro spark__create_external_table(source) %}
 
-    {% set columns = source.columns %}
-    {% set external = source.external %}
-    {% set partitions = external.partition %}
+    {%- set columns = source.columns.values() -%}
+    {%- set external = source.external -%}
+    {%- set partitions = external.partition -%}
 
 {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
     create external table {{source.database}}.{{source.schema}}.{{source.identifier}} (
-        {% for column in source.columns.values() %}
+        {% for column in columns %}
             {{column.name}} {{column.data_type}}
             {{- ',' if not loop.last -}}
         {% endfor %}
@@ -59,6 +59,7 @@
 
 {% macro snowflake__create_external_table(source) %}
 
+    {%- set columns = source.columns.values() -%}
     {%- set external = source.external -%}
     {%- set partitions = external.partitions -%}
 
@@ -68,7 +69,7 @@
         {%- if partitions -%}{%- for partition in partitions %}
             {{partition.name}} {{partition.data_type}} as {{partition.expression}},
         {%- endfor -%}{%- endif -%}
-        {% for column in source.columns.values() %}
+        {% for column in columns %}
             {{column.name}} {{column.data_type}} as (nullif(value:{{column.name}},'')::{{column.data_type}})
             {{- ',' if not loop.last -}}
         {% endfor %}
