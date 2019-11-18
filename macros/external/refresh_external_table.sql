@@ -8,64 +8,8 @@
 
 {% macro redshift__refresh_external_table(source) %}
 
-    {%- set starting = [
-        {
-            'partition_by': [],
-            'path': ''
-        }
-    ] -%}
-
-    {%- set ending = [] -%}
-    {%- set finals = [] -%}
-    
     {%- set partitions = source.external.get('partitions',[]) -%}
-
-    {%- if partitions -%}{%- for partition in partitions -%}
-    
-        {%- if not loop.first -%}
-            {%- set starting = ending -%}
-            {%- set ending = [] -%}
-        {%- endif -%}
-        
-        {%- for preexisting in starting -%}
-            
-            {%- if partition.vals.macro -%}
-                {%- set vals = render_from_context(partition.vals.macro, **partition.vals.args) -%}
-            {%- elif partition.vals is string -%}
-                {%- set vals = [partition.vals] -%}
-            {%- else -%}
-                {%- set vals = partition.vals -%}
-            {%- endif -%}
-        
-            {%- for val in vals -%}
-            
-                {# For each preexisting guy, add a new one #}
-            
-                {%- set next_partition_by = [] -%}
-                
-                {%- for prexist_part in preexisting.partition_by -%}
-                    {%- do next_partition_by.append(prexist_part) -%}
-                {%- endfor -%}
-                
-                {%- do next_partition_by.append({'name': partition.name, 'value': val}) -%}
-
-                {# Concatenate path #}
-
-                {%- set concat_path = preexisting.path ~ '/' ~ render_from_context(partition.path_macro, partition.name, val) -%}
-                
-                {%- do ending.append({'partition_by': next_partition_by, 'path': concat_path}) -%}
-            
-            {%- endfor -%}
-            
-        {%- endfor -%}
-        
-        {%- if loop.last -%}
-            {%- for end in ending -%}
-                {%- do finals.append(end) -%}
-            {%- endfor -%}
-        {%- endif -%}
-        
-    {%- endfor -%}{%- endif -%}
+    {%- set finals = generate_hive_partitions(partitions) -%}
     
     {%- set ddl -%}
 
@@ -87,6 +31,28 @@
     {% set alter %}
     alter external table {{source.database}}.{{source.schema}}.{{source.identifier}} refresh
     {% endset %}
+    
+    {{return(alter)}}
+    
+{% endmacro %}
+
+{% macro spark__refresh_external_table(source) %}
+
+    {% if source.external.hive %}
+    
+        {% set alter %}
+        alter table {{source.database}}.{{source.schema}}.{{source.identifier}} add
+        {% for partition in partitions %}
+
+            partition ({%- for part in partition.partition_by -%}{{ part.name }}='{{ part.value }}'{{',' if not loop.last}}{%- endfor -%})
+            location '{{ source_external_location }}{{ partition.path }}/' {{',' if not loop.last}}
+
+        {% endfor %}
+        {% endset %}
+    
+    {% else %}
+        {% set alter = '--noop' %}
+    {% endif %}
     
     {{return(alter)}}
     

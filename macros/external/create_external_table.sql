@@ -39,22 +39,46 @@
     {%- set external = source.external -%}
     {%- set partitions = external.partition -%}
 
-{# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
-    create external table {{source.database}}.{{source.schema}}.{{source.identifier}} (
-        {% for column in columns %}
-            {{column.name}} {{column.data_type}}
-            {{- ',' if not loop.last -}}
-        {% endfor %}
-    )
-    {% if partitions -%} partitioned by (
-        {%- for partition in partitions -%}
-            {{partition.name}} {{partition.data_type}}{{', ' if not loop.last}}
-        {%- endfor -%}
-    ) {%- endif %}
-    {% if external.row_format -%} row format {{external.row_format}} {%- endif %}
-    {% if external.file_format -%} stored as {{external.file_format}} {%- endif %}
-    {% if external.location -%} location '{{external.location}}' {%- endif %}
-    {% if external.table_properties -%} tbl_properties {{external.table_properties}} {%- endif %}
+    {%- if external.hive -%}
+
+    {# https://docs.databricks.com/spark/latest/spark-sql/language-manual/create-table.html #}
+        create table {{source.database}}.{{source.schema}}.{{source.identifier}} (
+            {% for column in (columns + partitions) %}
+                {{column.name}} {{column.data_type}}
+                {{- ',' if not loop.last -}}
+            {% endfor %}
+        )
+        {% if external.using -%} using {{external.using}} {%- endif %}
+        {% if external.options -%} options {{external.options}} {%- endif %}
+        {% if partitions -%} partitioned by (
+            {%- for partition in partitions -%}
+                {{partition.name}}{{', ' if not loop.last}}
+            {%- endfor -%}
+        ) {%- endif %}
+        {% if external.location -%} location '{{external.location}}' {%- endif %}
+        {% if external.table_properties -%} tbl_properties {{external.table_properties}} {%- endif %}
+        
+    {%- else -%}
+
+    {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
+        create external table {{source.database}}.{{source.schema}}.{{source.identifier}} (
+            {% for column in columns %}
+                {{column.name}} {{column.data_type}}
+                {{- ',' if not loop.last -}}
+            {% endfor %}
+        )
+        {% if partitions -%} partitioned by (
+            {%- for partition in partitions -%}
+                {{partition.name}} {{partition.data_type}}{{', ' if not loop.last}}
+            {%- endfor -%}
+        ) {%- endif %}
+        {% if external.row_format -%} row format {{external.row_format}} {%- endif %}
+        {% if external.file_format -%} stored as {{external.file_format}} {%- endif %}
+        {% if external.location -%} location '{{external.location}}' {%- endif %}
+        {% if external.table_properties -%} tbl_properties {{external.table_properties}} {%- endif %}
+        
+    {%- endif -%}
+
 {% endmacro %}
 
 {% macro snowflake__create_external_table(source) %}
