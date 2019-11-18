@@ -85,7 +85,7 @@
 {% macro snowflake__refresh_external_table(source) %}
 
     {% set alter %}
-    alter external table {{source.database}}.{{source.schema}}.{{source.identifier}} refresh
+    alter external table {{source(source.source_name, source.name)}} refresh
     {% endset %}
     
     {{return(alter)}}

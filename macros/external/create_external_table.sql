@@ -40,7 +40,7 @@
     {%- set partitions = external.partition -%}
 
 {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
-    create external table {{source.database}}.{{source.schema}}.{{source.identifier}} (
+    create external table {{source(source.source_name, source.name)}} (
         {% for column in columns %}
             {{column.name}} {{column.data_type}}
             {{- ',' if not loop.last -}}
@@ -65,7 +65,7 @@
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
-    create or replace external table {{source.database}}.{{source.schema}}.{{source.identifier}} (
+    create or replace external table {{source(source.source_name, source.name)}} (
         {%- if partitions -%}{%- for partition in partitions %}
             {{partition.name}} {{partition.data_type}} as {{partition.expression}},
         {%- endfor -%}{%- endif -%}
