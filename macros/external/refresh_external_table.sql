@@ -30,7 +30,7 @@
         {%- for preexisting in starting -%}
             
             {%- if partition.vals.macro -%}
-                {%- set vals = render_from_context(partition.vals.macro, **partition.vals.args) -%}
+                {%- set vals = dbt_external_tables.render_from_context(partition.vals.macro, **partition.vals.args) -%}
             {%- elif partition.vals is string -%}
                 {%- set vals = [partition.vals] -%}
             {%- else -%}
@@ -51,7 +51,7 @@
 
                 {# Concatenate path #}
 
-                {%- set concat_path = preexisting.path ~ '/' ~ render_from_context(partition.path_macro, partition.name, val) -%}
+                {%- set concat_path = preexisting.path ~ '/' ~ dbt_external_tables.render_from_context(partition.path_macro, partition.name, val) -%}
                 
                 {%- do ending.append({'partition_by': next_partition_by, 'path': concat_path}) -%}
             
@@ -69,7 +69,7 @@
     
     {%- set ddl -%}
 
-    {{ redshift__alter_table_add_partitions(
+    {{ dbt_external_tables.redshift__alter_table_add_partitions(
         source.database ~ "." ~ source.schema ~ "." ~ source.identifier,
         source.external.location,
         finals
