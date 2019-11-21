@@ -25,7 +25,7 @@ sources:
                   end_date_str: '{{modules.datetime.date.today().strftime("%Y-%m-%d")}}'
                   in_fmt: "%Y-%m-%d"
                   out_fmt: "%Y-%m-%d"
-              path_macro: test_external_sources_redshift.year_month_day
+              path_macro: dbt_external_tables.year_month_day
         columns:
           - name: app_id
             data_type: varchar(255)
