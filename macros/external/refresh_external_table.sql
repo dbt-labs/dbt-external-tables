@@ -1,12 +1,12 @@
-{% macro refresh_external_table(source) %}
-    {{ adapter_macro('refresh_external_table', source) }}
+{% macro refresh_external_table(source_node) %}
+    {{ adapter_macro('refresh_external_table', source_node) }}
 {% endmacro %}
 
-{% macro default__refresh_external_table(source) %}
+{% macro default__refresh_external_table(source_node) %}
     {{ exceptions.raise_compiler_error("External table creation is not implemented for the default adapter") }}
 {% endmacro %}
 
-{% macro redshift__refresh_external_table(source) %}
+{% macro redshift__refresh_external_table(source_node) %}
 
     {%- set starting = [
         {
@@ -18,7 +18,7 @@
     {%- set ending = [] -%}
     {%- set finals = [] -%}
     
-    {%- set partitions = source.external.get('partitions',[]) -%}
+    {%- set partitions = source_node.external.get('partitions',[]) -%}
 
     {%- if partitions -%}{%- for partition in partitions -%}
     
@@ -70,8 +70,7 @@
     {%- set ddl -%}
 
     {{ dbt_external_tables.redshift__alter_table_add_partitions(
-        source.database ~ "." ~ source.schema ~ "." ~ source.identifier,
-        source.external.location,
+        source_node,
         finals
       )
     }}
@@ -82,23 +81,23 @@
     
 {% endmacro %}
 
-{% macro snowflake__refresh_external_table(source) %}
+{% macro snowflake__refresh_external_table(source_node) %}
 
     {% set alter %}
-    alter external table {{source(source.source_name, source.name)}} refresh
+    alter external table {{source(source_node.source_name, source_node.name)}} refresh
     {% endset %}
     
     {{return(alter)}}
     
 {% endmacro %}
 
-{% macro bigquery__refresh_external_table(source) %}
+{% macro bigquery__refresh_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
         "BigQuery does not support creating external tables in SQL/DDL. 
         Create it from the BQ console.") }}
 {% endmacro %}
 
-{% macro presto__refresh_external_table(source) %}
+{% macro presto__refresh_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
         "Presto does not support creating external tables with 
         the Hive connector. Do so from Hive directly.") }}
