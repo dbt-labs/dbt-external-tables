@@ -18,25 +18,25 @@
           - path (string): The path to be added as a partition for the particular
               combination of columns defined in the 'partition_by'
 #}
-{% macro redshift__alter_table_add_partitions(source, source_external_location, partitions) %}
+{% macro redshift__alter_table_add_partitions(source_node, partitions) %}
 
   {{ log("Generating ADD PARTITION statement for partition set \n" ~ partitions) }}
 
   {% if partitions|length > 0 %}
 
-      alter table {{ source }} add
+      alter table {{source(source_node.source_name, source_node.name)}} add
 
     {% for partition in partitions %}
 
       {% if loop.index0 != 0 and loop.index0 % 100 == 0 %}
 
         ; -- close alter statement and open a new one
-        alter table {{ source }} add
+        alter table {{source(source_node.source_name, source_node.name)}} add
 
       {% endif %}
 
         partition ({%- for part in partition.partition_by -%}{{ part.name }}='{{ part.value }}'{{',' if not loop.last}}{%- endfor -%})
-        location '{{ source_external_location }}{{ partition.path }}/'
+        location '{{ source_node.external.location }}{{ partition.path }}/'
 
     {% endfor %}
 
