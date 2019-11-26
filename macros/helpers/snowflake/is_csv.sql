@@ -13,27 +13,42 @@ you should only specify one or the other when creating an external table.
 
     {% if 'format_name' in file_format %}
     
-        {% set file_format_identifier = file_format.split('.')|last %}
+        {% set ff_standardized = file_format|lower
+            | replace('(','') | replace(')','') | replace(' ','')
+            | replace('format_name=','') %}
+        {% set fqn = ff_standardized.split('.') %}
+        
+        {% do log(format_fqn, info = true) %}
+        
+        {% if fqn | length == 3 %}
+            {% set ff_database, ff_schema, ff_identifier = fqn[0], fqn[1], fqn[2] %}
+        {% elif fqn | length == 2 %}
+            {% set ff_database, ff_schema, ff_identifier = target.database, fqn[0], fqn[1] %}
+        {% else %}
+            {% set ff_database, ff_schema, ff_identifier = target.database, target.schema, fqn[0] %}
+        {% endif %}
     
-        {% call statement('get_file_format', fetch_results = True) %}
-            show file formats like '{{file_format.split()}}'
+        {% call statement('get_file_format', fetch_result = True) %}
+            show file formats in {{ff_database}}.{{ff_schema}}
         {% endcall %}
         
-        {% set ff_type = load_result('get_file_format').table.columns['TYPE'] %}
+        {% set ffs = load_result('get_file_format').table %}
         
-        {% if ff_type == 'csv' %}
-        
-            {{return(true)}}
+        {% for ff in ffs %}
             
-        {% else %}
-        
-            {{return(false)}}
+            {% if ff['name']|lower == ff_identifier and ff['type']|lower == 'csv' %}
             
-        {% endif %}
+                {{return(true)}}
+            
+            {% endif %}
+        
+        {% endfor %}
+        
+        {{return(false)}}
             
     {% else %}
 
-        {% set ff_standardized = file_format|lowercase|replace(' ','') %}
+        {% set ff_standardized = file_format|lower|replace(' ','') %}
         
         {% if 'type=csv' in ff_standardized %}
 
