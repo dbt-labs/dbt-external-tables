@@ -10,6 +10,8 @@ dbt run-operation stage_external_sources
 # maybe someday: dbt source stage-external
 ```
 
+![sample docs](etc/sample_docs.png)
+
 The macros assume that you have already created an external stage (Snowflake)
 or external schema (Spectrum), and that you have permissions to select from it
 and create tables in it.
@@ -22,14 +24,14 @@ source:
     tables:
       - name: event
       
-        # NEW: "external" property of source node
+                            # NEW: "external" property of source node
         external:
-          location: # S3 file path or Snowflake stage
-          file_format: # Hive specification or Snowflake named format / specification
-          row_format: # Hive specification
-          tbl_properties: # Hive specification
+          location:         # S3 file path or Snowflake stage
+          file_format:      # Hive specification or Snowflake named format / specification
+          row_format:       # Hive specification
+          tbl_properties:   # Hive specification
           
-          # Specify a list of file-path partitions.
+                            # Specify a list of file-path partitions.
           
           # ------ SNOWFLAKE ------
           partitions:
@@ -41,19 +43,19 @@ source:
           partitions:
             - name: appId
               data_type: varchar(255)
-              vals:     # list of values
+              vals:         # list of values
                 - dev
                 - prod
-              # macro to convert partition value to file path specification.
               path_macro: dbt_external_tables.key_value
-              # this "helper" macro is defined in the package, but you can use
-              # custom macro that takes keyword arguments 'name' + 'value'
-              # and returns the path as a string
+                  # Macro to convert partition value to file path specification.
+                  # This "helper" macro is defined in the package, but you can use
+                  # any custom macro that takes keyword arguments 'name' + 'value'
+                  # and returns the path as a string
             
-            # if multiple partitions, order matters for compiling S3 path
+                  # If multiple partitions, order matters for compiling S3 path
             - name: collector_date
               data_type: date
-              vals:     # macro w/ keyword args to generate list of values
+              vals:         # macro w/ keyword args to generate list of values
                 macro: dbt.dates_in_range
                 args:
                   start_date_str: '2019-08-01'
@@ -63,9 +65,9 @@ source:
                path_macro: dbt_external_tables.year_month_day
              
         
-        # Specify ALL column names + datatypes.
-        # Column order matters for CSVs. Other file formats require column
-        # names to exactly match.
+        # Specify ALL column names + datatypes. Column order matters for CSVs. 
+        # Other file formats require column names to exactly match.
+        
         columns:
           - name: app_id
             data_type: varchar(255)
