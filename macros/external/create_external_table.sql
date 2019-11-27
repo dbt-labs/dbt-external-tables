@@ -62,6 +62,8 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
+    
+    {%- set is_csv = dbt_external_tables.is_csv(external.file_format) -%}
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
@@ -69,8 +71,13 @@
         {%- if partitions -%}{%- for partition in partitions %}
             {{partition.name}} {{partition.data_type}} as {{partition.expression}},
         {%- endfor -%}{%- endif -%}
-        {% for column in columns %}
-            {{column.name}} {{column.data_type}} as (nullif(value:{{column.name}},'')::{{column.data_type}})
+        {%- for column in columns %}
+            {%- set col_expression -%}
+                {%- if is_csv -%}nullif(value:c{{loop.index}},''){# special case: get columns by ordinal position #}
+                {%- else -%}nullif(value:{{column.name}},''){# standard behavior: get columns by name #}
+                {%- endif -%}
+            {%- endset %}
+            {{column.name}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
             {{- ',' if not loop.last -}}
         {% endfor %}
     )
