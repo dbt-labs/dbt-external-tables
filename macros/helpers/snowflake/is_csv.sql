@@ -11,14 +11,26 @@ you should only specify one or the other when creating an external table.
 
 #}
 
-    {% if 'format_name' in file_format %}
+    {% set ff_ltrimmed = file_format|lower|replace(' ','') %}
+
+    {% if 'type=' in ff_ltrimmed %}
     
-        {% set ff_standardized = file_format|lower
-            | replace('(','') | replace(')','') | replace(' ','')
+        {% if 'type=csv' in ff_ltrimmed %}
+
+            {{return(true)}}
+
+        {% else %}
+
+            {{return(false)}}
+            
+        {% endif %}
+        
+    {% else %}
+    
+        {% set ff_standardized = ff_ltrimmed
+            | replace('(','') | replace(')','')
             | replace('format_name=','') %}
         {% set fqn = ff_standardized.split('.') %}
-        
-        {% do log(format_fqn, info = true) %}
         
         {% if fqn | length == 3 %}
             {% set ff_database, ff_schema, ff_identifier = fqn[0], fqn[1], fqn[2] %}
@@ -44,21 +56,7 @@ you should only specify one or the other when creating an external table.
         
         {% endfor %}
         
-        {{return(false)}}
-            
-    {% else %}
-
-        {% set ff_standardized = file_format|lower|replace(' ','') %}
-        
-        {% if 'type=csv' in ff_standardized %}
-
-            {{return(true)}}
-
-        {% else %}
-    
-            {{return(false)}}
-            
-        {% endif %}
+        {{return(false)}}        
     
     {% endif %}
 
