@@ -71,14 +71,12 @@
         {%- if partitions -%}{%- for partition in partitions %}
             {{partition.name}} {{partition.data_type}} as {{partition.expression}},
         {%- endfor -%}{%- endif -%}
-        {% for column in columns %}
+        {%- for column in columns %}
             {%- set col_expression -%}
-                {%- if is_csv -%}{# special case: get columns by ordinal position #}
-                    nullif(value:c{{loop.index}},'')
-                {%- else -%}{# standard behavior: get columns by name #}
-                    nullif(value:{{column.name}},'')
+                {%- if is_csv -%}nullif(value:c{{loop.index}},''){# special case: get columns by ordinal position #}
+                {%- else -%}nullif(value:{{column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
-            {%- endset -%}
+            {%- endset %}
             {{column.name}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
             {{- ',' if not loop.last -}}
         {% endfor %}
