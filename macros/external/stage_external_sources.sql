@@ -15,7 +15,7 @@
             
             {%- do run_queue.append(create_external_table(node)) -%}
             
-            {%- if node.external.partitions and target.type != 'spark' -%}
+            {%- if node.external.partitions and target.type == 'redshift' -%}
                 {%- set run_queue = run_queue + refresh_external_table(node).split(';') -%}
             {%- endif -%}
             
