@@ -4,7 +4,8 @@
         
         {% if node.resource_type == 'source' and node.external.location != none %}
         
-            {%- do log('Staging external table ' ~ node.source_name ~ '.' ~ node.name, info = true) -%}
+            {% set ts = modules.datetime.datetime.now().strftime('%H:%M:%S') %}
+            {%- do log(ts ~ ' + Staging external table ' ~ node.source_name ~ '.' ~ node.name, info = true) -%}
             
             {%- set run_queue = [] -%}
             
@@ -15,7 +16,7 @@
             
             {%- do run_queue.append(create_external_table(node)) -%}
             
-            {%- if node.external.partitions and target.type != 'spark' -%}
+            {%- if node.external.partitions and target.type == 'redshift' -%}
                 {%- set run_queue = run_queue + refresh_external_table(node).split(';') -%}
             {%- endif -%}
             
@@ -25,8 +26,8 @@
                     {{ q }}
                 {% endcall %}
                 
-                {% set status = load_result('runner')['status'] %}
                 {% set ts = modules.datetime.datetime.now().strftime('%H:%M:%S') %}
+                {% set status = load_result('runner')['status'] %}
                 {% set msg = ts ~ ' + (' ~ loop.index ~ ') ' ~ status %}
                 {% do log(msg, info = true) %}
                 

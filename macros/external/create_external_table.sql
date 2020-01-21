@@ -82,9 +82,10 @@
         {% endfor %}
     )
     {% if partitions -%} partition by ({{partitions|map(attribute='name')|join(', ')}}) {%- endif %}
-    {% if external.location -%} location = {{external.location}} {%- endif %} {# stage #}
+    location = {{external.location}} {# stage #}
     {% if external.auto_refresh -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
-    {% if external.file_format -%} file_format = {{external.file_format}} {%- endif %}
+    {% if external.pattern -%} pattern = {{external.pattern}} {%- endif %}
+    file_format = {{external.file_format}}
 {% endmacro %}
 
 {% macro bigquery__create_external_table(source_node) %}
