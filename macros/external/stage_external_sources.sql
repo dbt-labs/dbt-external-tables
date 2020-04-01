@@ -5,7 +5,7 @@
         {% if node.resource_type == 'source' and node.external.location != none %}
         
             {% set ts = modules.datetime.datetime.now().strftime('%H:%M:%S') %}
-            {%- do log(ts ~ ' + Staging external table ' ~ node.source_name ~ '.' ~ node.name, info = true) -%}
+            {%- do log(ts ~ ' + Staging external table ' ~ node.schema ~ '.' ~ node.identifier, info = true) -%}
             
             {%- set run_queue = [] -%}
             
