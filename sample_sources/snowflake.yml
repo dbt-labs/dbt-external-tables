@@ -13,6 +13,7 @@ sources:
           location: "@raw.snowplow.snowplow"
           file_format: "( type = json )"
           auto_refresh: "true"
+          snowpipe: false
           partitions:
             - name: collector_hour
               data_type: timestamp

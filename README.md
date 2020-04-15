@@ -19,7 +19,9 @@ and create tables in it.
 ### Spec
 
 ```yml
-source:
+version: 2
+
+sources:
   - name: snowplow
     tables:
       - name: event
@@ -30,6 +32,7 @@ source:
           file_format:      # Hive specification or Snowflake named format / specification
           row_format:       # Hive specification
           tbl_properties:   # Hive specification
+          snowpipe:         # Snowflake: create an empty table + pipe instead of an external table
           
                             # Specify a list of file-path partitions.
           
