@@ -83,8 +83,10 @@
 
 {% macro snowflake__refresh_external_table(source_node) %}
 
+    {% set object_type = 'pipe' if source_node.external.snowpipe == true else 'external table' %}
+
     {% set alter %}
-    alter external table {{source(source_node.source_name, source_node.name)}} refresh
+    alter {{object_type}} {{source(source_node.source_name, source_node.name)}} refresh
     {% endset %}
     
     {{return(alter)}}
