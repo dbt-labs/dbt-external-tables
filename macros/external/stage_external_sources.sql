@@ -9,9 +9,9 @@
 {% macro redshift__get_external_build_plan(source_node) %}
 
     {% set build_plan = 
-        dropif(source_node) + ';' + 
-        create_external_table(source_node) + ';' + 
-        refresh_external_table(source_node)
+        dbt_external_tables.dropif(source_node) + ';' + 
+        dbt_external_tables.create_external_table(source_node) + ';' + 
+        dbt_external_tables.refresh_external_table(source_node)
     %}
     
     {% do return(build_plan) %}
@@ -40,7 +40,7 @@
             
     {% else %}
 
-            {{ create_external_table(source_node) }}
+            {{ dbt_external_tables.create_external_table(source_node) }}
         
     {% endif %}
     {% endset %}
