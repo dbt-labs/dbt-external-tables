@@ -25,8 +25,8 @@
     {% if source_node.external.snowpipe == true %}
     
         {% set old_relation = adapter.get_relation(
-            database = source_node.database, 
-            schema = source_node.schema, 
+            database = source_node.database,
+            schema = source_node.schema,
             identifier = source_node.identifier
         ) %}
         

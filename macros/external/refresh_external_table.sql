@@ -1,5 +1,5 @@
 {% macro refresh_external_table(source_node) %}
-    {{ adapter_macro('refresh_external_table', source_node) }}
+    {{ adapter_macro('dbt_external_tables.refresh_external_table', source_node) }}
 {% endmacro %}
 
 {% macro default__refresh_external_table(source_node) %}

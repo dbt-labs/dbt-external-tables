@@ -1,5 +1,5 @@
 {% macro create_external_table(source_node) %}
-    {{ adapter_macro('create_external_table', source_node) }}
+    {{ adapter_macro('dbt_external_tables.create_external_table', source_node) }}
 {% endmacro %}
 
 {% macro default__create_external_table(source_node) %}
