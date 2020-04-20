@@ -1,5 +1,5 @@
 {% macro get_external_build_plan(source_node) %}
-    {{ adapter_macro('get_external_build_plan', source_node) }}
+    {{ adapter_macro('dbt_external_tables.get_external_build_plan', source_node) }}
 {% endmacro %}
 
 {% macro default__get_external_build_plan(source_node) %}
@@ -20,10 +20,27 @@
 
 {% macro snowflake__get_external_build_plan(source_node) %}
 
-    {% set ddl = create_snowpipe(source_node) if source_node.external.snowpipe == true
-        else create_external_table(source_node) %}
+    {% set build_plan %}
+
+    {% if source_node.external.snowpipe == true %}
+    
+        {% set old_relation = adapter.get_relation(
+            database = source_node.database, 
+            schema = source_node.schema, 
+            identifier = source_node.identifier
+        ) %}
+        {% if old_relation is none %}
+            {{ dbt_external_tables.snowflake_create_empty_table(source_node) }};
+        {% endif %}
         
-    {% set build_plan = ddl + ';' %}
+            {{ dbt_external_tables.snowflake_create_snowpipe(source_node) }}
+            
+    {% else %}
+
+            {{ create_external_table(source_node) }}
+        
+    {% endif %}
+    {% endset %}
 
     {% do return(build_plan) %}
 
