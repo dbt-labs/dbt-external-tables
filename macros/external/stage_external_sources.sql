@@ -34,9 +34,15 @@
             {# create empty table and insert historical data #}
             {{ dbt_external_tables.snowflake_create_empty_table(source_node) }};
             {{ dbt_external_tables.snowflake_get_copy_sql(source_node) }};
+            {{ dbt_external_tables.snowflake_create_snowpipe(source_node) }};
+        {% else %}
+        
+        -- noop
+        
+        select 1 as fun
+        
         {% endif %}
         
-            {{ dbt_external_tables.snowflake_create_snowpipe(source_node) }}
             
     {% else %}
 
