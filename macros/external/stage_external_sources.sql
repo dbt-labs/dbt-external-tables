@@ -22,7 +22,7 @@
 
     {% set build_plan %}
 
-    {% if source_node.external.snowpipe == true %}
+    {% if source_node.external.snowpipe is not none %}
     
         {% set old_relation = adapter.get_relation(
             database = source_node.database,
