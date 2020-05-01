@@ -1,9 +1,9 @@
 {% macro snowflake_create_empty_table(source_node) %}
 
-    {%- set columns = source_node.columns.values() -%}
+    {%- set columns = source_node.columns.values() %}
 
     create or replace table {{source(source_node.source_name, source_node.name)}} (
-        {%- for column in columns %}
+        {% for column in columns -%}
             {{column.name}} {{column.data_type}},
         {% endfor %}
             _dbt_copied_at timestamp
@@ -16,17 +16,17 @@
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
-    {%- set is_csv = dbt_external_tables.is_csv(external.file_format) -%}
+    {%- set is_csv = dbt_external_tables.is_csv(external.file_format) %}
     
     copy into {{source(source_node.source_name, source_node.name)}}
     from (
         select
-        {%- for column in columns %}
+        {% for column in columns -%}
             {%- set col_expression -%}
                 {%- if is_csv -%}nullif(${{loop.index}},''){# special case: get columns by ordinal position #}
                 {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
-            {%- endset %}
+            {%- endset -%}
             {{col_expression}}::{{column.data_type}} as {{column.name}},
         {% endfor %}
             current_timestamp::timestamp as _dbt_copied_at
@@ -48,4 +48,25 @@
         {% if snowpipe.integration -%} integration = '{{snowpipe.integration}}' {%- endif %}
         as {{ dbt_external_tables.snowflake_get_copy_sql(source_node) }}
 
+{% endmacro %}
+
+{% macro snowflake_refresh_snowpipe(source_node) %}
+
+    {% set auto_ingest = source_node.external.snowpipe.get('auto_ingest', false) %}
+    
+    {% if auto_ingest is true %}
+    
+        {{ dbt_utils.log_info('PASS') }}
+        {% do return([]) %}
+    
+    {% else %}
+    
+        {% set ddl %}
+        alter pipe {{source(source_node.source_name, source_node.name)}} refresh
+        {% endset %}
+        
+        {{ return([ddl]) }}
+    
+    {% endif %}
+    
 {% endmacro %}

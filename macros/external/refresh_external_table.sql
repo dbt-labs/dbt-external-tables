@@ -67,25 +67,35 @@
         
     {%- endfor -%}{%- endif -%}
     
-    {%- set ddl -%}
-
-    {{ dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals)}}
-
-    {%- endset -%}
-    
-    {{return(ddl)}}
+    {%- set ddl = dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals) -%}
+    {{ return(ddl) }}
     
 {% endmacro %}
 
 {% macro snowflake__refresh_external_table(source_node) %}
 
-    {% set object_type = 'pipe' if source_node.external.snowpipe == true else 'external table' %}
-
-    {% set alter %}
-    alter {{object_type}} {{source(source_node.source_name, source_node.name)}} refresh
-    {% endset %}
+    {% set external = source_node.external %}
+    {% set snowpipe = source_node.external.get('snowpipe', none) %}
     
-    {{return(alter)}}
+    {% set auto_refresh = external.get('auto_refresh', false) %}
+    {% set partitions = external.get('partitions', none) %}
+    
+    {% set manual_refresh = (partitions and not auto_refresh) %}
+    
+    {% if manual_refresh %}
+
+        {% set ddl %}
+        alter external table {{source(source_node.source_name, source_node.name)}} refresh
+        {% endset %}
+        
+        {% do return([ddl]) %}
+    
+    {% else %}
+    
+        {{ dbt_utils.log_info('PASS') }}
+        {% do return([]) %}
+    
+    {% endif %}
     
 {% endmacro %}
 

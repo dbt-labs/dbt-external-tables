@@ -1,13 +1,16 @@
 ### External tables in dbt
 
 * Source config extension for metadata about external file structure
-* Adapter macros to create and "refresh" partitioned external tables
+* Adapter macros to create external tables and refresh external table partitions
+* Snowflake-specific macros to create, backfill, and refresh snowpipes
 
 ```bash
-# iterate through all source nodes, run drop + create + refresh (if partitioned)
+# iterate through all source nodes, create if missing + refresh if appropriate
 dbt run-operation stage_external_sources
 
-# maybe someday: dbt source stage-external
+# iterate through all source nodes, create or replace + refresh if appropriate
+dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
+# maybe someday: dbt source stage-external --full-refresh
 ```
 
 ![sample docs](etc/sample_docs.png)
