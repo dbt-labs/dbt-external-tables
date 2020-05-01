@@ -1,5 +1,5 @@
 {% macro refresh_external_table(source_node) %}
-    {{ adapter_macro('dbt_external_tables.refresh_external_table', source_node) }}
+    {{ return(adapter_macro('dbt_external_tables.refresh_external_table', source_node)) }}
 {% endmacro %}
 
 {% macro default__refresh_external_table(source_node) %}
@@ -69,11 +69,7 @@
     
     {%- set ddl -%}
 
-    {{ dbt_external_tables.redshift__alter_table_add_partitions(
-        source_node,
-        finals
-      )
-    }}
+    {{ dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals)}}
 
     {%- endset -%}
     

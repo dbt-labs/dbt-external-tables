@@ -18,7 +18,7 @@
           - path (string): The path to be added as a partition for the particular
               combination of columns defined in the 'partition_by'
 #}
-{% macro redshift__alter_table_add_partitions(source_node, partitions) %}
+{% macro redshift_alter_table_add_partitions(source_node, partitions) %}
 
   {{ log("Generating ADD PARTITION statement for partition set \n" ~ partitions) }}
 
