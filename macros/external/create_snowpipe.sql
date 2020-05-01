@@ -42,7 +42,7 @@
 
 {# https://docs.snowflake.com/en/sql-reference/sql/create-pipe.html #}
     create or replace pipe {{source(source_node.source_name, source_node.name)}}
-        {% if external.auto_refresh -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
+        {% if external.auto_ingest -%} auto_ingest = {{external.auto_ingest}} {%- endif %}
         {% if external.aws_sns_topic -%} aws_sns_topic = {{external.aws_sns_topic}} {%- endif %}
         {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
         as {{ dbt_external_tables.snowflake_get_copy_sql(source_node) }}
