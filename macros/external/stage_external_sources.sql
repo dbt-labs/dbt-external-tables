@@ -22,10 +22,11 @@
     {% if create_or_replace %}
 
         {% set build_plan = [
-            dbt_external_tables.dropif(source_node),
-            dbt_external_tables.create_external_table(source_node),
-            dbt_external_tables.refresh_external_table(source_node)
-        ] %}
+                'commit',
+                dbt_external_tables.dropif(source_node),
+                dbt_external_tables.create_external_table(source_node)
+            ] + dbt_external_tables.refresh_external_table(source_node) 
+        %}
         
     {% else %}
     

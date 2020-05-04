@@ -3,9 +3,13 @@
     {%- set columns = source_node.columns.values() %}
 
     create or replace table {{source(source_node.source_name, source_node.name)}} (
-        {% for column in columns -%}
+        {% if columns|length == 0 %}
+            value variant,
+        {% else -%}
+        {%- for column in columns %}
             {{column.name}} {{column.data_type}},
-        {% endfor %}
+        {% endfor -%}
+        {% endif %}
             _dbt_copied_at timestamp
     );
 
@@ -19,16 +23,20 @@
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) %}
     
     copy into {{source(source_node.source_name, source_node.name)}}
-    from (
+    from ( 
         select
-        {% for column in columns -%}
+        {% if columns|length == 0 %}
+            $1::variant as value,
+        {% else -%}
+        {%- for column in columns -%}
             {%- set col_expression -%}
                 {%- if is_csv -%}nullif(${{loop.index}},''){# special case: get columns by ordinal position #}
                 {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
             {%- endset -%}
             {{col_expression}}::{{column.data_type}} as {{column.name}},
-        {% endfor %}
+        {%- endfor -%}
+        {% endif %}
             current_timestamp::timestamp as _dbt_copied_at
         from {{external.location}} {# stage #}
     )

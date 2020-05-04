@@ -67,7 +67,9 @@
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
-    create or replace external table {{source(source_node.source_name, source_node.name)}} (
+    create or replace external table {{source(source_node.source_name, source_node.name)}}
+    {%- if columns|length > 0 -%}    
+    (
         {%- if partitions -%}{%- for partition in partitions %}
             {{partition.name}} {{partition.data_type}} as {{partition.expression}},
         {%- endfor -%}{%- endif -%}
@@ -81,6 +83,7 @@
             {{- ',' if not loop.last -}}
         {% endfor %}
     )
+    {%- endif -%}
     {% if partitions -%} partition by ({{partitions|map(attribute='name')|join(', ')}}) {%- endif %}
     location = {{external.location}} {# stage #}
     {% if external.auto_refresh -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
