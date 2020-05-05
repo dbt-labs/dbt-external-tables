@@ -113,22 +113,22 @@
             
     {% for node in sources_to_stage %}
 
-        {% set src_num = loop.index %}
+        {% set loop_label = loop.index ~ ' of ' ~ loop.length %}
 
-        {% do dbt_utils.log_info(src_num ~ ' of ' ~ loop.length ~ ' START external source ' ~ node.schema ~ '.' ~ node.identifier) -%}
+        {% do dbt_utils.log_info(loop_label ~ ' START external source ' ~ node.schema ~ '.' ~ node.identifier) -%}
         
         {% set run_queue = get_external_build_plan(node) %}
         
         {% for q in run_queue %}
         
-            {% do dbt_utils.log_info(src_num ~ ' (' ~ loop.index ~ ') ' ~ (q|trim)[:30] ~ '...  ') %}
+            {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ (q|trim)[:50] ~ '...  ') %}
         
             {% call statement('runner', fetch_result = True, auto_begin = False) %}
                 {{ q }}
             {% endcall %}
             
             {% set status = load_result('runner')['status'] %}
-            {% do dbt_utils.log_info(src_num ~ ' (' ~ loop.index ~ ') ' ~ status) %}
+            {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ status) %}
             
         {% endfor %}
         
