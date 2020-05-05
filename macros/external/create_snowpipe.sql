@@ -6,10 +6,12 @@
         {% if columns|length == 0 %}
             value variant,
         {% else -%}
-        {%- for column in columns %}
+        {%- for column in columns -%}
             {{column.name}} {{column.data_type}},
         {% endfor -%}
         {% endif %}
+            metadata_filename varchar,
+            metadata_file_row_number bigint,
             _dbt_copied_at timestamp
     );
 
@@ -35,8 +37,10 @@
                 {%- endif -%}
             {%- endset -%}
             {{col_expression}}::{{column.data_type}} as {{column.name}},
-        {%- endfor -%}
+        {% endfor -%}
         {% endif %}
+            metadata$filename::varchar as metadata_filename,
+            metadata$file_row_number::bigint as metadata_file_row_number,
             current_timestamp::timestamp as _dbt_copied_at
         from {{external.location}} {# stage #}
     )
@@ -60,7 +64,8 @@
 
 {% macro snowflake_refresh_snowpipe(source_node) %}
 
-    {% set auto_ingest = source_node.external.snowpipe.get('auto_ingest', false) %}
+    {% set snowpipe = source_node.external.snowpipe %}
+    {% set auto_ingest = snowpipe.get('auto_ingest', false) if snowpipe is mapping %}
     
     {% if auto_ingest is true %}
     

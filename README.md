@@ -35,7 +35,12 @@ sources:
           file_format:      # Hive specification or Snowflake named format / specification
           row_format:       # Hive specification
           tbl_properties:   # Hive specification
-          snowpipe:         # Snowflake: create an empty table + pipe instead of an external table
+          
+          # Snowflake: create an empty table + pipe instead of an external table
+          snowpipe:
+            auto_ingest:    # true or false
+            aws_sns_topic:  # AWS
+            integration:    # Azure
           
                             # Specify a list of file-path partitions.
           
