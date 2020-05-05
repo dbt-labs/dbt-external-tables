@@ -84,7 +84,7 @@
         {% endfor %}
     )
     {%- endif -%}
-    {% if partitions -%} partition by ({{partitions|map(attribute='name')|join(', ')}}) {%- endif %}
+    {% if partitions %} partition by ({{partitions|map(attribute='name')|join(', ')}}) {% endif %}
     location = {{external.location}} {# stage #}
     {% if external.auto_refresh -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
