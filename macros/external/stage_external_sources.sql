@@ -76,28 +76,61 @@
 
 {% endmacro %}
 
-{% macro stage_external_sources() %}
+{% macro stage_external_sources(select=none) %}
+
+    {% set sources_to_stage = [] %}
     
     {% for node in graph.nodes.values() %}
         
         {% if node.resource_type == 'source' and node.external.location != none %}
-        
-            {% do dbt_utils.log_info('Staging external source ' ~ node.schema ~ '.' ~ node.identifier) -%}
             
-            {% set run_queue = get_external_build_plan(node) %}
+            {% if select %}
             
-            {% for q in run_queue %}
-            
-                {% call statement('runner', fetch_result = True, auto_begin = False) %}
-                    {{ q }}
-                {% endcall %}
+                {% for src in select.split(' ') %}
                 
-                {% set status = load_result('runner')['status'] %}
-                {% do dbt_utils.log_info('(' ~ loop.index ~ ') ' ~ status) %}
+                    {% if '.' in src %}
+                        {% set src_s = src.split('.') %}
+                        {% if src_s[0] == node.source_name and src_s[1] == node.name %}
+                            {% do sources_to_stage.append(node) %}
+                        {% endif %}
+                    {% else %}
+                        {% if src == node.source_name %}
+                            {% do sources_to_stage.append(node) %}
+                        {% endif %}
+                    {% endif %}
+                    
+                {% endfor %}
+                        
+            {% else %}
+            
+                {% do sources_to_stage.append(node) %}
                 
-            {% endfor %}
+            {% endif %}
             
         {% endif %}
+        
+    {% endfor %}
+            
+    {% for node in sources_to_stage %}
+
+        {% set src_num = loop.index %}
+
+        {% do dbt_utils.log_info(src_num ~ ' of ' ~ loop.length ~ ' START external source ' ~ node.schema ~ '.' ~ node.identifier) -%}
+        
+        {% set run_queue = get_external_build_plan(node) %}
+        
+        {% for q in run_queue %}
+        
+            {% do dbt_utils.log_info(src_num ~ ' (' ~ loop.index ~ ') ' ~ (q|trim)[:30] ~ '...  ') %}
+        
+            {% call statement('runner', fetch_result = True, auto_begin = False) %}
+                {{ q }}
+            {% endcall %}
+            
+            {% set status = load_result('runner')['status'] %}
+            {% do dbt_utils.log_info(src_num ~ ' (' ~ loop.index ~ ') ' ~ status) %}
+            
+        {% endfor %}
         
     {% endfor %}
     

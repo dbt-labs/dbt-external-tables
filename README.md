@@ -6,11 +6,10 @@
 
 ```bash
 # iterate through all source nodes, create if missing + refresh if appropriate
-dbt run-operation stage_external_sources
+$ dbt run-operation stage_external_sources
 
 # iterate through all source nodes, create or replace + refresh if appropriate
-dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
-# maybe someday: dbt source stage-external --full-refresh
+$ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
 ```
 
 ![sample docs](etc/sample_docs.png)
@@ -18,6 +17,24 @@ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
 The macros assume that you have already created an external stage (Snowflake)
 or external schema (Spectrum), and that you have permissions to select from it
 and create tables in it.
+
+The `stage_external_sources` macro accepts a similar node selection syntax to
+[snapshotting source freshness](https://docs.getdbt.com/docs/running-a-dbt-project/command-line-interface/source/#specifying-sources-to-snapshot).
+
+```bash
+# Stage all Snowplow and Logs external sources:
+$ dbt run-operation stage_external_sources --args 'select: snowplow logs'
+
+# Stage a particular external source table:
+$ dbt run-operation stage_external_sources --args 'select: snowplow.event'
+```
+
+Maybe someday:
+```bash
+$ dbt source stage-external
+$ dbt source stage-external --full-refresh
+$ dbt source stage-external --select snowplow.event logs
+```
 
 ### Spec
 
