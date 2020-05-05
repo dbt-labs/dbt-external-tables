@@ -23,6 +23,7 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) %}
+    {%- set copy_options = external.snowpipe.get('copy_options', none) -%}
     
     copy into {{source(source_node.source_name, source_node.name)}}
     from ( 
@@ -45,6 +46,7 @@
         from {{external.location}} {# stage #}
     )
     file_format = {{external.file_format}}
+    {% if copy_options %} {{copy_options}} {% endif %}
 
 {% endmacro %}
 

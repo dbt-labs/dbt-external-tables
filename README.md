@@ -38,9 +38,10 @@ sources:
           
           # Snowflake: create an empty table + pipe instead of an external table
           snowpipe:
-            auto_ingest:    # true or false
+            auto_ingest:    true
             aws_sns_topic:  # AWS
             integration:    # Azure
+            copy_options:   "on_error = continue, enforce_length = false" # e.g.
           
                             # Specify a list of file-path partitions.
           
