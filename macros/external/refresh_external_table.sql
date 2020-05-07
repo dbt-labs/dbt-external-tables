@@ -72,7 +72,6 @@
     
     {% else %}
     
-        {{ dbt_utils.log_info('PASS') }}
         {% do return([]) %}
     
     {% endif %}
@@ -99,7 +98,6 @@
     
     {% else %}
     
-        {{ dbt_utils.log_info('PASS') }}
         {% do return([]) %}
     
     {% endif %}

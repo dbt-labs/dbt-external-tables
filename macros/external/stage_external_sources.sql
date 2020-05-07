@@ -112,7 +112,9 @@
         
         {% set run_queue = get_external_build_plan(node) %}
         
-        {% do exit_transaction() %}
+        {% do dbt_utils.log_info(loop_label ~ ' SKIP') if run_queue == [] %}
+        
+        {% do dbt_external_tables.exit_transaction() %}
         
         {% for q in run_queue %}
         
