@@ -20,31 +20,35 @@
 #}
 {% macro redshift_alter_table_add_partitions(source_node, partitions) %}
 
-  {{ log("Generating ADD PARTITION statement for partition set \n" ~ partitions) }}
+  {{ log("Generating ADD PARTITION statement for partition set between " 
+         ~ partitions[0]['path'] ~ " and " ~ (partitions|last)['path']) }}
 
   {% set ddl = [] %}
   
   {% if partitions|length > 0 %}
   
-    {% set alters %}
+    {% set alter_table_add %}
+        alter table {{source(source_node.source_name, source_node.name)}} add if not exists 
+    {% endset %}
+  
+    {%- set alters -%}
 
-      alter table {{source(source_node.source_name, source_node.name)}} add
+      {{ alter_table_add }}
 
-    {% for partition in partitions %}
+    {%- for partition in partitions -%}
 
-      {% if loop.index0 != 0 and loop.index0 % 100 == 0 %}
+      {%- if loop.index0 != 0 and loop.index0 % 100 == 0 -%}
 
-        ; -- close alter statement and open a new one
-        alter table {{source(source_node.source_name, source_node.name)}} add
+        ; {{ alter_table_add }}
 
-      {% endif %}
+      {%- endif -%}
 
         partition ({%- for part in partition.partition_by -%}{{ part.name }}='{{ part.value }}'{{',' if not loop.last}}{%- endfor -%})
         location '{{ source_node.external.location }}{{ partition.path }}/'
 
-    {% endfor %}
+    {% endfor -%}
     
-    {% endset %}
+    {%- endset -%}
     
     {% set ddl = ddl + alters.split(';') %}
 

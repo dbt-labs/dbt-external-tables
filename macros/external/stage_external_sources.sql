@@ -9,20 +9,13 @@
 {% macro redshift__get_external_build_plan(source_node) %}
 
     {% set build_plan = [] %}
-
-    {% set old_relation = adapter.get_relation(
-        database = source_node.database,
-        schema = source_node.schema,
-        identifier = source_node.identifier
-    ) %}
     
     {%- set partitions = source_node.external.get('partitions', none) -%}
-    {% set create_or_replace = (partitions or old_relation is none or var('ext_full_refresh', false)) %}
+    {% set create_or_replace = (var('ext_full_refresh', false) or not redshift_is_ext_tbl(source_node)) %}
     
     {% if create_or_replace %}
 
         {% set build_plan = [
-                'commit',
                 dbt_external_tables.dropif(source_node),
                 dbt_external_tables.create_external_table(source_node)
             ] + dbt_external_tables.refresh_external_table(source_node) 
@@ -30,7 +23,7 @@
         
     {% else %}
     
-        {{ dbt_utils.log_info('PASS') }}
+        {% set build_plan = dbt_external_tables.refresh_external_table(source_node) %}
         
     {% endif %}
     
@@ -119,9 +112,14 @@
         
         {% set run_queue = get_external_build_plan(node) %}
         
+        {% do exit_transaction() %}
+        
         {% for q in run_queue %}
         
-            {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ (q|trim)[:50] ~ '...  ') %}
+            {% set q_msg = q|trim %}
+            {% set q_log = q_msg[:50] ~ '...  ' if q_msg|length > 50 else q_msg %}
+        
+            {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ q_log) %}
         
             {% call statement('runner', fetch_result = True, auto_begin = False) %}
                 {{ q }}
