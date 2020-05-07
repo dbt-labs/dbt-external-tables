@@ -1,5 +1,5 @@
 {% macro create_external_table(source_node) %}
-    {{ adapter_macro('create_external_table', source_node) }}
+    {{ adapter_macro('dbt_external_tables.create_external_table', source_node) }}
 {% endmacro %}
 
 {% macro default__create_external_table(source_node) %}
@@ -67,9 +67,11 @@
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
-    create or replace external table {{source(source_node.source_name, source_node.name)}} (
+    create or replace external table {{source(source_node.source_name, source_node.name)}}
+    {%- if columns|length > 0 or partitions|length > 0 -%}
+    (
         {%- if partitions -%}{%- for partition in partitions %}
-            {{partition.name}} {{partition.data_type}} as {{partition.expression}},
+            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if columns|length > 0 -}}
         {%- endfor -%}{%- endif -%}
         {%- for column in columns %}
             {%- set col_expression -%}
@@ -81,7 +83,8 @@
             {{- ',' if not loop.last -}}
         {% endfor %}
     )
-    {% if partitions -%} partition by ({{partitions|map(attribute='name')|join(', ')}}) {%- endif %}
+    {%- endif -%}
+    {% if partitions %} partition by ({{partitions|map(attribute='name')|join(', ')}}) {% endif %}
     location = {{external.location}} {# stage #}
     {% if external.auto_refresh -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}

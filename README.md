@@ -1,13 +1,16 @@
 ### External tables in dbt
 
 * Source config extension for metadata about external file structure
-* Adapter macros to create and "refresh" partitioned external tables
+* Adapter macros to create external tables and refresh external table partitions
+* Snowflake-specific macros to create, backfill, and refresh snowpipes
 
 ```bash
-# iterate through all source nodes, run drop + create + refresh (if partitioned)
+# iterate through all source nodes, create if missing + refresh if appropriate
 dbt run-operation stage_external_sources
 
-# maybe someday: dbt source stage-external
+# iterate through all source nodes, create or replace + refresh if appropriate
+dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
+# maybe someday: dbt source stage-external --full-refresh
 ```
 
 ![sample docs](etc/sample_docs.png)
@@ -19,7 +22,9 @@ and create tables in it.
 ### Spec
 
 ```yml
-source:
+version: 2
+
+sources:
   - name: snowplow
     tables:
       - name: event
@@ -30,6 +35,13 @@ source:
           file_format:      # Hive specification or Snowflake named format / specification
           row_format:       # Hive specification
           tbl_properties:   # Hive specification
+          
+          # Snowflake: create an empty table + pipe instead of an external table
+          snowpipe:
+            auto_ingest:    true
+            aws_sns_topic:  # AWS
+            integration:    # Azure
+            copy_options:   "on_error = continue, enforce_length = false" # e.g.
           
                             # Specify a list of file-path partitions.
           

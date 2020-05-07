@@ -22,11 +22,9 @@
 {%- endmacro %}
 
 {% macro dropif(node) %}
-
-    {% set fqn = [node.database, node.schema, node.identifier]|join('.') %}
     
     {% set ddl %}
-        drop table if exists {{fqn}} cascade
+        drop table if exists {{source(node.source_name, node.name)}} cascade
     {% endset %}
     
     {{return(ddl)}}
