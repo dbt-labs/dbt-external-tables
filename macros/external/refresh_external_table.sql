@@ -65,10 +65,17 @@
             {%- endfor -%}
         {%- endif -%}
         
-    {%- endfor -%}{%- endif -%}
+    {%- endfor -%}
     
-    {%- set ddl = dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals) -%}
-    {{ return(ddl) }}
+        {%- set ddl = dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals) -%}
+        {{ return(ddl) }}
+    
+    {% else %}
+    
+        {{ dbt_utils.log_info('PASS') }}
+        {% do return([]) %}
+    
+    {% endif %}
     
 {% endmacro %}
 

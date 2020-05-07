@@ -30,3 +30,9 @@
     {{return(ddl)}}
 
 {% endmacro %}
+
+{% macro exit_transaction() %}
+    
+    {% do run_query('begin; commit;') %}
+
+{% endmacro %}
