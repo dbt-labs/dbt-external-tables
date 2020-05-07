@@ -71,7 +71,6 @@
     
     {% if auto_ingest is true %}
     
-        {{ dbt_utils.log_info('PASS') }}
         {% do return([]) %}
     
     {% else %}

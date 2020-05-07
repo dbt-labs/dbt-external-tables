@@ -1,8 +1,10 @@
-### External tables in dbt
+# External sources in dbt
 
 * Source config extension for metadata about external file structure
 * Adapter macros to create external tables and refresh external table partitions
 * Snowflake-specific macros to create, backfill, and refresh snowpipes
+
+## Syntax
 
 ```bash
 # iterate through all source nodes, create if missing + refresh if appropriate
@@ -15,7 +17,7 @@ $ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
 ![sample docs](etc/sample_docs.png)
 
 The macros assume that you have already created an external stage (Snowflake)
-or external schema (Spectrum), and that you have permissions to select from it
+or external schema (Redshift/Spectrum), and that you have permissions to select from it
 and create tables in it.
 
 The `stage_external_sources` macro accepts a similar node selection syntax to
@@ -36,7 +38,7 @@ $ dbt source stage-external --full-refresh
 $ dbt source stage-external --select snowplow.event logs
 ```
 
-### Spec
+## Spec
 
 ```yml
 version: 2
@@ -107,10 +109,14 @@ sources:
         ...
 ```
 
-See [`sample_sources`](sample_sources) for full valid YML config that establishes Snowplow events
-as a dbt source and stage-ready external table in Snowflake and Spectrum.
+## Resources
 
-### Supported databases
+* [`sample_sources`](sample_sources) for full valid YML config that establishes Snowplow events
+as a dbt source and stage-ready external table in Snowflake and Spectrum.
+* [`sample_analysis`](sample_analysis) for a "dry run" version of the DDL/DML that
+`stage_external_sources` will run as an operation
+
+## Supported databases
 
 * Redshift (Spectrum)
 * Snowflake
