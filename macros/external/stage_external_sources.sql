@@ -73,9 +73,9 @@
 
     {% set sources_to_stage = [] %}
     
-    {% for node in graph.nodes.values() %}
+    {% for node in graph.sources.values() %}
         
-        {% if node.resource_type == 'source' and node.external.location != none %}
+        {% if node.external.location != none %}
             
             {% if select %}
             
