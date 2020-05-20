@@ -47,29 +47,32 @@ sources:
   - name: snowplow
     tables:
       - name: event
-      
+
                             # NEW: "external" property of source node
         external:
           location:         # S3 file path or Snowflake stage
           file_format:      # Hive specification or Snowflake named format / specification
+          using:            # Hive specification
           row_format:       # Hive specification
           tbl_properties:   # Hive specification
-          
+          options:          # Hive specification
+            header: 'TRUE'
+
           # Snowflake: create an empty table + pipe instead of an external table
           snowpipe:
             auto_ingest:    true
             aws_sns_topic:  # AWS
             integration:    # Azure
             copy_options:   "on_error = continue, enforce_length = false" # e.g.
-          
+
                             # Specify a list of file-path partitions.
-          
+
           # ------ SNOWFLAKE ------
           partitions:
             - name: collector_date
               data_type: date
               expression: to_date(substr(metadata$filename, 8, 10), 'YYYY/MM/DD')
-              
+
           # ------ REDSHIFT -------
           partitions:
             - name: appId
@@ -82,7 +85,7 @@ sources:
                   # This "helper" macro is defined in the package, but you can use
                   # any custom macro that takes keyword arguments 'name' + 'value'
                   # and returns the path as a string
-            
+
                   # If multiple partitions, order matters for compiling S3 path
             - name: collector_date
               data_type: date
@@ -94,11 +97,11 @@ sources:
                   in_fmt: "%Y-%m-%d"
                   out_fmt: "%Y-%m-%d"
                path_macro: dbt_external_tables.year_month_day
-             
-        
-        # Specify ALL column names + datatypes. Column order matters for CSVs. 
+
+
+        # Specify ALL column names + datatypes. Column order matters for CSVs.
         # Other file formats require column names to exactly match.
-        
+
         columns:
           - name: app_id
             data_type: varchar(255)

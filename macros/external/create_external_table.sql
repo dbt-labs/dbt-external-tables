@@ -11,6 +11,7 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
+    {%- set options = external.options -%}
 
 {# https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_EXTERNAL_TABLE.html #}
 {# This assumes you have already created an external schema #}
@@ -21,6 +22,7 @@
             {{- ',' if not loop.last -}}
         {% endfor %}
     )
+    {% if external.using -%} USING {{external.using}} {%- endif %}
     {% if partitions -%} partitioned by (
         {%- for partition in partitions -%}
             {{adapter.quote(partition.name)}} {{partition.data_type}}{{', ' if not loop.last}}
@@ -30,7 +32,12 @@
     {% if external.file_format -%} stored as {{external.file_format}} {%- endif %}
     {% if external.location -%} location '{{external.location}}' {%- endif %}
     {% if external.table_properties -%} table properties {{external.table_properties}} {%- endif %}
-    
+    {% if options -%} OPTIONS (
+        {%- for key, value in options -%}
+            '{{ key }}'='{{value}}'{{', ' if not loop.last}}
+        {%- endfor -%}
+    ) {%- endif %}
+
 {% endmacro %}
 
 {% macro spark__create_external_table(source_node) %}
@@ -62,7 +69,7 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
-    
+
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) -%}
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
@@ -93,12 +100,12 @@
 
 {% macro bigquery__create_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
-        "BigQuery does not support creating external tables in SQL/DDL. 
+        "BigQuery does not support creating external tables in SQL/DDL.
         Create it from the BQ console.") }}
 {% endmacro %}
 
 {% macro presto__create_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
-        "Presto does not support creating external tables with 
+        "Presto does not support creating external tables with
         the Hive connector. Do so from Hive directly.") }}
 {% endmacro %}
