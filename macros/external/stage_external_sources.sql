@@ -75,7 +75,7 @@
     
     {% for node in graph.sources.values() %}
         
-        {% if node.external.location != none %}
+        {% if node.external.location %}
             
             {% if select %}
             
