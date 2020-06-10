@@ -1,7 +1,9 @@
 name: 'dbt_external_tables'
-version: '0.2.0'
+version: '0.3.0'
 
-require-dbt-version: ">=0.15.0"
+config-version: 2
+
+require-dbt-version: ">=0.17.0"
 
 source-paths: ["models"]
 analysis-paths: ["analysis"] 
