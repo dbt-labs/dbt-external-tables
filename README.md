@@ -53,7 +53,7 @@ sources:
           location:         # S3 file path or Snowflake stage
           file_format:      # Hive specification or Snowflake named format / specification
           row_format:       # Hive specification
-          tbl_properties:   # Hive specification
+          table_properties: # Hive specification
           
           # Snowflake: create an empty table + pipe instead of an external table
           snowpipe:
