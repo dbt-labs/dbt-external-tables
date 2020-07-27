@@ -73,7 +73,9 @@
 
     {% set sources_to_stage = [] %}
     
-    {% for node in graph.sources.values() %}
+    {% set source_nodes = graph.sources.values() if graph.sources else [] %}
+    
+    {% for node in source_nodes %}
         
         {% if node.external.location %}
             
@@ -110,7 +112,7 @@
 
         {% do dbt_utils.log_info(loop_label ~ ' START external source ' ~ node.schema ~ '.' ~ node.identifier) -%}
         
-        {% set run_queue = get_external_build_plan(node) %}
+        {% set run_queue = dbt_external_tables.get_external_build_plan(node) %}
         
         {% do dbt_utils.log_info(loop_label ~ ' SKIP') if run_queue == [] %}
         
