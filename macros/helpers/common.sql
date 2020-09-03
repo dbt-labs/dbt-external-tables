@@ -12,7 +12,7 @@
     {% set package_context = context[package_name] %}
   {% else %}
     {% set error_msg %}
-        In adapter_macro: could not find package '{{package_name}}', called with '{{original_name}}'
+        Could not find package '{{package_name}}', called by macro '{{original_name}}'
     {% endset %}
     {{ exceptions.raise_compiler_error(error_msg | trim) }}
   {% endif %}
