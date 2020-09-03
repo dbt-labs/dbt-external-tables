@@ -1,5 +1,5 @@
 {% macro create_external_table(source_node) %}
-    {{ adapter_macro('dbt_external_tables.create_external_table', source_node) }}
+    {{ adapter.dispatch('create_external_table', dbt_external_tables._get_dbt_external_tables_namespaces()) (source_node) }}
 {% endmacro %}
 
 {% macro default__create_external_table(source_node) %}
@@ -30,7 +30,7 @@
     {% if external.file_format -%} stored as {{external.file_format}} {%- endif %}
     {% if external.location -%} location '{{external.location}}' {%- endif %}
     {% if external.table_properties -%} table properties {{external.table_properties}} {%- endif %}
-    
+
 {% endmacro %}
 
 {% macro spark__create_external_table(source_node) %}
@@ -62,7 +62,7 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
-    
+
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) -%}
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
@@ -93,12 +93,12 @@
 
 {% macro bigquery__create_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
-        "BigQuery does not support creating external tables in SQL/DDL. 
+        "BigQuery does not support creating external tables in SQL/DDL.
         Create it from the BQ console.") }}
 {% endmacro %}
 
 {% macro presto__create_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
-        "Presto does not support creating external tables with 
+        "Presto does not support creating external tables with
         the Hive connector. Do so from Hive directly.") }}
 {% endmacro %}
