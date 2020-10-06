@@ -17,6 +17,10 @@ sources:
             - name: collector_hour
               data_type: timestamp
               expression: to_timestamp(substr(metadata$filename, 8, 13), 'YYYY/MM/DD/HH24')
+          calc_columns:
+            - name: landed_time
+              data_type: time
+              expression: "IFF(try_to_time(substr(metadata$filename, 75, 6), 'HH24MISS') IS NOT NULL, to_time(substr(metadata$filename, 75, 6), 'HH24MISS'), to_time('080000', 'HH24MISS'))"
         columns:
           - name: app_id
             data_type: varchar(255)

@@ -69,7 +69,13 @@ sources:
             - name: collector_date
               data_type: date
               expression: to_date(substr(metadata$filename, 8, 10), 'YYYY/MM/DD')
-              
+          
+          # ------ SNOWFLAKE - Calculated Columns ------
+          calc_columns:
+            - name: landed_time
+              data_type: time
+              expression: "IFF(try_to_time(substr(metadata$filename, 75, 6), 'HH24MISS') IS NOT NULL, to_time(substr(metadata$filename, 75, 6), 'HH24MISS'), to_time('080000', 'HH24MISS'))"
+          
           # ------ REDSHIFT -------
           partitions:
             - name: appId
