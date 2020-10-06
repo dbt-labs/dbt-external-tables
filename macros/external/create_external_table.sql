@@ -64,16 +64,20 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
+    {%- set calc_columns = external.calc_columns -%}
 
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) -%}
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
     create or replace external table {{source(source_node.source_name, source_node.name)}}
-    {%- if columns or partitions -%}
+    {%- if columns or partitions or calc_columns -%}
     (
         {%- if partitions -%}{%- for partition in partitions %}
             {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if columns|length > 0 -}}
+        {%- endfor -%}{%- endif -%}
+        {%- if calc_columns -%}{%- for calc_column in calc_columns -%}
+            {{calc_column.name}} {{calc_column.data_type}} as {{calc_column.expression}}{{- ',' if calc_columns|length > 0 -}}
         {%- endfor -%}{%- endif -%}
         {%- for column in columns %}
             {%- set col_expression -%}
@@ -84,6 +88,7 @@
             {{column.name}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
             {{- ',' if not loop.last -}}
         {% endfor %}
+        
     )
     {%- endif -%}
     {% if partitions %} partition by ({{partitions|map(attribute='name')|join(', ')}}) {% endif %}
