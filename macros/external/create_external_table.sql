@@ -93,6 +93,37 @@
     file_format = {{external.file_format}}
 {% endmacro %}
 
+{% macro sqlserver__create_external_table(source_node) %}
+
+    {%- set columns = source_node.columns.values() -%}
+    {%- set external = source_node.external -%}
+    {%- set partitions = external.partitions -%}
+
+    {# TODO add params for modifiying these options? #}
+    SET ANSI_NULLS ON;
+    SET QUOTED_IDENTIFIER ON;
+
+    create external table {{source(source_node.source_name, source_node.name)}} (
+        {% for column in columns %}
+            {# TODO set nullity based on schema tests?? #}
+            {%- set nullity = 'NULL' if 'not_null' in columns.tests else 'NOT NULL'-%}
+            {{adapter.quote(column.name)}} {{column.data_type}} {{nullity}}
+            {{- ',' if not loop.last -}}
+        {% endfor %}
+    )
+    WITH (
+        {% set dict = {'DATA_SOURCE': external.data_source,
+                       'LOCATION' : external.location, 
+                       'FILE_FORMAT' : external.file_format, 
+                       'REJECT_TYPE' : external.reject_type, 
+                       'REJECT_VALUE' : external.reject_value} -%}
+        {%- for key, value in dict.items() %}
+            {{key}} = {% if key == "LOCATION" -%} '{{value}}' {%- else -%} {{value}} {%- endif -%}
+            {{- ',' if not loop.last -}}
+            {%- endfor -%}
+    )
+{% endmacro %}
+
 {% macro bigquery__create_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
         "BigQuery does not support creating external tables in SQL/DDL.

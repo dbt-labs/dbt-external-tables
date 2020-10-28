@@ -121,3 +121,4 @@ as a dbt source and stage-ready external table in Snowflake and Spectrum.
 * Redshift (Spectrum)
 * Snowflake
 * TK: Spark
+* Synapse
