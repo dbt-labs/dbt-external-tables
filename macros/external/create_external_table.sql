@@ -99,10 +99,9 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
 
-    SET ANSI_NULLS ON
-    GO
-    SET QUOTED_IDENTIFIER ON
-    GO
+    {# TODO add params for modifiying these options? #}
+    SET ANSI_NULLS ON;
+    SET QUOTED_IDENTIFIER ON;
 
     create external table {{source(source_node.source_name, source_node.name)}} (
         {% for column in columns %}
