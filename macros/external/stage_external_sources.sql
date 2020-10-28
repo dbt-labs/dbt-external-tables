@@ -71,6 +71,22 @@
 
 {% endmacro %}
 
+{% macro sqlserver__get_external_build_plan(source_node) %}
+
+    {% set build_plan = [] %}
+    
+    {%- set partitions = source_node.external.get('partitions', none) -%}
+    {% set create_or_replace = (var('ext_full_refresh', false)) %}
+    
+
+        {% set build_plan = [
+                sqlserver__dropif(source_node),
+                create_external_table(source_node)]%}
+    
+    {% do return(build_plan) %}
+
+{% endmacro %}
+
 {% macro stage_external_sources(select=none) %}
 
     {% set sources_to_stage = [] %}
