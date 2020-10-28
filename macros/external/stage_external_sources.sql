@@ -80,8 +80,8 @@
     
 
         {% set build_plan = [
-                sqlserver__dropif(source_node),
-                create_external_table(source_node)]%}
+                dbt_external_tables.sqlserver__dropif(source_node),
+                dbt_external_tables.create_external_table(source_node)]%}
     
     {% do return(build_plan) %}
 
