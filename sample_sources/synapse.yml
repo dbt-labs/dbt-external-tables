@@ -39,10 +39,8 @@ sources:
               description: what value was taken
               data_type: varchar(255)
 
-# SET ANSI_NULLS ON
-# GO
-# SET QUOTED_IDENTIFIER ON
-# GO
+# SET ANSI_NULLS ON;
+# SET QUOTED_IDENTIFIER ON;
 
 # CREATE EXTERNAL TABLE [source].[lead_activities]
 # ( 
