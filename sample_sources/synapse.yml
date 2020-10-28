@@ -52,5 +52,4 @@ sources:
 #    [primaryAttributeValueId] [int]  NOT NULL,
 #    [primaryAttributeValue] [varchar](255)  NOT NULL
 # )
-# WITH (DATA_SOURCE = [SynapseContainer], LOCATION = N'/marketing/Marketo/LeadActivities/LeadActivities.csv', FILE_FORMAT = [CommaDelimited], REJECT_TYPE = VALUE, REJECT_VALUE = 0 )
-# GO
+# WITH (DATA_SOURCE = [SynapseContainer], LOCATION = N'/marketing/Marketo/LeadActivities/LeadActivities.csv', FILE_FORMAT = [CommaDelimited], REJECT_TYPE = VALUE, REJECT_VALUE = 0 );
