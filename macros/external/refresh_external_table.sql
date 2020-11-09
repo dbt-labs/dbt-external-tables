@@ -92,9 +92,13 @@
     
     {% if manual_refresh %}
 
+        {% set ddl %}
         BEGIN;
         alter external table {{source(source_node.source_name, source_node.name)}} refresh;
         COMMIT;
+        {% endset %}
+
+         {% do return([ddl]) %}
 
     {% else %}
     
