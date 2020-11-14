@@ -1,0 +1,22 @@
+version: 2
+
+sources:
+  - name: redshift_external
+    schema: "{{ target.schema }}_spectrum"
+    loader: S3
+
+    tables:
+      
+      - name: my_csv
+        external:
+          location: "s3://dbt-tutorial-public/jaffle_shop_orders"
+          row_format: serde 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+        columns:
+          - name: id
+            data_type: int
+          - name: user_id
+            data_type: int
+          - name: order_date
+            data_type: varchar(32)
+          - name: status
+            data_type: varchar(32)
