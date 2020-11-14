@@ -107,9 +107,7 @@
 {% endmacro %}
 
 {% macro bigquery__refresh_external_table(source_node) %}
-    {{ exceptions.raise_compiler_error(
-        "BigQuery does not support creating external tables in SQL/DDL. 
-        Create it from the BQ console.") }}
+    {% do return([]) %}
 {% endmacro %}
 
 {% macro presto__refresh_external_table(source_node) %}

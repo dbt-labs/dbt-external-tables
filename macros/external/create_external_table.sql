@@ -94,9 +94,26 @@
 {% endmacro %}
 
 {% macro bigquery__create_external_table(source_node) %}
-    {{ exceptions.raise_compiler_error(
-        "BigQuery does not support creating external tables in SQL/DDL.
-        Create it from the BQ console.") }}
+    create or replace external table {{source(source_node.source_name, source_node.name)}}
+        {%- if columns -%}
+            ({%- for column in columns %}
+                {{column.name}} {{column.data_type}}
+            {%- endfor -%})
+        {%- endif -%}
+        {%- if partitions -%}
+        with partition columns
+            {%- if partitions is iterable and partitions is not string -%}
+            ({%- for partition in partitions %}
+                {{partition.name}} {{partition.data_type}}
+            {%- endfor -%})
+            {%- endif -%}
+        {%- if options -%}
+        options(
+        {%- for key, value in options.items() -%}
+            {{key}} = {{value}}
+        {%- endfor -%}
+        )
+        {%- endif -%}
 {% endmacro %}
 
 {% macro presto__create_external_table(source_node) %}
