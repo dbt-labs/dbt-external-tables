@@ -12,7 +12,7 @@
             {{ external_schema }}
             from data catalog
             database '{{ external_schema }}'
-            iam_role '{{ env_var("iam_role", "none") }}'
+            iam_role '{{ env_var("SPECTRUM_IAM_ROLE", "") }}'
             create external database if not exists;
             
     {% endset %}
