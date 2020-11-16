@@ -35,7 +35,7 @@ jobs:
             dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target redshift
             dbt --warn-error run-operation stage_external_sources --target redshift
             dbt --warn-error test --target redshift
-          	dbt run-operation cleanup_external --target redshift
+            dbt run-operation cleanup_external --target redshift
       
       - run:
           name: "Run Tests - Snowflake"
@@ -49,7 +49,7 @@ jobs:
             dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target snowflake
             dbt --warn-error run-operation stage_external_sources --target snowflake
             dbt --warn-error test --target snowflake
-          	dbt run-operation cleanup_external --target snowflake
+            dbt run-operation cleanup_external --target snowflake
       
       - save_cache:
           key: deps1-{{ .Branch }}
