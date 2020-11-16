@@ -34,7 +34,7 @@ sources:
         external:
           <<: *csv-people
           partitions: &parts-of-the-people
-            - name: group
+            - name: section
               data_type: varchar
               vals: ['a','b','c','d']
               path_macro: dbt_external_tables.key_value
