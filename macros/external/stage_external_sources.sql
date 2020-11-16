@@ -74,7 +74,13 @@
 
     {% set build_plan = [] %}
     
-    {% set create_or_replace = var('ext_full_refresh', false) %}
+    {% set old_relation = adapter.get_relation(
+        database = source_node.database,
+        schema = source_node.schema,
+        identifier = source_node.identifier
+    ) %}
+    
+    {% set create_or_replace = (old_relation is none or var('ext_full_refresh', false)) %}
 
     {% if create_or_replace %}
         {% set build_plan = build_plan + [dbt_external_tables.create_external_table(source_node)] %}
