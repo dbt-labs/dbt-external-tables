@@ -65,16 +65,34 @@ sources:
       # just to test syntax
       - name: people_csv_unpartitioned_no_columns
         external: *csv-people
+        tests: &same-rowcount
+          - dbt_utils.equal_rowcount:
+              compare_model: ref('people')
         
       - name: people_csv_partitioned_no_columns
         external:
           <<: *json-people
           partitions: *parts-of-the-people
+        tests: *same-rowcount
           
       - name: people_json_unpartitioned_no_columns
         external: *csv-people
+        tests: *same-rowcount
         
       - name: people_json_partitioned_no_columns
         external:
           <<: *json-people
           partitions: *parts-of-the-people
+        tests: *same-rowcount
+          
+      - name: people_json_multipartitioned_no_columns
+        external:
+          <<: *json-people
+          partitions:
+            - name: file_type
+              data_type: varchar
+              expression: "split_part(metadata$filename, 'section=', 1)"
+            - name: section
+              data_type: varchar
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        tests: *same-rowcount
