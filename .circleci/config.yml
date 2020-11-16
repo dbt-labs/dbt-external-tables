@@ -10,6 +10,11 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          run: setup_creds
+          command: |
+            echo $BIGQUERY_SERVICE_ACCOUNT_JSON > ${HOME}/bigquery-service-key.json
+
       - restore_cache:
           key: deps1-{{ .Branch }}
 
@@ -48,6 +53,19 @@ jobs:
             dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target snowflake
             dbt --warn-error run-operation stage_external_sources --target snowflake
             dbt --warn-error test --target snowflake
+            
+      - run:
+          name: "Run Tests - BigQuery"
+          command: |
+            . venv/bin/activate
+            echo `pwd`
+            cd integration_tests
+            dbt --warn-error deps --target bigquery
+            dbt --warn-error seed --target bigquery
+            dbt --warn-error run-operation prep_external --target bigquery
+            dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target bigquery
+            dbt --warn-error run-operation stage_external_sources --target bigquery
+            dbt --warn-error test --target bigquery
       
       - save_cache:
           key: deps1-{{ .Branch }}
