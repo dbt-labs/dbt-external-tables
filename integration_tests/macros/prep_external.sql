@@ -24,13 +24,13 @@
 
 {% macro snowflake__prep_external() %}
 
-    {% set external_stage = target.schema ~ '.dbt_tutorial_public' %}
+    {% set external_stage = target.schema ~ '.dbt_external_tables_testing' %}
 
     {% set create_external_stage %}
 
         create or replace stage
-            {{ target.schema }}.dbt_tutorial_public
-            url = 's3://dbt-tutorial-public';
+            {{ external_stage }}
+            url = 's3://dbt-external-tables-testing';
             
     {% endset %}
 
