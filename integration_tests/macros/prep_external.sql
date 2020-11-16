@@ -2,6 +2,11 @@
     {{ return(adapter.dispatch('prep_external', dbt_external_tables._get_dbt_external_tables_namespaces())()) }}
 {% endmacro %}
 
+{% macro default__prep_external() %}
+    {% do log('No prep necessary, skipping', info = true) %}
+    {# noop #}
+{% endmacro %}
+
 {% macro redshift__prep_external() %}
 
     {% set external_schema = target.schema ~ '_spectrum' %}
@@ -36,5 +41,12 @@
 
     {% do log('Creating external stage ' ~ external_stage, info = true) %}
     {% do run_query(create_external_stage) %}
+    
+    {% set set_autocommit_false %}
+        alter user {{ target.user }} set autocommit = false;
+    {% endset %}
+    
+    {% do log('Turning off autocommit for user ' ~ target.user, info = true) %}
+    {% do run_query(set_autocommit_false) %}
     
 {% endmacro %}

@@ -5,6 +5,7 @@ test-redshift:
 	dbt run-operation stage_external_sources --var 'ext_full_refresh: true' --target redshift
 	dbt run-operation stage_external_sources --target redshift
 	dbt test --target redshift
+	dbt run-operation cleanup_external --target redshift
 	
 test-snowflake:
 	dbt deps --target snowflake
@@ -13,3 +14,4 @@ test-snowflake:
 	dbt run-operation stage_external_sources --var 'ext_full_refresh: true' --target snowflake
 	dbt run-operation stage_external_sources --target snowflake
 	dbt test --target snowflake
+	dbt run-operation cleanup_external --target snowflake
