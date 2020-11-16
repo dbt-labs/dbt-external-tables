@@ -73,7 +73,7 @@
     {%- if columns or partitions -%}
     (
         {%- if partitions -%}{%- for partition in partitions %}
-            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if columns|length > 0 -}}
+            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if not loop.last or columns|length > 0 -}}
         {%- endfor -%}{%- endif -%}
         {%- for column in columns %}
             {%- set col_expression -%}
