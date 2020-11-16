@@ -30,10 +30,10 @@ jobs:
             echo `pwd`
             cd integration_tests
             dbt --warn-error deps --target redshift
+            dbt --warn-error seed --target redshift
             dbt --warn-error run-operation prep_external --target redshift
             dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target redshift
             dbt --warn-error run-operation stage_external_sources --target redshift
-            dbt --warn-error seed --target redshift
             dbt --warn-error test --target redshift
       
       - run:
@@ -43,10 +43,10 @@ jobs:
             echo `pwd`
             cd integration_tests
             dbt --warn-error deps --target snowflake
+            dbt --warn-error seed --target snowflake
             dbt --warn-error run-operation prep_external --target snowflake
             dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target snowflake
             dbt --warn-error run-operation stage_external_sources --target snowflake
-            dbt --warn-error seed --target snowflake
             dbt --warn-error test --target snowflake
       
       - save_cache:
