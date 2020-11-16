@@ -28,6 +28,8 @@ sources:
       +enabled: "{{ target.type == 'redshift' }}"
     snowflake_external:
       +enabled: "{{ target.type == 'snowflake' }}"
+    bigquery_external:
+      +enabled: "{{ target.type == 'bigquery' }}"
 
 seeds:
   quote_columns: false

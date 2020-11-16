@@ -8,7 +8,7 @@ sources:
     tables:
       - name: event
         external:
+          location: 'gs://bucket/path/*'
           options:
-            uris: 'gs://bucket/path/*'
             format: csv
         # auto-detect schema
