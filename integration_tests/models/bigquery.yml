@@ -67,29 +67,29 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
-      - name: people_json_unpartitioned
-        external: &json-people
-          location: 'gs://dbt-external-tables-testing/json/*'
-          options:
-            format: json
-        columns: *cols-of-the-people
-        tests: *equal-to-the-people
-
-      - name: people_json_partitioned
-        external:
-          location: 'gs://dbt-external-tables-testing/json/*'
-          options:
-            format: json
-            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
-          partitions: *parts-of-the-people
-        columns: *cols-of-the-people
-        tests: *equal-to-the-people
-        
-      - name: people_json_schema_auto_detect
-        external:
-          location: 'gs://dbt-external-tables-testing/json/*'
-          options:
-            format: csv
-            skip_leading_rows: 1
-            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
-        tests: *equal-to-the-people
+#      - name: people_json_unpartitioned
+#        external: &json-people
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: json
+#        columns: *cols-of-the-people
+#        tests: *equal-to-the-people
+#
+#      - name: people_json_partitioned
+#        external:
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: json
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
+#          partitions: *parts-of-the-people
+#        columns: *cols-of-the-people
+#        tests: *equal-to-the-people
+#        
+#      - name: people_json_schema_auto_detect
+#        external:
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: csv
+#            skip_leading_rows: 1
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
+#        tests: *equal-to-the-people
