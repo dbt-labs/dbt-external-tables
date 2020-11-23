@@ -1,55 +1,48 @@
 
-version: 2
+version: 2.1
 
 jobs:
-  build:
+  
+  integration-redshift:
     docker:
       - image: circleci/python:3.6.3-stretch
-      - image: circleci/postgres:9.6.5-alpine-ram
-
     steps:
       - checkout
-
-      - restore_cache:
-          key: deps1-{{ .Branch }}
-
-      - run:
-          name: "Setup dbt"
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install --upgrade pip setuptools
-            pip install dbt --upgrade
-            mkdir -p ~/.dbt
-            cp integration_tests/ci/sample.profiles.yml ~/.dbt/profiles.yml
-      
       - run:
           name: "Run Tests - Redshift"
-          command: |
-            . venv/bin/activate
-            echo `pwd`
-            cd integration_tests
-            dbt --warn-error deps --target redshift
-            dbt --warn-error seed --target redshift
-            dbt --warn-error run-operation prep_external --target redshift
-            dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target redshift
-            dbt --warn-error run-operation stage_external_sources --target redshift
-            dbt --warn-error test --target redshift
+          command: ./run_test.sh redshift
+      - store_artifacts:
+          path: ./logs
       
+  integration-snowflake:
+    docker:
+      - image: circleci/python:3.6.3-stretch
+    steps:
+      - checkout
       - run:
           name: "Run Tests - Snowflake"
-          command: |
-            . venv/bin/activate
-            echo `pwd`
-            cd integration_tests
-            dbt --warn-error deps --target snowflake
-            dbt --warn-error seed --target snowflake
-            dbt --warn-error run-operation prep_external --target snowflake
-            dbt --warn-error run-operation stage_external_sources --var 'ext_full_refresh: true' --target snowflake
-            dbt --warn-error run-operation stage_external_sources --target snowflake
-            dbt --warn-error test --target snowflake
-      
-      - save_cache:
-          key: deps1-{{ .Branch }}
-          paths:
-            - "venv"
+          command: ./run_test.sh snowflake
+      - store_artifacts:
+          path: ./logs
+
+  integration-databricks:
+    environment:
+      ODBC_DRIVER: Simba
+    docker:
+      - image: fishtownanalytics/test-container:9
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - Databricks"
+          command: ./run_test.sh databricks
+      - store_artifacts:
+          path: ./logs
+
+
+workflows:
+  version: 2
+  test-all:
+    jobs:
+      - integration-redshift
+      - integration-snowflake
+      - integration-databricks
