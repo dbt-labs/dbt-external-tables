@@ -41,7 +41,7 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
-# ----- HIVE FORMATTED
+# ----- TODO: hive format
         
 #      - name: people_csv_unpartitioned_hive_format
 #        external: &csv-people-hive
@@ -57,7 +57,7 @@ sources:
 #          partitions: *parts-of-the-people
 #        columns: *cols-of-the-people
 
-# ----- JSON
+# ----- TODO: json
 
 #      - name: people_json_unpartitioned_using
 #        external: &json-people-using
