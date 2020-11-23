@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: not_external
+    tables:
+      - name: take_no_action
+        columns:
+          - name: id
+            data_type: varchar(255)
+            description: "primary key"

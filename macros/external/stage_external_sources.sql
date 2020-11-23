@@ -1,5 +1,7 @@
 {% macro get_external_build_plan(source_node) %}
-    {{ return(adapter_macro('dbt_external_tables.get_external_build_plan', source_node)) }}
+    {{ return(adapter.dispatch('get_external_build_plan',
+        packages = dbt_external_tables._get_dbt_external_tables_namespaces())
+        (source_node)) }}
 {% endmacro %}
 
 {% macro default__get_external_build_plan(source_node) %}
@@ -73,9 +75,11 @@
 
     {% set sources_to_stage = [] %}
     
-    {% for node in graph.nodes.values() %}
+    {% set source_nodes = graph.sources.values() if graph.sources else [] %}
+    
+    {% for node in source_nodes %}
         
-        {% if node.resource_type == 'source' and node.external.location != none %}
+        {% if node.external.location %}
             
             {% if select %}
             
@@ -110,11 +114,9 @@
 
         {% do dbt_utils.log_info(loop_label ~ ' START external source ' ~ node.schema ~ '.' ~ node.identifier) -%}
         
-        {% set run_queue = get_external_build_plan(node) %}
+        {% set run_queue = dbt_external_tables.get_external_build_plan(node) %}
         
         {% do dbt_utils.log_info(loop_label ~ ' SKIP') if run_queue == [] %}
-        
-        {% do dbt_external_tables.exit_transaction() %}
         
         {% for q in run_queue %}
         
@@ -122,9 +124,10 @@
             {% set q_log = q_msg[:50] ~ '...  ' if q_msg|length > 50 else q_msg %}
         
             {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ q_log) %}
+            {% set exit_txn = dbt_external_tables.exit_transaction() %}
         
             {% call statement('runner', fetch_result = True, auto_begin = False) %}
-                {{ q }}
+                {{ exit_txn }} {{ q }}
             {% endcall %}
             
             {% set status = load_result('runner')['status'] %}

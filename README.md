@@ -54,7 +54,7 @@ sources:
           file_format:      # Hive specification or Snowflake named format / specification
           using:            # Hive specification
           row_format:       # Hive specification
-          tbl_properties:   # Hive specification
+          table_properties:   # Hive specification
           options:          # Hive specification
             header: 'TRUE'
 

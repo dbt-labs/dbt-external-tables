@@ -1,5 +1,7 @@
 {% macro create_external_table(source_node) %}
-    {{ adapter_macro('dbt_external_tables.create_external_table', source_node) }}
+    {{ adapter.dispatch('create_external_table', 
+        packages = dbt_external_tables._get_dbt_external_tables_namespaces()) 
+        (source_node) }}
 {% endmacro %}
 
 {% macro default__create_external_table(source_node) %}
@@ -11,7 +13,6 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
-    {%- set options = external.options -%}
 
 {# https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_EXTERNAL_TABLE.html #}
 {# This assumes you have already created an external schema #}
@@ -32,11 +33,6 @@
     {% if external.file_format -%} stored as {{external.file_format}} {%- endif %}
     {% if external.location -%} location '{{external.location}}' {%- endif %}
     {% if external.table_properties -%} table properties {{external.table_properties}} {%- endif %}
-    {% if options -%} OPTIONS (
-        {%- for key, value in options -%}
-            '{{ key }}'='{{value}}'{{', ' if not loop.last}}
-        {%- endfor -%}
-    ) {%- endif %}
 
 {% endmacro %}
 
@@ -45,6 +41,7 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partition -%}
+    {%- set options = external.options -%}
 
 {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
     create external table {{source(source_node.source_name, source_node.name)}} (
@@ -62,6 +59,11 @@
     {% if external.file_format -%} stored as {{external.file_format}} {%- endif %}
     {% if external.location -%} location '{{external.location}}' {%- endif %}
     {% if external.table_properties -%} tbl_properties {{external.table_properties}} {%- endif %}
+    {% if options -%} options (
+        {%- for key, value in options -%}
+            '{{ key }}' = '{{value}}' {{- ', \n' if not loop.last -}}
+        {%- endfor -%}
+    ) {%- endif %}
 {% endmacro %}
 
 {% macro snowflake__create_external_table(source_node) %}
@@ -75,10 +77,10 @@
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
     create or replace external table {{source(source_node.source_name, source_node.name)}}
-    {%- if columns|length > 0 or partitions|length > 0 -%}
+    {%- if columns or partitions -%}
     (
         {%- if partitions -%}{%- for partition in partitions %}
-            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if columns|length > 0 -}}
+            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if not loop.last or columns|length > 0 -}}
         {%- endfor -%}{%- endif -%}
         {%- for column in columns %}
             {%- set col_expression -%}
