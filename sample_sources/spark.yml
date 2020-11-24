@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: bibo
+    tables:
+      - name: people
+        external:
+          location: 'hdfs://.../people.csv'
+          using: CSV
+          options:
+            SEP: '|'
+            HEADER: 'TRUE'
+            timestampFormat: 'yyyy-MM-dd HH:mm'
+
+        columns:
+          - name: name
+            data_type: STRING
+          - name: phonenumber
+            data_type: STRING
+          - name: birthday
+            data_type: DATE
