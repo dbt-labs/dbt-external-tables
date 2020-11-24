@@ -26,6 +26,8 @@ jobs:
           path: ./logs
           
   integration-bigquery:
+    environment:
+      BIGQUERY_SERVICE_KEY_PATH: "/home/circleci/bigquery-service-key.json"
     docker:
       - image: circleci/python:3.6.3-stretch
     steps:
