@@ -35,30 +35,6 @@
 
 {% endmacro %}
 
-{% macro spark__create_external_table(source_node) %}
-
-    {%- set columns = source_node.columns.values() -%}
-    {%- set external = source_node.external -%}
-    {%- set partitions = external.partition -%}
-
-{# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
-    create external table {{source(source_node.source_name, source_node.name)}} (
-        {% for column in columns %}
-            {{column.name}} {{column.data_type}}
-            {{- ',' if not loop.last -}}
-        {% endfor %}
-    )
-    {% if partitions -%} partitioned by (
-        {%- for partition in partitions -%}
-            {{partition.name}} {{partition.data_type}}{{', ' if not loop.last}}
-        {%- endfor -%}
-    ) {%- endif %}
-    {% if external.row_format -%} row format {{external.row_format}} {%- endif %}
-    {% if external.file_format -%} stored as {{external.file_format}} {%- endif %}
-    {% if external.location -%} location '{{external.location}}' {%- endif %}
-    {% if external.table_properties -%} tbl_properties {{external.table_properties}} {%- endif %}
-{% endmacro %}
-
 {% macro snowflake__create_external_table(source_node) %}
 
     {%- set columns = source_node.columns.values() -%}
@@ -73,7 +49,7 @@
     {%- if columns or partitions -%}
     (
         {%- if partitions -%}{%- for partition in partitions %}
-            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if columns|length > 0 -}}
+            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if not loop.last or columns|length > 0 -}}
         {%- endfor -%}{%- endif -%}
         {%- for column in columns %}
             {%- set col_expression -%}
@@ -91,44 +67,6 @@
     {% if external.auto_refresh -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     file_format = {{external.file_format}}
-{% endmacro %}
-
-{% macro bigquery__create_external_table(source_node) %}
-
-    {%- set columns = source_node.columns.values() -%}
-    {%- set external = source_node.external -%}
-    {%- set partitions = external.partitions -%}
-    {%- set options = external.options -%}
-    
-    {%- set uris = [] -%}
-    {%- if options is mapping and options.get('uris', none) -%}
-        {%- set uris = external.options.get('uris') -%}
-    {%- else -%}
-        {%- set uris = [external.location] -%}
-    {%- endif -%}
-
-    create or replace external table {{source(source_node.source_name, source_node.name)}}
-        {%- if columns -%}(
-            {% for column in columns %}
-                {{column.name}} {{column.data_type}} {{- ',' if not loop.last -}}
-            {%- endfor -%}
-        )
-        {% endif %}
-        {% if options and options.get('hive_partition_uri_prefix', none) %}
-        with partition columns {%- if partitions %} (
-            {%- for partition in partitions %}
-                {{partition.name}} {{partition.data_type}}
-            {%- endfor -%}
-        ) {% endif -%}
-        {% endif %}
-        options (
-            uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
-            {%- if options is mapping -%}
-            {%- for key, value in options.items() if key != 'uris' %}
-                , {{key}} = {{value}}
-            {%- endfor -%}
-            {%- endif -%}
-        )
 {% endmacro %}
 
 {% macro presto__create_external_table(source_node) %}

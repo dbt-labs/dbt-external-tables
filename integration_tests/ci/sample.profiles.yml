@@ -38,3 +38,13 @@ integration_tests:
       project: "{{ env_var('BIGQUERY_TEST_DATABASE') }}"
       schema: dbt_external_tables_integration_tests_bigquery
       threads: 1
+
+    databricks:
+      type: spark
+      method: odbc
+      port: 443
+      driver: "{{ env_var('ODBC_DRIVER') }}"
+      host: "{{ env_var('DBT_DATABRICKS_HOST_NAME') }}"
+      endpoint: "{{ env_var('DBT_DATABRICKS_ENDPOINT') }}"
+      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
+      schema: dbt_external_tables_integration_tests_databricks

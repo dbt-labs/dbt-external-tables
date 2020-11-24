@@ -30,6 +30,8 @@ sources:
       +enabled: "{{ target.type == 'snowflake' }}"
     bigquery_external:
       +enabled: "{{ target.type == 'bigquery' }}"
+    spark_external:
+      +enabled: "{{ target.type == 'spark' }}"
 
 seeds:
   quote_columns: false
