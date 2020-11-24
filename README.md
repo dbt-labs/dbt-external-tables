@@ -115,7 +115,8 @@ sources:
 ## Resources
 
 * [`sample_sources`](sample_sources) for full valid YML config that establishes Snowplow events
-as a dbt source and stage-ready external table in Snowflake and Spectrum.
+as a dbt source and stage-ready external table in Snowflake and Spectrum, and other sample
+data sources for BigQuery and Spark.
 * [`sample_analysis`](sample_analysis) for a "dry run" version of the DDL/DML that
 `stage_external_sources` will run as an operation
 
@@ -123,4 +124,5 @@ as a dbt source and stage-ready external table in Snowflake and Spectrum.
 
 * Redshift (Spectrum)
 * Snowflake
+* BigQuery
 * Spark
