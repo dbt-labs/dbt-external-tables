@@ -97,7 +97,6 @@
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
-    {%- set partitions = external.partitions -%}
 
     {# TODO add params for modifiying these options? #}
     SET ANSI_NULLS ON;
