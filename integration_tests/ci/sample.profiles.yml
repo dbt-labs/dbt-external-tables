@@ -40,3 +40,16 @@ integration_tests:
       endpoint: "{{ env_var('DBT_DATABRICKS_ENDPOINT') }}"
       token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
       schema: dbt_external_tables_integration_tests_databricks
+
+    synapse:
+      type: sqlserver
+      driver: "ODBC Driver 17 for SQL Server"
+      port: 1433
+      host: "{{ env_var('DBT_SYNAPSE_SERVER') }}"
+      database: "{{ env_var('DBT_SYNAPSE_DB') }}"
+      username: "{{ env_var('DBT_SYNAPSE_UID') }}"
+      password: "{{ env_var('DBT_SYNAPSE_PWD') }}"
+      schema: dbt_external_tables_integration_tests_synapse
+      encrypt: no
+      trust_cert: yes
+      threads: 1
