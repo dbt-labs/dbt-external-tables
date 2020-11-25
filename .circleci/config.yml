@@ -1,0 +1,52 @@
+
+version: 2.1
+
+jobs:
+  
+  integration-redshift:
+    docker:
+      - image: circleci/python:3.6.3-stretch
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - Redshift"
+          command: ./run_test.sh redshift
+      - store_artifacts:
+          path: ./logs
+      
+  integration-snowflake:
+    docker:
+      - image: circleci/python:3.6.3-stretch
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - Snowflake"
+          command: ./run_test.sh snowflake
+      - store_artifacts:
+          path: ./logs
+
+  integration-databricks:
+    environment:
+      ODBC_DRIVER: Simba
+    docker:
+      # image based on `fishtownanalytics/test-container` w/ Simba ODBC Spark driver installed
+      - image: 828731156495.dkr.ecr.us-east-1.amazonaws.com/dbt-spark-odbc-test-container:latest
+        aws_auth:
+          aws_access_key_id: $AWS_ACCESS_KEY_ID_STAGING
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY_STAGING
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - Databricks"
+          command: ./run_test.sh databricks
+      - store_artifacts:
+          path: ./logs
+
+
+workflows:
+  version: 2
+  test-all:
+    jobs:
+      - integration-redshift
+      - integration-snowflake
+      - integration-databricks
