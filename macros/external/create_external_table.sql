@@ -74,7 +74,6 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
 
-    {# TODO add params for modifiying these options? #}
     {% if external.ansi_nulls is True -%} SET ANSI_NULLS ON; {%- endif %}
     {% if external.quoted_identifier is True -%} SET QUOTED_IDENTIFIER ON; {%- endif %}
 
