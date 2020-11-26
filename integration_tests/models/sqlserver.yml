@@ -14,6 +14,8 @@ sources:
           data_source: "{{ target.schema ~ '.dbt_external_tables_testing' }}"
           reject_type: VALUE
           reject_value: 0
+          ansi_nulls: true
+          quoted_identifier: true
         columns: &cols-of-the-people
           - name: id
             data_type: int
