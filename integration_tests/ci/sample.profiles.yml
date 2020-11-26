@@ -41,7 +41,7 @@ integration_tests:
       token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
       schema: dbt_external_tables_integration_tests_databricks
 
-    synapse:
+    sqlserver:
       type: sqlserver
       driver: "ODBC Driver 17 for SQL Server"
       port: 1433
