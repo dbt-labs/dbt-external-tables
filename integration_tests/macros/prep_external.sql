@@ -49,6 +49,9 @@
     {% set external_data_source = target.schema ~ '.dbt_external_tables_testing' %}
     
     {% set create_external_data_source %}
+        IF EXISTS ( SELECT * FROM sys.external_data_sources WHERE name = '{{external_data_source}}' )
+            DROP EXTERNAL DATA SOURCE [{{external_data_source}}];
+
         CREATE EXTERNAL DATA SOURCE [{{external_data_source}}] WITH (
             TYPE = HADOOP,
             LOCATION = N'abfss://dbt-external-tables-testing@dbtsynapselake.blob.core.windows.net'
@@ -58,6 +61,9 @@
     {% set external_file_format = target.schema ~ '.dbt_external_ff_testing' %}
 
     {% set create_external_file_format %}
+        IF EXISTS ( SELECT * FROM sys.external_file_formats WHERE name = '{{external_file_format}}' )
+            DROP EXTERNAL FILE FORMAT [{{external_file_format}}];
+
         CREATE EXTERNAL FILE FORMAT [{{external_file_format}}] 
         WITH (
             FORMAT_TYPE = DELIMITEDTEXT, 
