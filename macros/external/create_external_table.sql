@@ -86,9 +86,9 @@
         {% endfor %}
     )
     WITH (
-        {% set dict = {'DATA_SOURCE': external.data_source,
+        {% set dict = {'DATA_SOURCE': [external.data_source],
                        'LOCATION' : external.location, 
-                       'FILE_FORMAT' : external.file_format, 
+                       'FILE_FORMAT' : [external.file_format], 
                        'REJECT_TYPE' : external.reject_type, 
                        'REJECT_VALUE' : external.reject_value} -%}
         {%- for key, value in dict.items() %}
