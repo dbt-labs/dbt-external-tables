@@ -25,14 +25,14 @@ sources:
             data_type: varchar(64)
           - name: email
             data_type: varchar(64)
-        # tests: &equal-to-the-people
-        #   - dbt_utils.equality:
-        #       compare_model: ref('people')
-        #       compare_columns:
-        #         - id
-        #         - first_name
-        #         - last_name
-        #         - email
+        tests: &equal-to-the-people
+          - sqlserver__equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
 
       - name: people_csv_partitioned
         external:
@@ -65,9 +65,9 @@ sources:
       # just to test syntax
       - name: people_csv_unpartitioned_no_columns
         external: *csv-people
-        # tests: &same-rowcount
-        #   - dbt_utils.equal_rowcount:
-        #       compare_model: ref('people')
+        tests: &same-rowcount
+          - sqlserver__equal_rowcount:
+              compare_model: ref('people')
         
       - name: people_csv_partitioned_no_columns
         external:
