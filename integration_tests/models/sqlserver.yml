@@ -25,14 +25,14 @@ sources:
             data_type: varchar(64)
           - name: email
             data_type: varchar(64)
-        tests: &equal-to-the-people
-          - dbt_utils.equality:
-              compare_model: ref('people')
-              compare_columns:
-                - id
-                - first_name
-                - last_name
-                - email
+        # tests: &equal-to-the-people
+        #   - dbt_utils.equality:
+        #       compare_model: ref('people')
+        #       compare_columns:
+        #         - id
+        #         - first_name
+        #         - last_name
+        #         - email
 
       - name: people_csv_partitioned
         external:
@@ -44,7 +44,7 @@ sources:
           #     data_type: varchar
           #     expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
         columns: *cols-of-the-people
-        tests: *equal-to-the-people
+        # tests: *equal-to-the-people
 
       # JSON IS NOT SUPPORTED BY SYNAPSE ATM
 
@@ -65,15 +65,15 @@ sources:
       # just to test syntax
       - name: people_csv_unpartitioned_no_columns
         external: *csv-people
-        tests: &same-rowcount
-          - dbt_utils.equal_rowcount:
-              compare_model: ref('people')
+        # tests: &same-rowcount
+        #   - dbt_utils.equal_rowcount:
+        #       compare_model: ref('people')
         
       - name: people_csv_partitioned_no_columns
         external:
           <<: *csv-people
           # partitions: *parts-of-the-people
-        tests: *same-rowcount
+        # tests: *same-rowcount
           
       # - name: people_json_unpartitioned_no_columns
       #   external: *csv-people
