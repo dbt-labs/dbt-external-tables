@@ -1,4 +1,4 @@
-{% macro test_sqlserver_equal_rowcount(model) %}
+{% macro test_sqlserver__equal_rowcount(model) %}
 
 {% set compare_model = kwargs.get('compare_model', kwargs.get('arg')) %}
 
@@ -32,7 +32,7 @@ select diff_count from final
 {% endmacro %}
 
 
-{% macro test_sqlserver_equality(model) %}
+{% macro test_sqlserver__equality(model) %}
 
 
 {#-- Prevent querying of db in parsing mode. This works because this macro does not create any new refs. #}
