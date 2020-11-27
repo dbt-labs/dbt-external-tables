@@ -70,7 +70,7 @@
     {% endset %}
     
     {% do log('Creating external data source ' ~ external_data_source, info = true) %}
-    {% do run_query(create_external_schema) %}
+    {% do run_query(create_external_data_source) %}
     {% do log('Creating external file format ' ~ external_file_format, info = true) %}
     {% do run_query(create_external_file_format) %}
     
