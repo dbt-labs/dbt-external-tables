@@ -77,7 +77,7 @@
     {% if external.ansi_nulls is true -%} SET ANSI_NULLS ON; {%- endif %}
     {% if external.quoted_identifier is true -%} SET QUOTED_IDENTIFIER ON; {%- endif %}
 
-    create external table [{{source(source_node.source_name, source_node.name)}}] (
+    create external table {{source(source_node.source_name, source_node.name)}} (
         {% for column in columns %}
             {# TODO set nullity based on schema tests?? #}
             {%- set nullity = 'NULL' if 'not_null' in columns.tests else 'NOT NULL'-%}
@@ -86,9 +86,9 @@
         {% endfor %}
     )
     WITH (
-        {% set dict = {'DATA_SOURCE': [external.data_source],
+        {% set dict = {'DATA_SOURCE': adapter.quote(external.data_source),
                        'LOCATION' : external.location, 
-                       'FILE_FORMAT' : [external.file_format], 
+                       'FILE_FORMAT' : adapter.quote(external.file_format), 
                        'REJECT_TYPE' : external.reject_type, 
                        'REJECT_VALUE' : external.reject_value} -%}
         {%- for key, value in dict.items() %}
