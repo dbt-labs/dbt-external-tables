@@ -74,8 +74,8 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
 
-    {% if external.ansi_nulls is True -%} SET ANSI_NULLS ON; {%- endif %}
-    {% if external.quoted_identifier is True -%} SET QUOTED_IDENTIFIER ON; {%- endif %}
+    {% if external.ansi_nulls is true -%} SET ANSI_NULLS ON; {%- endif %}
+    {% if external.quoted_identifier is true -%} SET QUOTED_IDENTIFIER ON; {%- endif %}
 
     create external table {{source(source_node.source_name, source_node.name)}} (
         {% for column in columns %}
