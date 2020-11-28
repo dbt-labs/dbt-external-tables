@@ -8,7 +8,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Download Cue"
+          name: "Run Tests - Specification Validation"
           command: DBT_EXTERNAL_TABLES_CI_INSTALL_CUE=1 ./run_spec_test.sh
       - store_artifacts:
           path: ./logs
