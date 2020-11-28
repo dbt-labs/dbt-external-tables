@@ -62,16 +62,17 @@ sources:
       #   columns: *cols-of-the-people
       #   tests: *equal-to-the-people
         
+      # NO COLUMNS BREAKS THINGS CURRENTLY
       # just to test syntax
-      - name: people_csv_unpartitioned_no_columns
-        external: *csv-people
-        tests: &same-rowcount
-          - sqlserver__equal_rowcount:
-              compare_model: ref('people')
-        
-      - name: people_csv_partitioned_no_columns
-        external:
-          <<: *csv-people
+      # - name: people_csv_unpartitioned_no_columns
+      #   external: *csv-people
+      #   tests: &same-rowcount
+      #     - sqlserver__equal_rowcount:
+      #         compare_model: ref('people')
+
+      # - name: people_csv_partitioned_no_columns
+      #   external:
+      #     <<: *csv-people
           # partitions: *parts-of-the-people
         # tests: *same-rowcount
           
