@@ -2,7 +2,17 @@
 version: 2.1
 
 jobs:
-  
+  spec-validation:
+    docker:
+      - image: circleci/stretch
+    steps:
+      - checkout
+      - run:
+          name: "Download Cue"
+          command: DBT_EXTERNAL_TABLES_CI_INSTALL_CUE=1 ./run_spec_test.sh
+      - store_artifacts:
+          path: ./logs
+
   integration-redshift:
     docker:
       - image: circleci/python:3.6.3-stretch
@@ -47,6 +57,7 @@ workflows:
   version: 2
   test-all:
     jobs:
+      - spec-validation
       - integration-redshift
       - integration-snowflake
       - integration-databricks

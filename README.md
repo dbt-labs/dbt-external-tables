@@ -1,126 +1,162 @@
-# External sources in dbt
+<!--
+ Copyright 2018 The CUE Authors
 
-* Source config extension for metadata about external file structure
-* Adapter macros to create external tables and refresh external table partitions
-* Snowflake-specific macros to create, backfill, and refresh snowpipes
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-## Syntax
+     http://www.apache.org/licenses/LICENSE-2.0
 
-```bash
-# iterate through all source nodes, create if missing + refresh if appropriate
-$ dbt run-operation stage_external_sources
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+[![GoDoc](https://godoc.org/cuelang.org/go?status.svg)](https://godoc.org/cuelang.org/go)
+[![Github](https://github.com/cuelang/cue/workflows/Test/badge.svg)](https://github.com/cuelang/cue/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cuelang/cue)](https://goreportcard.com/report/github.com/cuelang/cue)
+[![GolangCI](https://golangci.com/badges/github.com/cuelang/cue.svg)](https://golangci.com/r/github.com/cuelang/cue)
+[![Go 1.12+](https://img.shields.io/badge/go-1.12-9cf.svg)](https://golang.org/dl/)
+[![platforms](https://img.shields.io/badge/platforms-linux|windows|macos-inactive.svg)]()
 
-# iterate through all source nodes, create or replace + refresh if appropriate
-$ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
+
+# The CUE Data Constraint Language
+
+_Configure, Unify, Execute_
+
+CUE is an open source data constraint language which aims
+to simplify tasks involving defining and using data.
+
+It is a superset of JSON,
+allowing users familiar with JSON to get started quickly.
+
+
+### What is it for?
+
+You can use CUE to
+
+- define a detailed validation schema for your data (manually or automatically from data)
+- reduce boilerplate in your data (manually or automatically from schema)
+- extract a schema from code
+- generate type definitions and validation code
+- merge JSON in a principled way
+- define and run declarative scripts
+
+
+### How?
+
+CUE merges the notion of schema and data.
+The same CUE definition can simultaneously be used for validating data
+and act as a template to reduce boilerplate.
+Schema definition is enriched with fine-grained value definitions
+and default values.
+At the same time,
+data can be simplified by removing values implied by such detailed definitions.
+The merging of these two concepts enables
+many tasks to be handled in a principled way.
+
+
+Constraints provide a simple and well-defined, yet powerful, alternative
+to inheritance,
+a common source of complexity with configuration languages.
+
+
+### CUE Scripting
+
+The CUE scripting layer defines declarative scripting, expressed in CUE,
+on top of data.
+This solves three problems:
+working around the closedness of CUE definitions (we say CUE is hermetic),
+providing an easy way to share common scripts and workflows for using data,
+and giving CUE the knowledge of how data is used to optimize validation.
+
+There are many tools that interpret data or use a specialized language for
+a specific domain (Kustomize, Ksonnet).
+This solves dealing with data on one level, but the problem it solves may repeat
+itself at a higher level when integrating other systems in a workflow.
+CUE scripting is generic and allows users to define any workflow.
+
+
+### Tooling
+
+CUE is designed for automation.
+Some aspects of this are:
+
+- convert existing YAML and JSON
+- automatically simplify configurations
+- rich APIs designed for automated tooling
+- formatter
+- arbitrary-precision arithmetic
+- generate CUE templates from source code
+- generate source code from CUE definitions (TODO)
+
+
+### Download and Install
+
+#### Install using Homebrew
+
+Using [Homebrew](https://brew.sh), you can install using the CUE Homebrew tap:
+
+`brew install cuelang/tap/cue`
+
+#### Install From Source
+
+If you already have Go installed, the short version is:
+
+```
+go get -u cuelang.org/go/cmd/cue
 ```
 
-![sample docs](etc/sample_docs.png)
+This will install the `cue` command line tool.
 
-The macros assume that you have already created an external stage (Snowflake)
-or external schema (Redshift/Spectrum), and that you have permissions to select from it
-and create tables in it.
-
-The `stage_external_sources` macro accepts a similar node selection syntax to
-[snapshotting source freshness](https://docs.getdbt.com/docs/running-a-dbt-project/command-line-interface/source/#specifying-sources-to-snapshot).
-
-```bash
-# Stage all Snowplow and Logs external sources:
-$ dbt run-operation stage_external_sources --args 'select: snowplow logs'
-
-# Stage a particular external source table:
-$ dbt run-operation stage_external_sources --args 'select: snowplow.event'
-```
-
-Maybe someday:
-```bash
-$ dbt source stage-external
-$ dbt source stage-external --full-refresh
-$ dbt source stage-external --select snowplow.event logs
-```
-
-## Spec
-
-```yml
-version: 2
-
-sources:
-  - name: snowplow
-    tables:
-      - name: event
-
-                            # NEW: "external" property of source node
-        external:
-          location:         # S3 file path or Snowflake stage
-          file_format:      # Hive specification or Snowflake named format / specification
-          using:            # Hive specification
-          row_format:       # Hive specification
-          table_properties:   # Hive specification
-          options:          # Hive specification
-            header: 'TRUE'
-
-          # Snowflake: create an empty table + pipe instead of an external table
-          snowpipe:
-            auto_ingest:    true
-            aws_sns_topic:  # AWS
-            integration:    # Azure
-            copy_options:   "on_error = continue, enforce_length = false" # e.g.
-
-                            # Specify a list of file-path partitions.
-
-          # ------ SNOWFLAKE ------
-          partitions:
-            - name: collector_date
-              data_type: date
-              expression: to_date(substr(metadata$filename, 8, 10), 'YYYY/MM/DD')
-
-          # ------ REDSHIFT -------
-          partitions:
-            - name: appId
-              data_type: varchar(255)
-              vals:         # list of values
-                - dev
-                - prod
-              path_macro: dbt_external_tables.key_value
-                  # Macro to convert partition value to file path specification.
-                  # This "helper" macro is defined in the package, but you can use
-                  # any custom macro that takes keyword arguments 'name' + 'value'
-                  # and returns the path as a string
-
-                  # If multiple partitions, order matters for compiling S3 path
-            - name: collector_date
-              data_type: date
-              vals:         # macro w/ keyword args to generate list of values
-                macro: dbt.dates_in_range
-                args:
-                  start_date_str: '2019-08-01'
-                  end_date_str: '{{modules.datetime.date.today().strftime("%Y-%m-%d")}}'
-                  in_fmt: "%Y-%m-%d"
-                  out_fmt: "%Y-%m-%d"
-               path_macro: dbt_external_tables.year_month_day
+For more details see [Installing CUE](./doc/install.md).
 
 
-        # Specify ALL column names + datatypes. Column order matters for CSVs.
-        # Other file formats require column names to exactly match.
+### Learning CUE
 
-        columns:
-          - name: app_id
-            data_type: varchar(255)
-            description: "Application ID"
-          - name: platform
-            data_type: varchar(255)
-            description: "Platform"
-        ...
-```
+The fastest way to learn the basics is to follow the
+[tutorial on basic language constructs](./doc/tutorial/basics/Readme.md).
 
-## Resources
+A more elaborate tutorial demonstrating of how to convert and restructure
+an existing set of Kubernetes configurations is available in
+[written form](./doc/tutorial/kubernetes/README.md).
 
-* [`sample_sources`](sample_sources) for full valid YML config that establishes Snowplow events
-as a dbt source and stage-ready external table in Snowflake and Spectrum.
-* [`sample_analysis`](sample_analysis) for a "dry run" version of the DDL/DML that
-`stage_external_sources` will run as an operation
+### References
 
-## Supported databases
+- [Language Specification](./doc/ref/spec.md): official CUE Language specification.
 
-* Redshift (Spectrum)
-* Snowflake
-* Spark
+- [API](https://godoc.org/cuelang.org/go/cue): the API on godoc.org
+
+- [Builtin packages](https://godoc.org/cuelang.org/go/pkg): builtins available from CUE programs
+
+- [`cue` Command line reference](./doc/cmd/cue.md): the `cue` command
+
+
+### Contributing
+
+Our canonical Git repository is located at https://cue.googlesource.com.
+
+To contribute, please read the [Contribution Guide](./doc/contribute.md).
+
+To report issues or make a feature request, use the
+[issue tracker](https://github.com/cuelang/cue/issues).
+
+Changes can be contributed using Gerrit or Github pull requests.
+
+
+### Contact
+
+You can get in touch with the cuelang community in the following ways:
+
+- Chat with us on our
+  [Slack workspace](https://join.slack.com/t/cuelang/shared_invite/enQtNzQwODc3NzYzNTA0LTAxNWQwZGU2YWFiOWFiOWQ4MjVjNGQ2ZTNlMmIxODc4MDVjMDg5YmIyOTMyMjQ2MTkzMTU5ZjA1OGE0OGE1NmE).
+
+
+---
+
+Unless otherwise noted, the CUE source files are distributed
+under the Apache 2.0 license found in the LICENSE file.
+
+This is not an officially supported Google product.
+
