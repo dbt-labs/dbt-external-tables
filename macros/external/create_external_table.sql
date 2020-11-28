@@ -86,13 +86,13 @@
         {% endfor %}
     )
     WITH (
-        {% set dict = {'DATA_SOURCE': adapter.quote(external.data_source),
+        {% set dict = {'DATA_SOURCE': external.data_source,
                        'LOCATION' : external.location, 
-                       'FILE_FORMAT' : adapter.quote(external.file_format), 
+                       'FILE_FORMAT' : external.file_format, 
                        'REJECT_TYPE' : external.reject_type, 
                        'REJECT_VALUE' : external.reject_value} -%}
         {%- for key, value in dict.items() %}
-            {{key}} = {% if key == "LOCATION" -%} '{{value}}' {%- else -%} {{value}} {%- endif -%}
+            {{key}} = {% if key == "LOCATION" -%} '{{value}}' {%- elif key in ["DATA_SOURCE","FILE_FORMAT"] -%} [{{value}}] {%- else -%} {{value}} {%- endif -%}
             {{- ',' if not loop.last -}}
             {%- endfor -%}
     )
