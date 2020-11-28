@@ -54,7 +54,7 @@
 
         CREATE EXTERNAL DATA SOURCE [{{external_data_source}}] WITH (
             TYPE = HADOOP,
-            LOCATION = N'abfss://dbt-external-tables-testing@dbtsynapselake.blob.core.windows.net'
+            LOCATION = 'wasbs://dbt-external-tables-testing@dbtsynapselake.blob.core.windows.net'
         )
     {% endset %}
 
