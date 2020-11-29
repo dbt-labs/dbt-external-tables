@@ -58,6 +58,17 @@ jobs:
       - store_artifacts:
           path: ./logs
 
+  integration-sqlserver:
+    docker:
+      - image: dataders/pyodbc:1.2
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - sqlserver"
+          command: ./run_test.sh sqlserver
+      - store_artifacts:
+          path: ./logs
+
 
 workflows:
   version: 2
@@ -67,3 +78,4 @@ workflows:
       - integration-snowflake
       - integration-bigquery
       - integration-databricks
+      - integration-sqlserver

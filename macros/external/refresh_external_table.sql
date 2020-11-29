@@ -80,6 +80,10 @@
     
 {% endmacro %}
 
+{% macro sqlserver__refresh_external_table(source_node) %}
+    {% do return([]) %}
+{% endmacro %}
+
 {% macro snowflake__refresh_external_table(source_node) %}
 
     {% set external = source_node.external %}

@@ -32,6 +32,8 @@ sources:
       +enabled: "{{ target.type == 'bigquery' }}"
     spark_external:
       +enabled: "{{ target.type == 'spark' }}"
+    sqlserver_external:
+      +enabled: "{{ target.type == 'sqlserver' }}"
 
 seeds:
   quote_columns: false
