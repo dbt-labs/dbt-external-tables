@@ -20,20 +20,3 @@
     {{ return(package_context[name](*varargs, **kwargs)) }}
 
 {%- endmacro %}
-
-
-{% macro dropif(node) %}
-    {{ adapter.dispatch('dropif', 
-        packages = dbt_external_tables._get_dbt_external_tables_namespaces()) 
-        (node) }}
-{% endmacro %}
-
-{% macro redshift__dropif(node) %}
-    
-    {% set ddl %}
-        drop table if exists {{source(node.source_name, node.name)}} cascade
-    {% endset %}
-    
-    {{return(ddl)}}
-
-{% endmacro %}

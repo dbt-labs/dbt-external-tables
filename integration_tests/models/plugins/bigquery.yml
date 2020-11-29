@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: bigquery_external
     schema: "{{ target.schema }}"
-    loader: S3
+    loader: Cloud Storage
 
     tables:
       

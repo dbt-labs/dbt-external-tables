@@ -5,7 +5,3 @@
 {% macro default__exit_transaction() %}
     {{ return('') }}
 {% endmacro %}
-
-{% macro redshift__exit_transaction() %}
-    {{ return('begin; commit;') }}
-{% endmacro %}

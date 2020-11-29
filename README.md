@@ -1,45 +1,55 @@
 # External sources in dbt
 
-* Source config extension for metadata about external file structure
-* Adapter macros to create external tables and refresh external table partitions
-* Snowflake-specific macros to create, backfill, and refresh snowpipes
+dbt v0.15.0 added support for an `external` property within `sources` that can include information about `location`, `partitions`, and other database-specific properties.
 
-## Syntax
+This package provides:
+* Macros to create/replace external tables and refresh their partitions, using the metadata provided in your `.yml` file source definitions
+* Snowflake-specific macros to create, backfill, and refresh snowpipes, using the same metadata
 
-```bash
-# iterate through all source nodes, create if missing + refresh if appropriate
-$ dbt run-operation stage_external_sources
+## Supported databases
 
-# iterate through all source nodes, create or replace + refresh if appropriate
-$ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
-```
+* Redshift (Spectrum)
+* Snowflake
+* BigQuery
+* Spark
+* Synapse
 
 ![sample docs](etc/sample_docs.png)
 
-The macros assume that you have already:
-- created either:
-  - an external stage (Snowflake),
-  - external schema (Redshift/Spectrum), or
-  - and external data source and file format (Synapse); and that you
-- have permissions to select from it and create tables in it.
+## Syntax
 
-The `stage_external_sources` macro accepts a similar node selection syntax to
-[snapshotting source freshness](https://docs.getdbt.com/docs/running-a-dbt-project/command-line-interface/source/#specifying-sources-to-snapshot).
+The `stage_external_sources` macro is the primary point of entry when using this package. It has two operational modes: standard and "full refresh."
 
 ```bash
-# Stage all Snowplow and Logs external sources:
+# iterate through all source nodes, create if missing, refresh metadata
+$ dbt run-operation stage_external_sources
+
+# iterate through all source nodes, create or replace (+ refresh if necessary)
+$ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
+```
+
+The `stage_external_sources` macro accepts a limited node selection syntax similar to
+[snapshotting source freshness](https://docs.getdbt.com/docs/running-a-dbt-project/command-line-interface/source/#specifying-sources-to-snapshot):
+
+```bash
+# stage all Snowplow and Logs external sources:
 $ dbt run-operation stage_external_sources --args 'select: snowplow logs'
 
-# Stage a particular external source table:
+# stage a particular external source table:
 $ dbt run-operation stage_external_sources --args 'select: snowplow.event'
 ```
 
-Maybe someday:
-```bash
-$ dbt source stage-external
-$ dbt source stage-external --full-refresh
-$ dbt source stage-external --select snowplow.event logs
-```
+## Setup
+
+The macros assume that you:
+1. Have already created your database's required scaffolding for external resources:
+  - an external stage (Snowflake)
+  - an external schema + S3 bucket (Redshift Spectrum)
+  - an external data source and file format (Synapse)
+  - a Google Cloud Storage bucket (BigQuery)
+  - an accessible set of files (Spark)
+2. Have the appropriate permissions on to create tables using that scaffolding
+3. Have already created the database/project and/or schema/dataset in which dbt will create external tables (or snowpiped tables)
 
 ## Spec
 
@@ -50,65 +60,24 @@ sources:
   - name: snowplow
     tables:
       - name: event
-
-                            # NEW: "external" property of source node
+        description: >
+            This source table is actually a set of files in external storage.
+            The dbt-external-tables package provides handy macros for getting
+            those files queryable, just in time for modeling.
+                            
         external:
-          location:         # S3 file path or Snowflake stage
-          file_format:      # Hive specification or Snowflake named format / specification
-          using:            # Hive specification
-          row_format:       # Hive specification
-          table_properties:   # Hive specification
-          options:          # Hive specification
-            header: 'TRUE'
-          # ------ SYNAPSE ------
-          data_source: # External Data Source Name
-          reject_type: 
-          reject_value: 
-          ansi_nulls: 
-          quoted_identifier:
-          # Snowflake: create an empty table + pipe instead of an external table
-          snowpipe:
-            auto_ingest:    true
-            aws_sns_topic:  # AWS
-            integration:    # Azure
-            copy_options:   "on_error = continue, enforce_length = false" # e.g.
-
-                            # Specify a list of file-path partitions.
-
-          # ------ SNOWFLAKE ------
-          partitions:
+          location:         # required: S3 file path, GCS file path, Snowflake stage, Synapse data source
+          
+          ...               # database-specific properties of external table
+          
+          partitions:       # optional
             - name: collector_date
               data_type: date
-              expression: to_date(substr(metadata$filename, 8, 10), 'YYYY/MM/DD')
+              ...           # database-specific properties
 
-          # ------ REDSHIFT -------
-          partitions:
-            - name: appId
-              data_type: varchar(255)
-              vals:         # list of values
-                - dev
-                - prod
-              path_macro: dbt_external_tables.key_value
-                  # Macro to convert partition value to file path specification.
-                  # This "helper" macro is defined in the package, but you can use
-                  # any custom macro that takes keyword arguments 'name' + 'value'
-                  # and returns the path as a string
-
-                  # If multiple partitions, order matters for compiling S3 path
-            - name: collector_date
-              data_type: date
-              vals:         # macro w/ keyword args to generate list of values
-                macro: dbt.dates_in_range
-                args:
-                  start_date_str: '2019-08-01'
-                  end_date_str: '{{modules.datetime.date.today().strftime("%Y-%m-%d")}}'
-                  in_fmt: "%Y-%m-%d"
-                  out_fmt: "%Y-%m-%d"
-               path_macro: dbt_external_tables.year_month_day
-
-
-        # Specify ALL column names + datatypes. Column order matters for CSVs.
-        # Other file formats require column names to exactly match.
+        # Specify ALL column names + datatypes.
+        # Column order must match for CSVs, column names must match for other formats.
+        # Some databases support schema inference.
 
         columns:
           - name: app_id
@@ -117,21 +86,32 @@ sources:
           - name: platform
             data_type: varchar(255)
             description: "Platform"
-        ...
+          ...
+```
+
+The `stage_external_sources` macro will use this YAML config to compile and 
+execute the appropriate `create`, `refresh`, and/or `drop` commands:
+
+```
+19:01:48 + 1 of 1 START external source spectrum.my_partitioned_tbl
+19:01:48 + 1 of 1 (1) drop table if exists "db"."spectrum"."my_partitioned_tbl"
+19:01:48 + 1 of 1 (1) DROP TABLE
+19:01:48 + 1 of 1 (2) create external table "db"."spectrum"."my_partitioned_tbl"...
+19:01:48 + 1 of 1 (2) CREATE EXTERNAL TABLE
+19:01:48 + 1 of 1 (3) alter table "db"."spectrum"."my_partitioned_tbl"...
+19:01:49 + 1 of 1 (3) ALTER EXTERNAL TABLE
 ```
 
 ## Resources
 
-* [`sample_sources`](sample_sources) for full valid YML config that establishes Snowplow events
-as a dbt source and stage-ready external table in Snowflake and Spectrum, and other sample
-data sources for BigQuery and Spark.
-* [`sample_analysis`](sample_analysis) for a "dry run" version of the DDL/DML that
-`stage_external_sources` will run as an operation
+* [`sample_sources`](sample_sources): detailed example source specs, with annotations, for each database's implementation
+* [`sample_analysis`](sample_analysis): a "dry run" version of the compiled DDL/DML that
+`stage_external_sources` runs as an operation
+* [`tested specs`](integration_tests/models/plugins): source spec variations that are confirmed to work on each database, via integration tests
 
-## Supported databases
+If you encounter issues using this package or have questions, please check the [open issues](https://github.com/fishtown-analytics/dbt-external-tables/issues), as there's a chance it's a known limitation or work in progress. If not, you can:
+- open a new issue to report a bug or suggest an enhancement
+- post a technical question to [StackOverflow](https://stackoverflow.com/questions/tagged/dbt)
+- post a conceptual question to the relevant database channel (#db-redshift, #dbt-snowflake, etc) in the [dbt Slack community](https://community.getdbt.com/)
 
-* Redshift (Spectrum)
-* Snowflake
-* BigQuery
-* Spark
-* Synapse
+Additional contributions to this package are very welcome! Please create issues or open PRs against `master`. Check out [this post](https://discourse.getdbt.com/t/contributing-to-an-external-dbt-package/657) on the best workflow for contributing to a package.
