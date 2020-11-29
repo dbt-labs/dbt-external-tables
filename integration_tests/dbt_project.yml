@@ -30,6 +30,8 @@ sources:
       +enabled: "{{ target.type == 'snowflake' }}"
     spark_external:
       +enabled: "{{ target.type == 'spark' }}"
+    sqlserver_external:
+      +enabled: "{{ target.type == 'sqlserver' }}"
 
 seeds:
   quote_columns: false

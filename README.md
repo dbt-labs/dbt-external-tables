@@ -16,9 +16,12 @@ $ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
 
 ![sample docs](etc/sample_docs.png)
 
-The macros assume that you have already created an external stage (Snowflake)
-or external schema (Redshift/Spectrum), and that you have permissions to select from it
-and create tables in it.
+The macros assume that you have already:
+- created either:
+  - an external stage (Snowflake),
+  - external schema (Redshift/Spectrum), or
+  - and external data source and file format (Synapse); and that you
+- have permissions to select from it and create tables in it.
 
 The `stage_external_sources` macro accepts a similar node selection syntax to
 [snapshotting source freshness](https://docs.getdbt.com/docs/running-a-dbt-project/command-line-interface/source/#specifying-sources-to-snapshot).
@@ -57,7 +60,12 @@ sources:
           table_properties:   # Hive specification
           options:          # Hive specification
             header: 'TRUE'
-
+          # ------ SYNAPSE ------
+          data_source: # External Data Source Name
+          reject_type: 
+          reject_value: 
+          ansi_nulls: 
+          quoted_identifier:
           # Snowflake: create an empty table + pipe instead of an external table
           snowpipe:
             auto_ingest:    true
@@ -124,3 +132,4 @@ as a dbt source and stage-ready external table in Snowflake and Spectrum.
 * Redshift (Spectrum)
 * Snowflake
 * Spark
+* Synapse
