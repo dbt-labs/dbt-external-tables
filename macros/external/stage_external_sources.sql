@@ -12,7 +12,6 @@
 
     {% set build_plan = [] %}
     
-    {%- set partitions = source_node.external.get('partitions', none) -%}
     {% set create_or_replace = (var('ext_full_refresh', false) or not redshift_is_ext_tbl(source_node)) %}
     
     {% if create_or_replace %}

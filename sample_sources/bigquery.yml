@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: external
+    database: analytics
+    loader: gcloud storage
+  
+    tables:
+      - name: event
+        external:
+          location: 'gs://bucket/path/*'
+          options:
+            format: csv
+        # auto-detect schema

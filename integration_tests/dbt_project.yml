@@ -28,6 +28,8 @@ sources:
       +enabled: "{{ target.type == 'redshift' }}"
     snowflake_external:
       +enabled: "{{ target.type == 'snowflake' }}"
+    bigquery_external:
+      +enabled: "{{ target.type == 'bigquery' }}"
     spark_external:
       +enabled: "{{ target.type == 'spark' }}"
     sqlserver_external:

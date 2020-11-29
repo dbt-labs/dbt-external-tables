@@ -31,6 +31,14 @@ integration_tests:
       schema: dbt_external_tables_integration_tests_snowflake
       threads: 1
 
+    bigquery:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('BIGQUERY_SERVICE_KEY_PATH') }}"
+      project: "{{ env_var('BIGQUERY_TEST_DATABASE') }}"
+      schema: dbt_external_tables_integration_tests_bigquery
+      threads: 1
+
     databricks:
       type: spark
       method: odbc

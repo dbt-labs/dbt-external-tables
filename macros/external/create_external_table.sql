@@ -98,12 +98,6 @@
     )
 {% endmacro %}
 
-{% macro bigquery__create_external_table(source_node) %}
-    {{ exceptions.raise_compiler_error(
-        "BigQuery does not support creating external tables in SQL/DDL.
-        Create it from the BQ console.") }}
-{% endmacro %}
-
 {% macro presto__create_external_table(source_node) %}
     {{ exceptions.raise_compiler_error(
         "Presto does not support creating external tables with
