@@ -43,8 +43,8 @@
 
       {%- endif -%}
 
-        partition ({%- for part in partition.partition_by -%}{{ part.name }}='{{ part.value }}'{{',' if not loop.last}}{%- endfor -%})
-        location '{{ source_node.external.location }}{{ partition.path }}/'
+        partition ({%- for part in partition.partition_by -%}{{ part.name }}='{{ part.value }}'{{', ' if not loop.last}}{%- endfor -%})
+        location '{{ source_node.external.location }}/{{ partition.path }}/'
 
     {% endfor -%}
     
