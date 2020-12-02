@@ -8,7 +8,7 @@ if [[ ! -f $VENV ]]; then
     if [ $1 == 'databricks' ]
     then
         pip install dbt-spark[ODBC] --upgrade
-    elif [ $1 == 'sqlserver' ]
+    elif [ $1 == 'synapse' ]
     then
         pip install dbt-synapse --upgrade
     elif [ $1 == 'azuresql' ]
