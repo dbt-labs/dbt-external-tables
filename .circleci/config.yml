@@ -64,7 +64,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "Run Tests - Synapse"
+          name: "Run Tests - synapse"
           command: ./run_test.sh synapse
       - store_artifacts:
           path: ./logs
