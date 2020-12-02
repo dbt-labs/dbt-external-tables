@@ -50,8 +50,8 @@ sources:
     loader: RDBMS cross database query
     tables:
       - name: people_csv_unpartitioned
-        external: &csv-people
-          data_source: "{{ target.schema ~ '.dbt_external_tables_testing' }}"
+        external:
+          <<: *csv-people
           schema_name: "{{ target.schema }}"
           object_name: people_csv_unpartitioned
         columns: *cols-of-the-people
