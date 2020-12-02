@@ -5,7 +5,7 @@
     {% set source_nodes = graph.sources.values() if graph.sources else [] %}
     
     {% for node in source_nodes %}
-        
+        {% if node.external.items() %}
             
             {% if select %}
             
@@ -29,7 +29,7 @@
                 {% do sources_to_stage.append(node) %}
                 
             {% endif %}
-            
+        {% endif %}
         
     {% endfor %}
             
