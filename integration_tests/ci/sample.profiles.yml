@@ -71,6 +71,6 @@ integration_tests:
       username: "{{ env_var('DBT_AZURESQL_UID') }}"
       password: "{{ env_var('DBT_AZURESQL_PWD') }}"
       schema: dbt_external_tables_integration_tests_azuresql
-      encrypt: 'yes'
-      trust_cert: 'yes'
+      encrypt: yes
+      trust_cert: yes
       threads: 1
