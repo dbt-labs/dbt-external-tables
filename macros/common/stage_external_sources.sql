@@ -6,7 +6,6 @@
     
     {% for node in source_nodes %}
         
-        {% if node.external.location %}
             
             {% if select %}
             
@@ -31,7 +30,6 @@
                 
             {% endif %}
             
-        {% endif %}
         
     {% endfor %}
             
