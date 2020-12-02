@@ -35,7 +35,14 @@
     )
     WITH (
         {%- for key, value in dict.items() %}
-            {{key}} = {% if key == "LOCATION" -%} '{{value}}' {%- elif key in ["DATA_SOURCE","FILE_FORMAT"] -%} [{{value}}] {%- else -%} {{value}} {%- endif -%}
+            {{key}} = 
+                {%- if key in ["LOCATION", "SCHEMA_NAME", "OBJECT_NAME"] -%}
+                    '{{value}}'
+                {%- elif key in ["DATA_SOURCE","FILE_FORMAT"] -%}
+                    [{{value}}]
+                {%- else -%}
+                    {{value}}
+                {%- endif -%}
             {{- ',' if not loop.last -}}
             {%- endfor -%}
     )
