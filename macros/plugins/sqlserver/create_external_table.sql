@@ -20,9 +20,9 @@
             {{key}} = 
                 {%- if key in ["location", "schema_name", "object_name"] -%}
                     '{{value}}'
-                {%- elif key in ["data_source","file_format"] -%}
+                {% elif key in ["data_source","file_format"] -%}
                     [{{value}}]
-                {%- else -%}
+                {% else -%}
                     {{value}}
                 {%- endif -%}
             {{- ',' if not loop.last -}}
