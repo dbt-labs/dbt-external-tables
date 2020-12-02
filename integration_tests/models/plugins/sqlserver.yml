@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: sqlserver_external
+  - name: synapse_external
     schema: "{{ target.schema }}"
     loader: ADLSblob
 
@@ -45,7 +45,17 @@ sources:
           #     expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
         columns: *cols-of-the-people
         tests: *equal-to-the-people
-
+  - name: azuresql_external
+    schema: "{{ target.schema }}"
+    loader: RDBMS cross database query
+    tables:
+      - name: people_csv_unpartitioned
+        external: &csv-people
+          data_source: "{{ target.schema ~ '.dbt_external_tables_testing' }}"
+          schema_name: "{{ target.schema }}"
+          object_name: people_csv_unpartitioned
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
       # TODO: JSON IS NOT SUPPORTED BY SYNAPSE ATM
 
       # - name: people_json_unpartitioned

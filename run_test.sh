@@ -11,6 +11,9 @@ if [[ ! -f $VENV ]]; then
     elif [ $1 == 'sqlserver' ]
     then
         pip install dbt-synapse --upgrade
+    elif [ $1 == 'azuresql' ]
+    then
+        pip install dbt-sqlserver --upgrade
     else
         pip install dbt --upgrade
     fi

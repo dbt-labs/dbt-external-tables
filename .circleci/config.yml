@@ -69,6 +69,17 @@ jobs:
       - store_artifacts:
           path: ./logs
 
+  integration-azuresql:
+    docker:
+      - image: dataders/pyodbc:1.2
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - azuresql"
+          command: ./run_test.sh azuresql
+      - store_artifacts:
+          path: ./logs
+
 
 workflows:
   version: 2
