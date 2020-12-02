@@ -13,6 +13,7 @@ This package provides:
 * BigQuery
 * Spark
 * Synapse
+* Azure SQL
 
 ![sample docs](etc/sample_docs.png)
 
@@ -46,6 +47,7 @@ The macros assume that you:
   - an external stage (Snowflake)
   - an external schema + S3 bucket (Redshift Spectrum)
   - an external data source and file format (Synapse)
+  - an external data source and databse-scoped credential (Azure SQL)
   - a Google Cloud Storage bucket (BigQuery)
   - an accessible set of files (Spark)
 2. Have the appropriate permissions on to create tables using that scaffolding
