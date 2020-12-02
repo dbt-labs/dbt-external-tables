@@ -58,7 +58,7 @@ jobs:
       - store_artifacts:
           path: ./logs
 
-  integration-sqlserver:
+  integration-synapse:
     docker:
       - image: dataders/pyodbc:1.2
     steps:
@@ -89,4 +89,5 @@ workflows:
       - integration-snowflake
       - integration-bigquery
       - integration-databricks
-      - integration-sqlserver
+      - integration-synapse
+      - integration-azuresql
