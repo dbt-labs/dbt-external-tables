@@ -51,11 +51,12 @@ sources:
     tables:
       - name: people_csv_unpartitioned
         external:
-          <<: *csv-people
-          schema_name: "{{ target.schema }}"
-          object_name: people_csv_unpartitioned
+          data_source: "{{ target.schema ~ '.dbt_external_tables_testing' }}"
+          schema_name: 'dbt_external_tables_integration_tests_synapse'
+          object_name: 'people_csv_unpartitioned'
         columns: *cols-of-the-people
         tests: *equal-to-the-people
+
       # TODO: JSON IS NOT SUPPORTED BY SYNAPSE ATM
 
       # - name: people_json_unpartitioned
