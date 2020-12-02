@@ -65,7 +65,7 @@ jobs:
       - checkout
       - run:
           name: "Run Tests - sqlserver"
-          command: ./run_test.sh sqlserver
+          command: ./run_test.sh synapse
       - store_artifacts:
           path: ./logs
 
