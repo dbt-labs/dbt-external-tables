@@ -34,10 +34,10 @@
         {% set cred_name = 'synapse_reader' %}
 
         {% set create_database_scoped_credential %}
-            IF NOT EXISTS ( SELECT * FROM sys.create_database_scoped_credentials WHERE name = {{ cred_name }})
+            IF NOT EXISTS ( SELECT * FROM sys.database_scoped_credentials WHERE name = '{{ cred_name }}')
                 CREATE DATABASE SCOPED CREDENTIAL [{{ cred_name }}] WITH
-                    IDENTITY = "{{ env_var('DBT_SYNAPSE_UID') }}",
-                    SECRET = "{{ env_var('DBT_SYNAPSE_PWD') }}"
+                    IDENTITY = '{{ env_var("DBT_SYNAPSE_UID") }}',
+                    SECRET = '{{ env_var("DBT_SYNAPSE_PWD") }}'
 
         {% endset %}
 
