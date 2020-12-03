@@ -75,6 +75,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: "wait for Synapse tests to finish"
+          command: sleep 60
+      - run:
           name: "Run Tests - azuresql"
           command: ./run_test.sh azuresql
       - store_artifacts:
