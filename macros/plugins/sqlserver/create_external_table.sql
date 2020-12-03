@@ -18,7 +18,7 @@
         {# remove keys that are None (i.e. not defined for a given source) #}
         {%- for key, value in external.items() if value is not none and key not in ['ansi_nulls', 'quoted_identifier'] -%}
             {{key}} = 
-                {%- if key in ["location", "schema_name", "object_name"] -%}
+                {%- if key in ["location", "schema_name", "object_name", 'type'] -%}
                     '{{value}}'
                 {% elif key in ["data_source","file_format"] -%}
                     [{{value}}]
