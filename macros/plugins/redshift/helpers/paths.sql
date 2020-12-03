@@ -7,3 +7,8 @@
     {% set path = name ~ '=' ~ value %}
     {{return(path)}}
 {% endmacro %}
+
+{% macro value_only(name, value) %}
+    {% set path = value %}
+    {{return(path)}}
+{% endmacro %}
