@@ -33,8 +33,10 @@ sources:
         +enabled: "{{ target.type == 'bigquery' }}"
       spark_external:
         +enabled: "{{ target.type == 'spark' }}"
-      sqlserver_external:
-        +enabled: "{{ target.type == 'sqlserver' }}"
+      synapse_external:
+        +enabled: "{{ target.name == 'synapse' }}"
+      azuresql_external:
+        +enabled: "{{ target.name == 'azuresql' }}"
 
 seeds:
   quote_columns: false

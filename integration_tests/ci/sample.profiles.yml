@@ -49,7 +49,7 @@ integration_tests:
       token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
       schema: dbt_external_tables_integration_tests_databricks
 
-    sqlserver:
+    synapse:
       type: sqlserver
       driver: "ODBC Driver 17 for SQL Server"
       port: 1433
@@ -60,4 +60,17 @@ integration_tests:
       schema: dbt_external_tables_integration_tests_synapse
       encrypt: 'yes'
       trust_cert: 'yes'
+      threads: 1
+
+    azuresql:
+      type: sqlserver
+      driver: "ODBC Driver 17 for SQL Server"
+      port: 1433
+      host: "{{ env_var('DBT_AZURESQL_SERVER') }}"
+      database: "{{ env_var('DBT_AZURESQL_DB') }}"
+      username: "{{ env_var('DBT_AZURESQL_UID') }}"
+      password: "{{ env_var('DBT_AZURESQL_PWD') }}"
+      schema: dbt_external_tables_integration_tests_azuresql
+      encrypt: yes
+      trust_cert: yes
       threads: 1

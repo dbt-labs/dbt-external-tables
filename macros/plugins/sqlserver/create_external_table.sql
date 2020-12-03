@@ -15,13 +15,16 @@
         {% endfor %}
     )
     WITH (
-        {% set dict = {'DATA_SOURCE': external.data_source,
-                       'LOCATION' : external.location, 
-                       'FILE_FORMAT' : external.file_format, 
-                       'REJECT_TYPE' : external.reject_type, 
-                       'REJECT_VALUE' : external.reject_value} -%}
-        {%- for key, value in dict.items() %}
-            {{key}} = {% if key == "LOCATION" -%} '{{value}}' {%- elif key in ["DATA_SOURCE","FILE_FORMAT"] -%} [{{value}}] {%- else -%} {{value}} {%- endif -%}
+        {# remove keys that are None (i.e. not defined for a given source) #}
+        {%- for key, value in external.items() if value is not none and key not in ['ansi_nulls', 'quoted_identifier'] -%}
+            {{key}} = 
+                {%- if key in ["location", "schema_name", "object_name"] -%}
+                    '{{value}}'
+                {% elif key in ["data_source","file_format"] -%}
+                    [{{value}}]
+                {% else -%}
+                    {{value}}
+                {%- endif -%}
             {{- ',' if not loop.last -}}
             {%- endfor -%}
     )
