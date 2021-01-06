@@ -80,6 +80,10 @@ jobs:
       - run:
           name: "Run Tests - azuresql"
           command: ./run_test.sh azuresql
+      - run:
+          name: "Run Tests - azuresql (retry when server is off)"
+          command: ./run_test.sh azuresql
+          when: on_fail
       - store_artifacts:
           path: ./logs
 
