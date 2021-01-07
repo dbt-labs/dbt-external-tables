@@ -56,7 +56,7 @@
             {% endcall %}
             
             {% set runner = load_result('runner') %}
-            {% set log_msg = runner['response'] if response in runner.keys() else runner['status'] %}
+            {% set log_msg = runner['response'] if 'response' in runner.keys() else runner['status'] %}
             {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ log_msg) %}
             
         {% endfor %}
