@@ -32,6 +32,10 @@
         {% endif %}
         
     {% endfor %}
+    
+    {% if sources_to_stage|length == 0 %}
+        {% do dbt_utils.log_info('No external sources selected') %}
+    {% endif %}
             
     {% for node in sources_to_stage %}
 
