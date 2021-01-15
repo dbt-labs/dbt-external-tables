@@ -7,15 +7,15 @@ if [[ ! -f $VENV ]]; then
     pip install --upgrade pip setuptools
     if [ $1 == 'databricks' ]
     then
-        pip install dbt-spark[ODBC] --upgrade
+        pip install --pre dbt-spark[ODBC] --upgrade
     elif [ $1 == 'synapse' ]
     then
-        pip install dbt-synapse --upgrade
+        pip install --pre dbt-synapse --upgrade
     elif [ $1 == 'azuresql' ]
     then
-        pip install dbt-sqlserver --upgrade
+        pip install --pre dbt-sqlserver --upgrade
     else
-        pip install dbt --upgrade
+        pip install --pre dbt --upgrade
     fi
 fi
 
