@@ -30,3 +30,47 @@ integration_tests:
       warehouse: "{{ env_var('SNOWFLAKE_TEST_WAREHOUSE') }}"
       schema: dbt_external_tables_integration_tests_snowflake
       threads: 1
+
+    bigquery:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('BIGQUERY_SERVICE_KEY_PATH') }}"
+      project: "{{ env_var('BIGQUERY_TEST_DATABASE') }}"
+      schema: dbt_external_tables_integration_tests_bigquery
+      threads: 1
+
+    databricks:
+      type: spark
+      method: odbc
+      port: 443
+      driver: "{{ env_var('ODBC_DRIVER') }}"
+      host: "{{ env_var('DBT_DATABRICKS_HOST_NAME') }}"
+      endpoint: "{{ env_var('DBT_DATABRICKS_ENDPOINT') }}"
+      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
+      schema: dbt_external_tables_integration_tests_databricks
+
+    synapse:
+      type: sqlserver
+      driver: "ODBC Driver 17 for SQL Server"
+      port: 1433
+      host: "{{ env_var('DBT_SYNAPSE_SERVER') }}"
+      database: "{{ env_var('DBT_SYNAPSE_DB') }}"
+      username: "{{ env_var('DBT_SYNAPSE_UID') }}"
+      password: "{{ env_var('DBT_SYNAPSE_PWD') }}"
+      schema: dbt_external_tables_integration_tests_synapse
+      encrypt: 'yes'
+      trust_cert: 'yes'
+      threads: 1
+
+    azuresql:
+      type: sqlserver
+      driver: "ODBC Driver 17 for SQL Server"
+      port: 1433
+      host: "{{ env_var('DBT_AZURESQL_SERVER') }}"
+      database: "{{ env_var('DBT_AZURESQL_DB') }}"
+      username: "{{ env_var('DBT_AZURESQL_UID') }}"
+      password: "{{ env_var('DBT_AZURESQL_PWD') }}"
+      schema: dbt_external_tables_integration_tests_azuresql
+      encrypt: yes
+      trust_cert: yes
+      threads: 1

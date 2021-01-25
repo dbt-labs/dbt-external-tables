@@ -24,10 +24,19 @@ vars:
 
 sources:
   dbt_external_tables_integration_tests:
-    redshift_external:
-      +enabled: "{{ target.type == 'redshift' }}"
-    snowflake_external:
-      +enabled: "{{ target.type == 'snowflake' }}"
+    plugins:
+      redshift_external:
+        +enabled: "{{ target.type == 'redshift' }}"
+      snowflake_external:
+        +enabled: "{{ target.type == 'snowflake' }}"
+      bigquery_external:
+        +enabled: "{{ target.type == 'bigquery' }}"
+      spark_external:
+        +enabled: "{{ target.type == 'spark' }}"
+      synapse_external:
+        +enabled: "{{ target.name == 'synapse' }}"
+      azuresql_external:
+        +enabled: "{{ target.name == 'azuresql' }}"
 
 seeds:
   quote_columns: false

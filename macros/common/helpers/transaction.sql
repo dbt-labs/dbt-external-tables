@@ -3,13 +3,5 @@
 {% endmacro %}
 
 {% macro default__exit_transaction() %}
-    {{ return('begin; commit;') }}
-{% endmacro %}
-
-{% macro bigquery__exit_transaction() %}
-    {{ return('') }}
-{% endmacro %}
-
-{% macro spark__exit_transaction() %}
     {{ return('') }}
 {% endmacro %}

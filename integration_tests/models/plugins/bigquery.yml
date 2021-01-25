@@ -1,0 +1,95 @@
+version: 2
+
+sources:
+  - name: bigquery_external
+    schema: "{{ target.schema }}"
+    loader: Cloud Storage
+
+    tables:
+      
+      - name: people_csv_unpartitioned
+        external:
+          location: 'gs://dbt-external-tables-testing/csv/*'
+          options:
+            format: csv
+            skip_leading_rows: 1
+        columns: &cols-of-the-people
+          - name: id
+            data_type: int64
+          - name: first_name
+            data_type: string
+          - name: last_name
+            data_type: string
+          - name: email
+            data_type: string
+        tests: &equal-to-the-people
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+
+      - name: people_csv_partitioned
+        external:
+          location: 'gs://dbt-external-tables-testing/csv/*'
+          options:
+            format: csv
+            skip_leading_rows: 1
+            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/csv'"
+          partitions: &parts-of-the-people
+            - name: section
+              data_type: string
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+        
+      - name: people_csv_schema_auto_detect
+        external:
+          location: 'gs://dbt-external-tables-testing/csv/*'
+          options:
+            format: csv
+            skip_leading_rows: 1
+            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/csv'"
+        tests: *equal-to-the-people
+
+      - name: people_csv_override_uris
+        external:
+          location: this can be anything
+          options:
+            format: csv
+            skip_leading_rows: 1
+            uris:
+              - 'gs://dbt-external-tables-testing/csv/section=a/people_a.csv'
+              - 'gs://dbt-external-tables-testing/csv/section=b/people_b.csv'
+              - 'gs://dbt-external-tables-testing/csv/section=c/people_c.csv'
+              - 'gs://dbt-external-tables-testing/csv/section=d/people_d.csv'
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+#      - name: people_json_unpartitioned
+#        external: &json-people
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: json
+#        columns: *cols-of-the-people
+#        tests: *equal-to-the-people
+#
+#      - name: people_json_partitioned
+#        external:
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: json
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
+#          partitions: *parts-of-the-people
+#        columns: *cols-of-the-people
+#        tests: *equal-to-the-people
+#        
+#      - name: people_json_schema_auto_detect
+#        external:
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: csv
+#            skip_leading_rows: 1
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
+#        tests: *equal-to-the-people
