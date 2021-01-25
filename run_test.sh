@@ -33,3 +33,4 @@ dbt run-operation prep_external --target $1
 dbt run-operation stage_external_sources --var 'ext_full_refresh: true' --target $1
 dbt run-operation stage_external_sources --target $1
 dbt test --target $1
+dbt run-operation cleanup_external --target $1
