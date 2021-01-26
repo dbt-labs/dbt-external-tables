@@ -2,8 +2,11 @@
 ## setup
 1. set up profile
 1. clone
-   1. jaffle shop repo
-   2. dbt-external-tables
+   1. dbt-msft/jaffle-shop-mssql repo
+      1. branch : ext_table_sandbox
+   2. fork swanderz/dbt-external-tables
+      1. use the materialzed-external-tables
+      2. add anders as contrib to your branch
 2. install packages (local for dbt-external-tables)
 3. add a source
 # dbt-external-tables
