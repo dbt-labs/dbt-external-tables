@@ -61,8 +61,6 @@
                     'path': path_parts | join('/')
                 }  -%}
                 
-                {% do log(construct, info = true) %}
-                
                 {% do finals.append(construct) %}
             {%- endfor -%}
         {%- endif -%}
