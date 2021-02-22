@@ -10,7 +10,7 @@ if [[ ! -f $VENV ]]; then
         pip install --pre dbt-spark[ODBC] --upgrade
     elif [ $1 == 'synapse' ]
     then
-        pip install --pre dbt-synapse --upgrade
+        pip install --pre dbt-synapse>=0.19.0 --upgrade
     elif [ $1 == 'azuresql' ]
     then
         pip install --pre dbt-sqlserver --upgrade
