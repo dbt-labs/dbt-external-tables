@@ -34,9 +34,9 @@ sources:
       spark_external:
         +enabled: "{{ target.type == 'spark' }}"
       synapse_external:
-        +enabled: "{{ target.name == 'synapse' }}"
+        +enabled: "{{ target.type == 'synapse' }}"
       azuresql_external:
-        +enabled: "{{ target.name == 'azuresql' }}"
+        +enabled: "{{ target.type == 'azuresql' }}"
 
 seeds:
   quote_columns: false
