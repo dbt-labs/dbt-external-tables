@@ -4,8 +4,6 @@ version: '1.0'
 
 profile: 'integration_tests'
 
-# require-dbt-version: inherit this from package
-
 config-version: 2
 
 source-paths: ["models"]
@@ -14,8 +12,8 @@ test-paths: ["tests"]
 data-paths: ["data"]
 macro-paths: ["macros"]
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
+target-path: "target"
+clean-targets:
     - "target"
     - "dbt_modules"
 
@@ -39,4 +37,4 @@ sources:
         +enabled: "{{ target.name == 'azuresql' }}"
 
 seeds:
-  quote_columns: false
+  +quote_columns: false
