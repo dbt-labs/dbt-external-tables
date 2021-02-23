@@ -2,6 +2,44 @@
 
     {% set external_data_source = target.schema ~ '.dbt_external_tables_testing' %}
 
+    {% if target.name == "azuresql" %}
+
+        {% set cred_name = 'synapse_reader' %}
+
+        {% set create_database_scoped_credential %}
+            IF NOT EXISTS ( SELECT * FROM sys.database_scoped_credentials WHERE name = '{{ cred_name }}')
+                CREATE DATABASE SCOPED CREDENTIAL [{{ cred_name }}] WITH
+                    IDENTITY = '{{ env_var("DBT_SYNAPSE_UID") }}',
+                    SECRET = '{{ env_var("DBT_SYNAPSE_PWD") }}'
+
+        {% endset %}
+
+        {% set create_external_data_source %}
+            IF NOT EXISTS ( SELECT * FROM sys.external_data_sources WHERE name = '{{external_data_source}}' )
+
+            CREATE EXTERNAL DATA SOURCE [{{external_data_source}}] WITH (
+                TYPE = RDBMS,
+                LOCATION = '{{ env_var("DBT_SYNAPSE_SERVER") }}',
+                DATABASE_NAME = '{{ env_var("DBT_SYNAPSE_DB") }}',
+                CREDENTIAL = [{{ cred_name }}]
+            )
+        {% endset %}
+
+    {%- endif %}
+
+    {% do log('Creating database scoped credential ' ~ cred_name, info = true) %}
+    {% do run_query(create_database_scoped_credential) %}
+
+    {% do log('Creating external data source ' ~ external_data_source, info = true) %}
+    {% do run_query(create_external_data_source) %}
+
+{% endmacro %}
+
+
+{% macro synapse__prep_external() %}
+
+    {% set external_data_source = target.schema ~ '.dbt_external_tables_testing' %}
+
     {% if target.name == "synapse"%}
 
         {% set create_external_data_source %}
@@ -29,43 +67,12 @@
             )
         {% endset %}
 
-    {% elif target.name == "azuresql" %}
-
-        {% set cred_name = 'synapse_reader' %}
-
-        {% set create_database_scoped_credential %}
-            IF NOT EXISTS ( SELECT * FROM sys.database_scoped_credentials WHERE name = '{{ cred_name }}')
-                CREATE DATABASE SCOPED CREDENTIAL [{{ cred_name }}] WITH
-                    IDENTITY = '{{ env_var("DBT_SYNAPSE_UID") }}',
-                    SECRET = '{{ env_var("DBT_SYNAPSE_PWD") }}'
-
-        {% endset %}
-
-        {% set create_external_data_source %}
-            IF NOT EXISTS ( SELECT * FROM sys.external_data_sources WHERE name = '{{external_data_source}}' )
-
-            CREATE EXTERNAL DATA SOURCE [{{external_data_source}}] WITH (
-                TYPE = RDBMS,
-                LOCATION = '{{ env_var("DBT_SYNAPSE_SERVER") }}',
-                DATABASE_NAME = '{{ env_var("DBT_SYNAPSE_DB") }}',
-                CREDENTIAL = [{{ cred_name }}]
-            )
-        {% endset %}
-
-    {%- endif %}
-    
-
-    {% if target.name == "azuresql" -%}
-        {% do log('Creating database scoped credential ' ~ cred_name, info = true) %}
-        {% do run_query(create_database_scoped_credential) %}
     {%- endif %}
 
     {% do log('Creating external data source ' ~ external_data_source, info = true) %}
     {% do run_query(create_external_data_source) %}
 
-    {% if target.name == "synapse" -%}
-        {% do log('Creating external file format ' ~ external_file_format, info = true) %}
-        {% do run_query(create_external_file_format) %}
-    {%- endif %}
+    {% do log('Creating external file format ' ~ external_file_format, info = true) %}
+    {% do run_query(create_external_file_format) %}
 
 {% endmacro %}
