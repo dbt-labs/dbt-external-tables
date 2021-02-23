@@ -28,6 +28,7 @@ if [[ ! -e ~/.dbt/profiles.yml ]]; then
 fi
 
 dbt deps --target $1
+dbt debug --target $1
 dbt seed --full-refresh --target $1
 dbt run-operation prep_external --target $1
 dbt run-operation stage_external_sources --var 'ext_full_refresh: true' --target $1
