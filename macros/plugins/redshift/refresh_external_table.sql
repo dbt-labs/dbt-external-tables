@@ -25,9 +25,9 @@
             {%- for val in vals %}
             
                 select
-                    '{{ partition.name }}' as name_{{ part_num }},
-                    '{{ val }}' as val_{{ part_num }},
-                    '{{ dbt_external_tables.render_from_context(partition.path_macro, partition.name, val) }}' as path_{{ part_num }}
+                    '"{{ partition.name }}"' as name_{{ part_num }},
+                    '"{{ val }}"' as val_{{ part_num }},
+                    '"{{ dbt_external_tables.render_from_context(partition.path_macro, partition.name, val) }}"' as path_{{ part_num }}
                 
                 {{ 'union all' if not loop.last else ') ' }}
             
@@ -50,10 +50,10 @@
                 
                 {%- for i in range(0, part_len) -%}
                     {%- do partition_parts.append({
-                        'name': row[i * 3],
-                        'value': row[i * 3 + 1]
+                        'name': row[i * 3][1:-1],
+                        'value': row[i * 3 + 1][1:-1]
                     }) -%}
-                    {%- do path_parts.append(row[i * 3 + 2]) -%}
+                    {%- do path_parts.append(row[i * 3 + 2][1:-1]) -%}
                 {%- endfor -%}
                 
                 {%- set construct = {
