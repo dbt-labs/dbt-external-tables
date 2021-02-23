@@ -17,8 +17,8 @@
         {%- for column in columns %}
             {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
             {%- set col_expression -%}
-                {%- if is_csv -%}nullif(value:c{{loop.index}},''){# special case: get columns by ordinal position #}
-                {%- else -%}nullif(value:{{column.name}},''){# standard behavior: get columns by name #}
+                {% set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column.name %}
+                (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                 {%- endif -%}
             {%- endset %}
             {{column_quoted}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
