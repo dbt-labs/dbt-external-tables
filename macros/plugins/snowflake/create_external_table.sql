@@ -15,12 +15,13 @@
             {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if not loop.last or columns|length > 0 -}}
         {%- endfor -%}{%- endif -%}
         {%- for column in columns %}
+            {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
             {%- set col_expression -%}
                 {%- if is_csv -%}nullif(value:c{{loop.index}},''){# special case: get columns by ordinal position #}
                 {%- else -%}nullif(value:{{column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
             {%- endset %}
-            {{column.name}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
+            {{column_quoted}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
             {{- ',' if not loop.last -}}
         {% endfor %}
     )
