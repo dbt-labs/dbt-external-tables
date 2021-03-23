@@ -10,3 +10,7 @@
     {{return(ddl)}}
 
 {% endmacro %}
+
+{% macro synapse__dropif(node) %}
+    {% do return( dbt_external_tables.sqlserver__dropif(node)) %}
+{% endmacro %}
