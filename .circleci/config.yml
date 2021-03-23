@@ -93,4 +93,6 @@ workflows:
       - integration-bigquery
       - integration-databricks
       - integration-synapse
-      - integration-azuresql
+      - integration-azuresql:
+          requires:
+            - integration-synapse
