@@ -21,3 +21,7 @@
     {% do return(build_plan) %}
 
 {% endmacro %}
+
+{% macro synapse__get_external_build_plan(source_node) %}
+    {% do return( dbt_external_tables.sqlserver__get_external_build_plan(source_node)) %}
+{% endmacro %}
