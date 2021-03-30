@@ -17,6 +17,10 @@ This package provides:
 
 ![sample docs](etc/sample_docs.png)
 
+## Installation
+
+Follow the instructions at [hub.getdbt.com](https://hub.getdbt.com/fishtown-analytics/dbt_external_tables/latest/) on how to modify your `packages.yml` and run `dbt deps`.
+
 ## Syntax
 
 The `stage_external_sources` macro is the primary point of entry when using this package. It has two operational modes: standard and "full refresh."
