@@ -9,7 +9,7 @@
     create external table {{source(source_node.source_name, source_node.name)}} (
         {% for column in columns %}
             {# TODO set nullity based on schema tests?? #}
-            {%- set nullity = 'NULL' if 'not_null' in columns.tests else 'NOT NULL'-%}
+            {%- set nullity = 'NOT NULL' if 'not_null' in columns.tests else 'NULL'-%}
             {{adapter.quote(column.name)}} {{column.data_type}} {{nullity}}
             {{- ',' if not loop.last -}}
         {% endfor %}
@@ -28,4 +28,8 @@
             {{- ',' if not loop.last -}}
             {%- endfor -%}
     )
+{% endmacro %}
+
+{% macro synapse__create_external_table(source_node) %}
+    {% do return( dbt_external_tables.sqlserver__create_external_table(source_node)) %}
 {% endmacro %}

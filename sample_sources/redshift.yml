@@ -42,23 +42,23 @@ sources:
           # specify ALL columns to extract, unnest, or otherwise parse from the source files.
           # all Redshift external tables natively include `$path` and `$size` pseudocolumns, 
           # so there is no need to specify those here.
-          columns:
-            - name: app_id
-              data_type: varchar(255)
-              description: "Application ID"
-            - name: domain_sessionidx
-              data_type: int
-              description: "A visit / session index"
+        columns:
+          - name: app_id
+            data_type: varchar(255)
+            description: "Application ID"
+          - name: domain_sessionidx
+            data_type: int
+            description: "A visit / session index"
 
-              # Spectrum timestamp columns *must* be in the format `yyyy-MM-dd HH:mm:ss.SSSSSS`
-              # (e.g. '2017-05-01 11:30:59.000000'). Otherwise, load as varchar and
-              # parse/cast in a staging model.
-            - name: etl_tstamp
-              data_type: varchar(32)
-              description: "Timestamp event began ETL"
-            
-            # Spectrum columns with nested values require Hive-style specifications.
-            # I usually give up, make them big varchars, and parse in a staging model.
-            - name: contexts
-              data_type: varchar(65000)     
-              description: "Contexts attached to event by Tracker"
+            # Spectrum timestamp columns *must* be in the format `yyyy-MM-dd HH:mm:ss.SSSSSS`
+            # (e.g. '2017-05-01 11:30:59.000000'). Otherwise, load as varchar and
+            # parse/cast in a staging model.
+          - name: etl_tstamp
+            data_type: varchar(32)
+            description: "Timestamp event began ETL"
+
+          # Spectrum columns with nested values require Hive-style specifications.
+          # I usually give up, make them big varchars, and parse in a staging model.
+          - name: contexts
+            data_type: varchar(65000)     
+            description: "Contexts attached to event by Tracker"

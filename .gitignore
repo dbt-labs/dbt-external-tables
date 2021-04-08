@@ -1,1 +1,6 @@
-venv/
+
+**/target/
+**/dbt_modules/
+**/logs/
+**/env/
+**/venv/
