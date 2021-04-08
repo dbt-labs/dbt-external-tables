@@ -53,13 +53,10 @@ integration_tests:
       type: synapse
       driver: "ODBC Driver 17 for SQL Server"
       port: 1433
-      host: "{{ env_var('DBT_SYNAPSE_SERVER') }}"
+      host: "{{ env_var('DBT_SYNAPSE_SERVER') }}.sql.azuresynapse.net"
       database: "{{ env_var('DBT_SYNAPSE_DB') }}"
-      username: "{{ env_var('DBT_SYNAPSE_UID') }}"
-      password: "{{ env_var('DBT_SYNAPSE_PWD') }}"
+      authentication: CLI
       schema: dbt_external_tables_integration_tests_synapse
-      encrypt: yes
-      trust_cert: yes
       threads: 1
 
     azuresql:
@@ -68,9 +65,6 @@ integration_tests:
       port: 1433
       host: "{{ env_var('DBT_AZURESQL_SERVER') }}"
       database: "{{ env_var('DBT_AZURESQL_DB') }}"
-      username: "{{ env_var('DBT_AZURESQL_UID') }}"
-      password: "{{ env_var('DBT_AZURESQL_PWD') }}"
+      authentication: CLI
       schema: dbt_external_tables_integration_tests_azuresql
-      encrypt: yes
-      trust_cert: yes
       threads: 1
