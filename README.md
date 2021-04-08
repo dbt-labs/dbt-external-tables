@@ -30,7 +30,7 @@ The `stage_external_sources` macro is the primary point of entry when using this
 $ dbt run-operation stage_external_sources
 
 # iterate through all source nodes, create or replace (+ refresh if necessary)
-$ dbt run-operation stage_external_sources --vars 'ext_full_refresh: true'
+$ dbt run-operation stage_external_sources --vars "ext_full_refresh: true"
 ```
 
 The `stage_external_sources` macro accepts a limited node selection syntax similar to
@@ -38,10 +38,10 @@ The `stage_external_sources` macro accepts a limited node selection syntax simil
 
 ```bash
 # stage all Snowplow and Logs external sources:
-$ dbt run-operation stage_external_sources --args 'select: snowplow logs'
+$ dbt run-operation stage_external_sources --args "select: snowplow logs"
 
 # stage a particular external source table:
-$ dbt run-operation stage_external_sources --args 'select: snowplow.event'
+$ dbt run-operation stage_external_sources --args "select: snowplow.event"
 ```
 
 ## Setup
