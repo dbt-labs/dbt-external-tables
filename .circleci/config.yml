@@ -68,7 +68,7 @@ jobs:
       - checkout
       - run: &gnupg2
           name: az cli dep
-          command: sudo apt-get install gnupg2
+          command: apt-get install gnupg2 -y
       - azure-cli/install
       - azure-cli/login-with-service-principal: &azure-creds
           azure-sp: DBT_AZURE_SP_NAME
