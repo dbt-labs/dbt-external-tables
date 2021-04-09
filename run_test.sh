@@ -10,17 +10,13 @@ if [[ ! -f $VENV ]]; then
     then
         echo "Installing dbt-spark"
         pip install dbt-spark[ODBC] --upgrade
-    elif [ $1 == 'synapse' ]
-    then
-        echo "Installing dbt-synapse"
-        pip install dbt-synapse --upgrade
     elif [ $1 == 'azuresql' ]
     then
         echo "Installing dbt-sqlserver"
         pip install dbt-sqlserver --upgrade
     else
-        echo "Installing dbt"
-        pip install dbt --upgrade
+        echo "Installing dbt-$1"
+        pip install dbt-$1 --upgrade
     fi
 fi
 
