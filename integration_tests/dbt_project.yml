@@ -6,7 +6,10 @@ profile: 'integration_tests'
 
 config-version: 2
 
-source-paths: ["models"]
+source-paths:
+  - "sources/common"
+  - "sources/plugins/{{ target.type }}"
+
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
 data-paths: ["data"]
@@ -19,22 +22,6 @@ clean-targets:
 
 vars:
   dbt_external_tables_dispatch_list: ['dbt_external_tables_integration_tests']
-
-sources:
-  dbt_external_tables_integration_tests:
-    plugins:
-      redshift_external:
-        +enabled: "{{ target.name == 'redshift' }}"
-      snowflake_external:
-        +enabled: "{{ target.name == 'snowflake' }}"
-      bigquery_external:
-        +enabled: "{{ target.name == 'bigquery' }}"
-      spark_external:
-        +enabled: "{{ target.name == 'databricks' }}"
-      synapse_external:
-        +enabled: "{{ target.name == 'synapse' }}"
-      azuresql_external:
-        +enabled: "{{ target.name == 'azuresql' }}"
 
 seeds:
   +quote_columns: false
