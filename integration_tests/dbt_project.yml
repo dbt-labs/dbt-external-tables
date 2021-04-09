@@ -24,17 +24,17 @@ sources:
   dbt_external_tables_integration_tests:
     plugins:
       redshift_external:
-        +enabled: "{{ target.type == 'redshift' }}"
+        +enabled: "{{ target.name == 'redshift' }}"
       snowflake_external:
-        +enabled: "{{ target.type == 'snowflake' }}"
+        +enabled: "{{ target.name == 'snowflake' }}"
       bigquery_external:
-        +enabled: "{{ target.type == 'bigquery' }}"
+        +enabled: "{{ target.name == 'bigquery' }}"
       spark_external:
-        +enabled: "{{ target.type == 'spark' }}"
+        +enabled: "{{ target.name == 'databricks' }}"
       synapse_external:
-        +enabled: "{{ target.type == 'synapse' }}"
+        +enabled: "{{ target.name == 'synapse' }}"
       azuresql_external:
-        +enabled: "{{ target.type == 'sqlserver' }}"
+        +enabled: "{{ target.name == 'azuresql' }}"
 
 seeds:
   +quote_columns: false
