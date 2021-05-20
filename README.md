@@ -1,6 +1,6 @@
 # External sources in dbt
 
-dbt v0.15.0 added support for an `external` property within `sources` that can include information about `location`, `partitions`, and other database-specific properties.
+dbt v0.15.0 [added support](https://github.com/fishtown-analytics/dbt/pull/1784) for an `external` property within `sources` that can include information about `location`, `partitions`, and other database-specific properties.
 
 This package provides:
 * Macros to create/replace external tables and refresh their partitions, using the metadata provided in your `.yml` file source definitions
