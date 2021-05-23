@@ -13,7 +13,7 @@
             {{- ',' if not loop.last -}}
         {% endfor %}
     ) {% endif -%}
-    {% if external.using -%} using {{external.using}} {%- endif %}
+    {% if external.using %} using {{external.using}} {%- endif %}
     {% if options -%} options (
         {%- for key, value in options.items() -%}
             '{{ key }}' = '{{value}}' {{- ', \n' if not loop.last -}}
