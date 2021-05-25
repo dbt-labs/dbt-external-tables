@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Setting up virtual environment"
 VENV="venv/bin/activate"
 
 if [[ ! -f $VENV ]]; then
@@ -7,26 +8,29 @@ if [[ ! -f $VENV ]]; then
     pip install --upgrade pip setuptools
     if [ $1 == 'databricks' ]
     then
-        pip install --pre dbt-spark[ODBC] --upgrade
-    elif [ $1 == 'synapse' ]
-    then
-        pip install --pre dbt-synapse --upgrade
+        echo "Installing dbt-spark"
+        pip install dbt-spark[ODBC] --upgrade
     elif [ $1 == 'azuresql' ]
     then
-        pip install --pre dbt-sqlserver --upgrade
+        echo "Installing dbt-sqlserver"
+        pip install dbt-sqlserver --upgrade
     else
-        pip install --pre dbt --upgrade
+        echo "Installing dbt-$1"
+        pip install dbt-$1 --upgrade
     fi
 fi
 
 . $VENV
+echo "Changing working directory: integration_tests"
 cd integration_tests
 
 if [[ ! -e ~/.dbt/profiles.yml ]]; then
+    echo "Copying sample profile"
     mkdir -p ~/.dbt
     cp ci/sample.profiles.yml ~/.dbt/profiles.yml
 fi
 
+echo "Starting integration tests"
 dbt deps --target $1
 dbt seed --full-refresh --target $1
 dbt run-operation prep_external --target $1

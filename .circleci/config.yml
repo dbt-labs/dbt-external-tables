@@ -1,11 +1,14 @@
 
 version: 2.1
 
+orbs:
+  azure-cli: circleci/azure-cli@1.1.0
+
 jobs:
   
   integration-redshift:
     docker:
-      - image: circleci/python:3.6.3-stretch
+      - image: circleci/python:3.6.13-stretch
     steps:
       - checkout
       - run:
@@ -16,7 +19,7 @@ jobs:
       
   integration-snowflake:
     docker:
-      - image: circleci/python:3.6.3-stretch
+      - image: circleci/python:3.6.13-stretch
     steps:
       - checkout
       - run:
@@ -29,7 +32,7 @@ jobs:
     environment:
       BIGQUERY_SERVICE_KEY_PATH: "/home/circleci/bigquery-service-key.json"
     docker:
-      - image: circleci/python:3.6.3-stretch
+      - image: circleci/python:3.6.13-stretch
     steps:
       - checkout
       - run:
@@ -63,9 +66,23 @@ jobs:
       - image: dataders/pyodbc:1.2
     steps:
       - checkout
+      - run: &gnupg2
+          name: az cli dep
+          command: apt-get install gnupg2 -y
+      - azure-cli/install
+      - azure-cli/login-with-service-principal: &azure-creds
+          azure-sp: DBT_AZURE_SP_NAME
+          azure-sp-password: DBT_AZURE_SP_SECRET
+          azure-sp-tenant: DBT_AZURE_TENANT
+      - run:
+          name: resume Synapse pool/db
+          command: az synapse sql pool resume --name $DBT_SYNAPSE_DB --workspace-name $DBT_SYNAPSE_SERVER --resource-group dbt-msft
       - run:
           name: "Run Tests - synapse"
           command: ./run_test.sh synapse
+      - run:
+          name: pause Synapse pool/db
+          command: az synapse sql pool resume --name $DBT_SYNAPSE_DB --workspace-name $DBT_SYNAPSE_SERVER --resource-group dbt-msft
       - store_artifacts:
           path: ./logs
 
@@ -74,9 +91,9 @@ jobs:
       - image: dataders/pyodbc:1.2
     steps:
       - checkout
-      - run:
-          name: "wait for Synapse tests to finish"
-          command: sleep 60
+      - run: *gnupg2
+      - azure-cli/install
+      - azure-cli/login-with-service-principal: *azure-creds
       - run:
           name: "Run Tests - azuresql"
           command: ./run_test.sh azuresql
@@ -93,4 +110,6 @@ workflows:
       - integration-bigquery
       - integration-databricks
       - integration-synapse
-      - integration-azuresql
+      - integration-azuresql:
+          requires:
+            - integration-synapse

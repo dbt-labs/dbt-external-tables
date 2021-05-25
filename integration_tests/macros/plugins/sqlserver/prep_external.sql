@@ -2,7 +2,7 @@
 
     {% set external_data_source = target.schema ~ '.dbt_external_tables_testing' %}
 
-    {% if target.name == "synapse"%}
+    {% if target.type == "synapse"%}
 
         {% set create_external_data_source %}
             IF NOT EXISTS ( SELECT * FROM sys.external_data_sources WHERE name = '{{external_data_source}}' )
@@ -29,7 +29,7 @@
             )
         {% endset %}
 
-    {% elif target.name == "azuresql" %}
+    {% elif target.type == "sqlserver" %}
 
         {% set cred_name = 'synapse_reader' %}
 
@@ -55,7 +55,7 @@
     {%- endif %}
     
 
-    {% if target.name == "azuresql" -%}
+    {% if target.type == "sqlserver" -%}
         {% do log('Creating database scoped credential ' ~ cred_name, info = true) %}
         {% do run_query(create_database_scoped_credential) %}
     {%- endif %}
@@ -63,9 +63,13 @@
     {% do log('Creating external data source ' ~ external_data_source, info = true) %}
     {% do run_query(create_external_data_source) %}
 
-    {% if target.name == "synapse" -%}
+    {% if target.type == "synapse" -%}
         {% do log('Creating external file format ' ~ external_file_format, info = true) %}
         {% do run_query(create_external_file_format) %}
     {%- endif %}
 
+{% endmacro %}
+
+{% macro synapse__prep_external() %}
+    {% do return( dbt_external_tables_integration_tests.sqlserver__prep_external()) %}
 {% endmacro %}

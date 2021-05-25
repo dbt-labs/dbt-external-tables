@@ -4,8 +4,6 @@ version: '1.0'
 
 profile: 'integration_tests'
 
-# require-dbt-version: inherit this from package
-
 config-version: 2
 
 source-paths: ["models"]
@@ -14,13 +12,16 @@ test-paths: ["tests"]
 data-paths: ["data"]
 macro-paths: ["macros"]
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
+target-path: "target"
+clean-targets:
     - "target"
     - "dbt_modules"
 
 vars:
   dbt_external_tables_dispatch_list: ['dbt_external_tables_integration_tests']
+
+seeds:
+  +quote_columns: false
 
 sources:
   dbt_external_tables_integration_tests:
@@ -34,9 +35,6 @@ sources:
       spark_external:
         +enabled: "{{ target.type == 'spark' }}"
       synapse_external:
-        +enabled: "{{ target.name == 'synapse' }}"
+        +enabled: "{{ target.type == 'synapse' }}"
       azuresql_external:
-        +enabled: "{{ target.name == 'azuresql' }}"
-
-seeds:
-  quote_columns: false
+        +enabled: "{{ target.type == 'sqlserver' }}"

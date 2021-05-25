@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+  - name: synapse_external
+    schema: "{{ target.schema }}"
+    loader: ADLSblob
+
+    tables:
+
+      - name: people_csv_unpartitioned
+        external: &csv-people
+          location: '/csv'
+          file_format: "{{ target.schema ~ '.dbt_external_ff_testing' }}"
+          data_source: "{{ target.schema ~ '.dbt_external_tables_testing' }}"
+          reject_type: VALUE
+          reject_value: 0
+          ansi_nulls: true
+          quoted_identifier: true
+        columns: &cols-of-the-people
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+        tests: &equal-to-the-people
+          - dbt_external_tables_integration_tests.tsql_equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+
+      - name: people_csv_partitioned
+        external:
+          <<: *csv-people
+          # TODO: SYNAPSE DOES NOT DO PARTITIONS
+          # (BUT WE COULD MAKE A WORKAROUND !!!)
+          # partitions: &parts-of-the-people
+          #   - name: section
+          #     data_type: varchar
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
