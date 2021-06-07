@@ -1,7 +1,5 @@
 {% macro dropif(node) %}
-    {{ adapter.dispatch('dropif', 
-        packages = dbt_external_tables._get_dbt_external_tables_namespaces()) 
-        (node) }}
+    {{ adapter.dispatch('dropif', 'dbt_external_tables')(node) }}
 {% endmacro %}
 
 {% macro default__dropif() %}

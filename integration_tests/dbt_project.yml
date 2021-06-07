@@ -17,8 +17,9 @@ clean-targets:
     - "target"
     - "dbt_modules"
 
-vars:
-  dbt_external_tables_dispatch_list: ['dbt_external_tables_integration_tests']
+dispatch:
+  - macro_namespace: dbt_external_tables
+    search_order: ['dbt_external_tables_integration_tests', 'dbt_external_tables']
 
 seeds:
   +quote_columns: false
