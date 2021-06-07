@@ -1,0 +1,62 @@
+version: 2
+
+sources:
+  - name: snowplow
+    database: analytics
+    schema: snowplow_external
+    loader: S3
+    loaded_at_field: collector_hour
+    
+    tables:
+      - name: event_ext_tbl
+        description: "External table of Snowplow events stored as JSON files"
+        external:
+          location: "@raw.snowplow.snowplow"  # reference an existing external stage
+          file_format: "( type = json )"      # fully specified here, or reference an existing file format
+          auto_refresh: true                  # requires configuring an event notification from Amazon S3 or Azure
+          partitions:
+            - name: collector_hour
+              data_type: timestamp
+              expression: to_timestamp(substr(metadata$filename, 8, 13), 'YYYY/MM/DD/HH24')
+              
+        # all Snowflake external tables natively include a `metadata$filename` pseudocolumn
+        # and a `value` column (JSON blob-ified version of file contents), so there is no need to specify
+        # them here. you may optionally specify columns to unnest or parse from the file:
+        columns:
+          - name: app_id
+            data_type: varchar(255)
+            description: "Application ID"
+          - name: domain_sessionidx
+            data_type: int
+            description: "A visit / session index"
+          - name: etl_tstamp
+            data_type: timestamp
+            description: "Timestamp event began ETL"
+          - name: contexts
+            data_type: variant
+            description: "Contexts attached to event by Tracker"
+        
+              
+      - name: event_snowpipe
+        description: "Table of Snowplow events, stored as JSON files, loaded in near-real time via Snowpipe"
+        loader: S3 + snowpipe    # this is just for your reference
+        external:
+          location: "@raw.snowplow.snowplow"
+          file_format: "{{ target.schema }}.my_json_file_format"
+          
+          # Instead of an external tables, create an empty table, backfill it, and pipe new data
+          snowpipe:
+            auto_ingest:    true  # requires either `aws_sns_topic` or `integration`
+            aws_sns_topic:  # Amazon S3
+            integration:    # Google Cloud or Azure
+            copy_options:   "on_error = continue, enforce_length = false" # e.g.
+              
+        # dbt will include three metadata columns in addition to any `columns`
+        # specified for a snowpiped table:
+        #   `metadata_filename`: the file from which this row was loaded
+        #   `metadata_file_row_number`: the numbered row this was in that file
+        #   `_dbt_copied_at`: the current_timestamp when this row was loaded (backfilled or piped)
+        #
+        # if you do not specify *any* columns for a snowpiped table, dbt will also
+        # include `value`, the JSON blob of all file contents.
+  
