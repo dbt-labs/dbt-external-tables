@@ -1,0 +1,66 @@
+# Creates query given below
+
+version: 2
+
+sources:
+  - name: marketo
+    schema: source_marketo
+    loader: ADLSblob
+    tables:
+      - name: lead_activities
+        description: |
+          from raw DW.
+        external:
+        # Delimited Files in Blob/Lake
+          # External Data Source name (created prior)
+          data_source: SynapseContainer # made with TYPE= 'HADOOP'
+          location: /marketing/Marketo/LeadActivities/ # path on above data source
+          # External File Format name (created prior)
+          file_format: CommaDelimited 
+          reject_type: VALUE
+          reject_value: 0
+          ansi_nulls: true
+          quoted_identifier: true
+
+        # Cross database query (i.e. RDBMS) Azure SQL ONLY
+          data_source: AEDW # made with TYPE= 'RDBMS'
+          schema_name: Business
+          object_name: LeadActivities
+
+        columns:
+          - name: id
+            description: unique Activity ID
+            data_type: int
+          - name: leadId
+            description: Lead ID
+            data_type: int
+          - name: activityDate
+            description: date of activity
+            data_type: varchar(255)
+          - name: activityTypeId
+            description: unique identifier for type of activity
+            data_type: int
+          - name: campaignId
+            description: Campaign under which activity took place
+            data_type: int
+          - name: primaryAttributeValueId
+            description: the main attribute for given activity type
+            data_type: int
+          - name: primaryAttributeValue
+            description: what value was taken
+            data_type: varchar(255)
+
+# SET ANSI_NULLS ON;
+# SET QUOTED_IDENTIFIER ON;
+
+# CREATE EXTERNAL TABLE [source].[lead_activities]
+# ( 
+#    [id] [int]  NOT NULL,
+#    [leadId] [int]  NOT NULL,
+#    [activityDate] [varchar](255)  NOT NULL,
+#    [activityTypeId] [int]  NOT NULL,
+#    [campaignId] [int]  NOT NULL,
+#    [primaryAttributeValueId] [int]  NOT NULL,
+#    [primaryAttributeValue] [varchar](255)  NOT NULL
+# )
+# WITH (DATA_SOURCE = [SynapseContainer], LOCATION = N'/marketing/Marketo/LeadActivities/LeadActivities.csv', FILE_FORMAT = [CommaDelimited], REJECT_TYPE = VALUE, REJECT_VALUE = 0 );

@@ -1,0 +1,89 @@
+version: 2
+
+sources:
+  - name: redshift_external
+    schema: "{{ target.schema }}_spectrum"
+    loader: S3
+
+    tables:
+      
+      - name: people_csv_unpartitioned
+        external: &csv-people
+          location: "s3://dbt-external-tables-testing/csv/"
+          row_format: serde 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+          table_properties: "('skip.header.line.count'='1')"
+        columns: &cols-of-the-people
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+        tests: &equal-to-the-people
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+
+      - name: people_csv_partitioned
+        external:
+          <<: *csv-people
+          partitions: &parts-of-the-people
+            - name: section
+              data_type: varchar
+              vals: ['a','b','c','d']
+              path_macro: dbt_external_tables.key_value
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+        
+      # ensure that all partitions are created
+      - name: people_csv_multipartitioned
+        external:
+          <<: *csv-people
+          location: "s3://dbt-external-tables-testing/"
+          partitions:
+            - name: file_format
+              data_type: varchar
+              vals: ['csv', 'json']
+              path_macro: dbt_external_tables.value_only
+            - name: section
+              data_type: varchar
+              vals: ['a','b','c','d']
+              path_macro: dbt_external_tables.key_value
+            - name: some_date
+              data_type: date
+              vals:
+                macro: dbt.dates_in_range
+                args:
+                  start_date_str: '2020-01-01'
+                  end_date_str: '2020-02-01'
+                  in_fmt: "%Y-%m-%d"
+                  out_fmt: "%Y-%m-%d"
+              path_macro: dbt_external_tables.year_month_day
+            - name: file_name
+              data_type: varchar
+              vals: ['people', 'not_people']
+              path_macro: dbt_external_tables.value_only
+        columns: *cols-of-the-people
+
+      - name: people_json_unpartitioned
+        external: &json-people
+          location: "s3://dbt-external-tables-testing/json/"
+          row_format: "serde 'org.openx.data.jsonserde.JsonSerDe'
+            with serdeproperties (
+                'strip.outer.array'='false'
+            )"
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+      - name: people_json_partitioned
+        external:
+          <<: *json-people
+          partitions: *parts-of-the-people
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people

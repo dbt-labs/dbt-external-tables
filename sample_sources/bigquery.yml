@@ -1,0 +1,60 @@
+version: 2
+
+sources:
+  - name: snowplow
+    database: analytics
+    loader: gcloud storage
+  
+    tables:
+      - name: event
+        description: "External table of Snowplow events, stored as CSV files in Cloud Storage"
+        external:
+          location: 'gs://bucket/path/*'
+          options:
+            format: csv
+            skip_leading_rows: 1
+          
+            # if you want a partitioned table, file paths MUST be Hive-style: 
+            #   'gs://bucket/path/collector_hour=2020-01-01/'
+            #   'gs://bucket/path/collector_hour=2020-01-02/' (etc)
+            hive_partition_uri_prefix: 'gs://bucket/path/'
+          partitions:               
+            - name: collector_date
+              data_type: date
+        
+        columns:
+          - name: app_id
+            data_type: varchar(255)
+            description: "Application ID"
+          - name: domain_sessionidx
+            data_type: int
+            description: "A visit / session index"
+          - name: etl_tstamp
+            data_type: timestamp
+            description: "Timestamp event began ETL"
+          - name: contexts
+            data_type: variant
+            description: "Contexts attached to event by Tracker"
+      
+      # alternatively, BigQuery can infer your schema (columns + partitions)
+      - name: event_inferred
+        external:
+          location: 'gs://bucket/path/*'
+          options:
+            format: csv
+            skip_leading_rows: 1
+            hive_partition_uri_prefix: 'gs://bucket/path/'
+      
+      # optionally, BigQuery can pull data from multiple GCS paths, instead of just one
+      - name: event_multiple_paths
+        external:
+          location: this is still a required property, but it will be ignored
+          options:
+            format: csv
+            skip_leading_rows: 1
+            
+            # list all file paths with relevant source data
+            uris:
+              - 'gs://bucket_a/path/*'
+              - 'gs://bucket_b/path/*'
+              - 'gs://bucket_c/more/specific/path/file.csv'

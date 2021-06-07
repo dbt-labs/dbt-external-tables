@@ -1,0 +1,80 @@
+version: 2
+
+sources:
+  - name: azuresql_external
+    schema: "{{ target.schema }}"
+    loader: RDBMS cross database query
+    tables:
+      - name: people_csv_unpartitioned
+        external:
+          data_source: "{{ target.schema ~ '.dbt_external_tables_testing' }}"
+          schema_name: 'dbt_external_tables_integration_tests_synapse'
+          object_name: 'people_csv_unpartitioned'
+        columns: &cols-of-the-people
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+        tests: &equal-to-the-people
+          - dbt_external_tables_integration_tests.tsql_equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+
+      # TODO: JSON IS NOT SUPPORTED BY SYNAPSE ATM
+
+      # - name: people_json_unpartitioned
+      #   external: &json-people
+      #     location: '@{{ target.schema }}.dbt_external_tables_testing/json'
+      #     file_format: '( type = json )'
+      #   columns: *cols-of-the-people
+      #   tests: *equal-to-the-people
+
+      # - name: people_json_partitioned
+      #   external:
+      #     <<: *json-people
+      #     partitions: *parts-of-the-people
+      #   columns: *cols-of-the-people
+      #   tests: *equal-to-the-people
+        
+      # TODO: syntax when no columns specified
+      # - name: people_csv_unpartitioned_no_columns
+      #   external: *csv-people
+      #   tests: &same-rowcount
+      #     - dbt_external_tables_integration_tests.tsql_equrowcount:
+      #         compare_model: ref('people')
+      #   
+      # - name: people_csv_partitioned_no_columns
+      #   external:
+      #     <<: *csv-people
+      #     # partitions: *parts-of-the-people
+      #   tests: *same-rowcount
+          
+      # - name: people_json_unpartitioned_no_columns
+      #   external: *csv-people
+      #   tests: *same-rowcount
+        
+      # - name: people_json_partitioned_no_columns
+      #   external:
+      #     <<: *json-people
+      #     partitions: *parts-of-the-people
+      #   tests: *same-rowcount
+          
+      # - name: people_json_multipartitioned_no_columns
+      #   external:
+      #     <<: *json-people
+      #     partitions:
+      #       - name: file_type
+      #         data_type: varchar
+      #         expression: "split_part(metadata$filename, 'section=', 1)"
+      #       - name: section
+      #         data_type: varchar
+      #         expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+      #   tests: *same-rowcount

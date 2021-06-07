@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: snowplow
+    tables:
+      - name: event
+        description: "Snowplow events stored as CSV files in HDFS"
+        external:
+          location: 'hdfs://.../event.csv'   # hdfs://, s3://, azure://, dbfs://, ...
+          using: csv                         # file type: csv, json, parquet, delta, ...
+          options:                           # as needed
+            sep: '|'
+            header: 'true'
+            timestampFormat: 'yyyy-MM-dd HH:mm'
+
+        columns:
+          - name: app_id
+            data_type: string
+            description: "Application ID"
+          - name: domain_sessionidx
+            data_type: int
+            description: "A visit / session index"
+          - name: etl_tstamp
+            data_type: timestamp
+            description: "Timestamp event began ETL"
+            
+            # depending on the complexity of nested columns, it may be preferable to
+            # register them as strings here and parse in a model:
+            #   `from_json(contexts, 'schema string, data array<struct<data:varchar(65000),schema:string>>'``
+          - name: contexts
+            data_type: string
+            description: "Contexts attached to event by Tracker"

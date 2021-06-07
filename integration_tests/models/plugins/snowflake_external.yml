@@ -1,0 +1,106 @@
+version: 2
+
+sources:
+  - name: snowflake_external
+    schema: "{{ target.schema }}"
+    loader: S3
+
+    tables:
+      
+      - name: people_csv_unpartitioned
+        external: &csv-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/csv'
+          file_format: '( type = csv skip_header = 1 )'
+        columns: &cols-of-the-people
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+        tests: &equal-to-the-people
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+
+      - name: people_csv_partitioned
+        external:
+          <<: *csv-people
+          partitions: &parts-of-the-people
+            - name: section
+              data_type: varchar
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+      - name: people_json_unpartitioned
+        external: &json-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/json'
+          file_format: '( type = json )'
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+      - name: people_json_partitioned
+        external:
+          <<: *json-people
+          partitions: *parts-of-the-people
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+        
+      - name: people_json_snowpipe
+        external:
+          <<: *json-people
+          snowpipe:
+            auto_ingest: false
+            copy_options: ''
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+        
+      # just to test syntax
+      - name: people_csv_unpartitioned_no_columns
+        external: *csv-people
+        tests: &same-rowcount
+          - dbt_utils.equal_rowcount:
+              compare_model: ref('people')
+        
+      - name: people_csv_partitioned_no_columns
+        external:
+          <<: *csv-people
+          partitions: *parts-of-the-people
+        tests: *same-rowcount
+      
+      - name: people_csv_with_keyword_colname
+        external: *csv-people
+        columns:
+          - name: UNION
+            quote: true
+            data_type: varchar(64)
+        tests: *same-rowcount
+          
+      - name: people_json_unpartitioned_no_columns
+        external: *json-people
+        tests: *same-rowcount
+        
+      - name: people_json_partitioned_no_columns
+        external:
+          <<: *json-people
+          partitions: *parts-of-the-people
+        tests: *same-rowcount
+          
+      - name: people_json_multipartitioned_no_columns
+        external:
+          <<: *json-people
+          partitions:
+            - name: file_type
+              data_type: varchar
+              expression: "split_part(metadata$filename, 'section=', 1)"
+            - name: section
+              data_type: varchar
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        tests: *same-rowcount
