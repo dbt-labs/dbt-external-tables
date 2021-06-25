@@ -30,7 +30,11 @@
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
             {%- if options is mapping -%}
             {%- for key, value in options.items() if key != 'uris' %}
+                {%- if value is string -%}
+                , {{key}} = '{{value}}'
+                {%- else -%}
                 , {{key}} = {{value}}
+                {%- endif -%}
             {%- endfor -%}
             {%- endif -%}
         )
