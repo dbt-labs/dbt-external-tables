@@ -30,5 +30,6 @@
     {% if external.auto_refresh -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
+    {% if external.refresh_on_create -%} refresh_on_create = {{external.refresh_on_create}} {%- endif %}
     file_format = {{external.file_format}}
 {% endmacro %}
