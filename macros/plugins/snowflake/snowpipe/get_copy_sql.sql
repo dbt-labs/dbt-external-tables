@@ -1,4 +1,4 @@
-{% macro snowflake_get_copy_sql(source_node) %}
+{% macro snowflake_get_copy_sql(source_node, explicit_transaction=false) %}
 {# This assumes you have already created an external stage #}
 
     {%- set columns = source_node.columns.values() -%}
@@ -6,7 +6,8 @@
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) %}
     {%- set copy_options = external.snowpipe.get('copy_options', none) -%}
     
-    begin;
+    {%- if explicit_transaction -%} begin; {%- endif %}
+    
     copy into {{source(source_node.source_name, source_node.name)}}
     from ( 
         select
@@ -29,6 +30,7 @@
     )
     file_format = {{external.file_format}}
     {% if copy_options %} {{copy_options}} {% endif %};
-    commit;
+    
+    {% if explicit_transaction -%} commit; {%- endif -%}
 
 {% endmacro %}

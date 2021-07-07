@@ -49,7 +49,7 @@
         
         {% for q in run_queue %}
         
-            {% set q_msg = q|trim %}
+            {% set q_msg = q|replace('\n','')|replace('begin;','')|trim %}
             {% set q_log = q_msg[:50] ~ '...  ' if q_msg|length > 50 else q_msg %}
         
             {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ q_log) %}

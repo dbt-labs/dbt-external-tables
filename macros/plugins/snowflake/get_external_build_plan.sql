@@ -15,7 +15,7 @@
         {% if create_or_replace %}
             {% set build_plan = build_plan + [
                 dbt_external_tables.snowflake_create_empty_table(source_node),
-                dbt_external_tables.snowflake_get_copy_sql(source_node),
+                dbt_external_tables.snowflake_get_copy_sql(source_node, explicit_transaction=true),
                 dbt_external_tables.snowflake_create_snowpipe(source_node)
             ] %}
         {% else %}
