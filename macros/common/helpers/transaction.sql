@@ -1,5 +1,5 @@
 {% macro exit_transaction() %}
-    {{ return(adapter.dispatch('exit_transaction', dbt_external_tables._get_dbt_external_tables_namespaces())()) }}
+    {{ return(adapter.dispatch('exit_transaction', 'dbt_external_tables')()) }}
 {% endmacro %}
 
 {% macro default__exit_transaction() %}

@@ -1,5 +1,5 @@
 {% macro prep_external() %}
-    {{ return(adapter.dispatch('prep_external', dbt_external_tables._get_dbt_external_tables_namespaces())()) }}
+    {{ return(adapter.dispatch('prep_external', 'dbt_external_tables')()) }}
 {% endmacro %}
 
 {% macro default__prep_external() %}

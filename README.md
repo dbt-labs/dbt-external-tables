@@ -1,6 +1,6 @@
 # External sources in dbt
 
-dbt v0.15.0 [added support](https://github.com/fishtown-analytics/dbt/pull/1784) for an `external` property within `sources` that can include information about `location`, `partitions`, and other database-specific properties.
+dbt v0.15.0 [added support](https://github.com/dbt-labs/dbt/pull/1784) for an `external` property within `sources` that can include information about `location`, `partitions`, and other database-specific properties.
 
 This package provides:
 * Macros to create/replace external tables and refresh their partitions, using the metadata provided in your `.yml` file source definitions
@@ -19,7 +19,7 @@ This package provides:
 
 ## Installation
 
-Follow the instructions at [hub.getdbt.com](https://hub.getdbt.com/fishtown-analytics/dbt_external_tables/latest/) on how to modify your `packages.yml` and run `dbt deps`.
+Follow the instructions at [hub.getdbt.com](https://hub.getdbt.com/dbt-labs/dbt_external_tables/latest/) on how to modify your `packages.yml` and run `dbt deps`.
 
 ## Syntax
 
@@ -115,7 +115,7 @@ execute the appropriate `create`, `refresh`, and/or `drop` commands:
 `stage_external_sources` runs as an operation
 * [`tested specs`](integration_tests/models/plugins): source spec variations that are confirmed to work on each database, via integration tests
 
-If you encounter issues using this package or have questions, please check the [open issues](https://github.com/fishtown-analytics/dbt-external-tables/issues), as there's a chance it's a known limitation or work in progress. If not, you can:
+If you encounter issues using this package or have questions, please check the [open issues](https://github.com/dbt-labs/dbt-external-tables/issues), as there's a chance it's a known limitation or work in progress. If not, you can:
 - open a new issue to report a bug or suggest an enhancement
 - post a technical question to [StackOverflow](https://stackoverflow.com/questions/tagged/dbt)
 - post a conceptual question to the relevant database channel (#db-redshift, #dbt-snowflake, etc) in the [dbt Slack community](https://community.getdbt.com/)
