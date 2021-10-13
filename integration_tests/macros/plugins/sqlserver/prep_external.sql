@@ -69,7 +69,3 @@
     {%- endif %}
 
 {% endmacro %}
-
-{% macro synapse__prep_external() %}
-    {% do return( dbt_external_tables_integration_tests.sqlserver__prep_external()) %}
-{% endmacro %}
