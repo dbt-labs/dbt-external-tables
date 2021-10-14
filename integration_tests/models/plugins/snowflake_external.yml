@@ -61,6 +61,16 @@ sources:
             copy_options: ''
         columns: *cols-of-the-people
         tests: *equal-to-the-people
+
+      - name: people_json_snowpipe_pattern
+        external:
+          <<: *json-people
+          pattern: '.*[.]json'
+          snowpipe:
+            auto_ingest: false
+            copy_options: ''
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
         
       # just to test syntax
       - name: people_csv_unpartitioned_no_columns
