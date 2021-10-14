@@ -5,7 +5,7 @@
     {%- set external = source_node.external -%}
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) %}
     {%- set copy_options = external.snowpipe.get('copy_options', none) -%}
-    
+   
     {%- if explicit_transaction -%} begin; {%- endif %}
     
     copy into {{source(source_node.source_name, source_node.name)}}
@@ -29,6 +29,7 @@
         from {{external.location}} {# stage #}
     )
     file_format = {{external.file_format}}
+    {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if copy_options %} {{copy_options}} {% endif %};
     
     {% if explicit_transaction -%} commit; {%- endif -%}
