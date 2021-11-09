@@ -24,7 +24,7 @@
             '{{ key }}' = '{{value}}' {{- ', \n' if not loop.last -}}
         {%- endfor -%}
     ) {%- endif %}
-    {% if partitions|length > 0 -%} partitioned by (
+    {% if partitions -%} partitioned by (
         {%- for partition in partitions -%}
             {{partition.name}}{{', ' if not loop.last}}
         {%- endfor -%}
