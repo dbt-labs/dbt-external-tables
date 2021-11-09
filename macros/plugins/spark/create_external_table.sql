@@ -12,14 +12,14 @@
             {{column.name}} {{column.data_type}}
             {{- ',' if not loop.last or partitions is not none -}}
         {% endfor %}
-    {% endif -%}
-    {% if partitions -%} 
-        {%- for partition in partitions -%}
-            {{partition.name}} {{partition.data_type}}{{', ' if not loop.last}}
-        {%- endfor -%}
-        )
-    {% else -%}
-        )
+        {% if partitions -%} 
+            {%- for partition in partitions -%}
+                {{partition.name}} {{partition.data_type}}{{', ' if not loop.last}}
+            {%- endfor -%}
+            )
+        {% else -%}
+            )
+        {%- endif %}
     {%- endif %}
     {% if external.using %} using {{external.using}} {%- endif %}
     {% if options -%} options (
