@@ -2,7 +2,7 @@
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
-    {%- set partitions = external.partition -%}
+    {%- set partitions = external.partitions -%}
     {%- set options = external.options -%}
 
 {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
