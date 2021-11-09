@@ -17,7 +17,10 @@
         {%- for partition in partitions -%}
             {{partition.name}} {{partition.data_type}}{{', ' if not loop.last}}
         {%- endfor -%}
-    ) {%- endif %}
+        )
+    {% else -%}
+        )
+    {%- endif %}
     {% if external.using %} using {{external.using}} {%- endif %}
     {% if options -%} options (
         {%- for key, value in options.items() -%}
