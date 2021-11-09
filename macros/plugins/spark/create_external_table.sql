@@ -10,7 +10,7 @@
     {%- if columns|length > 0 %} (
         {% for column in columns %}
             {{column.name}} {{column.data_type}}
-            {{- ',' if not loop.last -}}
+            {{- ',' if not loop.last or partitions is not none -}}
         {% endfor %}
     {% endif -%}
     {% if partitions -%} 
