@@ -13,7 +13,7 @@
             {{- ',' if not loop.last -}}
         {% endfor %}
     {% endif -%}
-    {% if partitions|length > 0 -%} 
+    {% if partitions -%} 
         {%- for partition in partitions -%}
             {{partition.name}} {{partition.data_type}}{{', ' if not loop.last}}
         {%- endfor -%}
