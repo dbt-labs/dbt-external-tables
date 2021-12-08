@@ -46,11 +46,12 @@
         {% set run_queue = dbt_external_tables.get_external_build_plan(node) %}
         
         {% do dbt_utils.log_info(loop_label ~ ' SKIP') if run_queue == [] %}
+        {% set width = flags.PRINTER_WIDTH %}
         
         {% for q in run_queue %}
         
             {% set q_msg = q|replace('\n','')|replace('begin;','')|trim %}
-            {% set q_log = q_msg[:50] ~ '...  ' if q_msg|length > 50 else q_msg %}
+            {% set q_log = q_msg[:width] ~ '...  ' if q_msg|length > width else q_msg %}
         
             {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ q_log) %}
             {% set exit_txn = dbt_external_tables.exit_transaction() %}
