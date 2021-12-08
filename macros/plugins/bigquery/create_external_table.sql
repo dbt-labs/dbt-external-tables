@@ -22,7 +22,7 @@
         {% if options and options.get('hive_partition_uri_prefix', none) %}
         with partition columns {%- if partitions %} (
             {%- for partition in partitions %}
-                {{partition.name}} {{partition.data_type}}
+                {{partition.name}} {{partition.data_type}}{{',' if not loop.last}}
             {%- endfor -%}
         ) {% endif -%}
         {% endif %}
