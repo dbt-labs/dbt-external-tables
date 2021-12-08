@@ -32,6 +32,7 @@ sources:
       - name: people_csv_partitioned
         external:
           <<: *csv-people
+          auto_refresh: false   # make sure this templates right
           partitions: &parts-of-the-people
             - name: section
               data_type: varchar
