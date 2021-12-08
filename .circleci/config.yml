@@ -61,6 +61,7 @@ jobs:
       - store_artifacts:
           path: ./logs
 
+  # DISABLED FOR NOW
   integration-synapse:
     docker:
       - image: dataders/pyodbc:1.2
@@ -86,6 +87,7 @@ jobs:
       - store_artifacts:
           path: ./logs
 
+  # DISABLED FOR NOW
   integration-azuresql:
     docker:
       - image: dataders/pyodbc:1.2
@@ -109,7 +111,7 @@ workflows:
       - integration-snowflake
       - integration-bigquery
       - integration-databricks
-      - integration-synapse
-      - integration-azuresql:
-          requires:
-            - integration-synapse
+      #- integration-synapse
+      #- integration-azuresql:
+      #    requires:
+      #      - integration-synapse

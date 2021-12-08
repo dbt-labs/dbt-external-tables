@@ -3,10 +3,12 @@
     {% set external_stage = target.schema ~ '.dbt_external_tables_testing' %}
 
     {% set create_external_stage %}
-
+    
+        begin;
         create or replace stage
             {{ external_stage }}
             url = 's3://dbt-external-tables-testing';
+        commit;
             
     {% endset %}
 
