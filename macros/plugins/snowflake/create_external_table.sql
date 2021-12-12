@@ -27,7 +27,9 @@
     {%- endif -%}
     {% if partitions %} partition by ({{partitions|map(attribute='name')|join(', ')}}) {% endif %}
     location = {{external.location}} {# stage #}
-    {% if external.auto_refresh is not none -%} auto_refresh = {{external.auto_refresh}} {%- endif %}
+    {% if external.auto_refresh in (true, false) -%}
+      auto_refresh = {{external.auto_refresh}}
+    {%- endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
     file_format = {{external.file_format}}

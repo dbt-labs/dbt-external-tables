@@ -27,15 +27,31 @@ seeds:
 sources:
   dbt_external_tables_integration_tests:
     plugins:
-      redshift_external:
+      redshift:
         +enabled: "{{ target.type == 'redshift' }}"
-      snowflake_external:
+      snowflake:
         +enabled: "{{ target.type == 'snowflake' }}"
-      bigquery_external:
+      bigquery:
         +enabled: "{{ target.type == 'bigquery' }}"
-      spark_external:
+      spark:
         +enabled: "{{ target.type == 'spark' }}"
-      synapse_external:
+      synapse:
         +enabled: "{{ target.type == 'synapse' }}"
-      azuresql_external:
+      azuresql:
+        +enabled: "{{ target.type == 'sqlserver' }}"
+
+tests:
+  dbt_external_tables_integration_tests:
+    plugins:
+      redshift:
+        +enabled: "{{ target.type == 'redshift' }}"
+      snowflake:
+        +enabled: "{{ target.type == 'snowflake' }}"
+      bigquery:
+        +enabled: "{{ target.type == 'bigquery' }}"
+      spark:
+        +enabled: "{{ target.type == 'spark' }}"
+      synapse:
+        +enabled: "{{ target.type == 'synapse' }}"
+      azuresql:
         +enabled: "{{ target.type == 'sqlserver' }}"
