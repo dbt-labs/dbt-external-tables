@@ -3,7 +3,7 @@ echo "Setting up virtual environment"
 VENV="venv/bin/activate"
 
 if [[ ! -f $VENV ]]; then
-    python3 -m venv venv
+    python3.8 -m venv venv
     . $VENV
     pip install --upgrade pip setuptools
     if [ $1 == 'databricks' ]
