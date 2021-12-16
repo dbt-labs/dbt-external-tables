@@ -62,7 +62,7 @@
             
             {% set runner = load_result('runner') %}
             {% set log_msg = runner['response'] if 'response' in runner.keys() else runner['status'] %}
-            {% do log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ log_msg, info = true) %}
+            {% do log(loop_label ~ ' (' ~ loop.index ~ ') ' ~ log_msg, info = true) %}
             
         {% endfor %}
         
