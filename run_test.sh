@@ -9,14 +9,14 @@ if [[ ! -f $VENV ]]; then
     if [ $1 == 'databricks' ]
     then
         echo "Installing dbt-spark"
-        pip install dbt-spark[ODBC]~=0.21.0
+        pip install dbt-spark[ODBC] --upgrade --pre
     elif [ $1 == 'azuresql' ]
     then
         echo "Installing dbt-sqlserver"
-        pip install dbt-sqlserver~=0.21.0
+        pip install dbt-sqlserver --upgrade --pre
     else
         echo "Installing dbt-$1"
-        pip install dbt-$1~=0.21.0
+        pip install dbt-$1 --upgrade --pre
     fi
 fi
 
