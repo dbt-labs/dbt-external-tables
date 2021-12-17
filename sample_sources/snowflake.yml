@@ -43,7 +43,8 @@ sources:
         external:
           location: "@raw.snowplow.snowplow"
           file_format: "{{ target.schema }}.my_json_file_format"
-          
+          pattern: ".*[.]json"  # Optional object key pattern
+
           # Instead of an external tables, create an empty table, backfill it, and pipe new data
           snowpipe:
             auto_ingest:    true  # requires either `aws_sns_topic` or `integration`
