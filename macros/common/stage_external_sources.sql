@@ -34,26 +34,26 @@
     {% endfor %}
     
     {% if sources_to_stage|length == 0 %}
-        {% do dbt_utils.log_info('No external sources selected') %}
+        {% do log('No external sources selected', info = true) %}
     {% endif %}
             
     {% for node in sources_to_stage %}
 
         {% set loop_label = loop.index ~ ' of ' ~ loop.length %}
 
-        {% do dbt_utils.log_info(loop_label ~ ' START external source ' ~ node.schema ~ '.' ~ node.identifier) -%}
+        {% do log(loop_label ~ ' START external source ' ~ node.schema ~ '.' ~ node.identifier, info = true) -%}
         
         {% set run_queue = dbt_external_tables.get_external_build_plan(node) %}
         
-        {% do dbt_utils.log_info(loop_label ~ ' SKIP') if run_queue == [] %}
-        {% set width = 80 %} {# hard code this for now, use PRINTER_WIDTH flag in v1.0+ #}
+        {% do log(loop_label ~ ' SKIP', info = true) if run_queue == [] %}
+        {% set width = flags.PRINTER_WIDTH %}
         
         {% for q in run_queue %}
         
             {% set q_msg = q|replace('\n','')|replace('begin;','')|trim %}
             {% set q_log = q_msg[:width] ~ '...  ' if q_msg|length > width else q_msg %}
         
-            {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ q_log) %}
+            {% do log(loop_label ~ ' (' ~ loop.index ~ ') ' ~ q_log, info = true) %}
             {% set exit_txn = dbt_external_tables.exit_transaction() %}
         
             {% call statement('runner', fetch_result = True, auto_begin = False) %}
@@ -62,7 +62,7 @@
             
             {% set runner = load_result('runner') %}
             {% set log_msg = runner['response'] if 'response' in runner.keys() else runner['status'] %}
-            {% do dbt_utils.log_info(loop_label ~ ' (' ~ loop.index ~ ') ' ~ log_msg) %}
+            {% do log(loop_label ~ ' (' ~ loop.index ~ ') ' ~ log_msg, info = true) %}
             
         {% endfor %}
         
