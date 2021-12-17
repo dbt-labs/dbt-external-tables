@@ -46,7 +46,7 @@
         {% set run_queue = dbt_external_tables.get_external_build_plan(node) %}
         
         {% do dbt_utils.log_info(loop_label ~ ' SKIP') if run_queue == [] %}
-        {% set width = flags.PRINTER_WIDTH %}
+        {% set width = 80 %} {# hard code this for now, use PRINTER_WIDTH flag in v1.0+ #}
         
         {% for q in run_queue %}
         
