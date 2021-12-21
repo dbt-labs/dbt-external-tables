@@ -1,17 +1,5 @@
 name: 'dbt_external_tables'
-version: '0.7.0'
-
+version: '0.8.0'
 config-version: 2
-
-require-dbt-version: ">=0.20.0"
-
-source-paths: ["models"]
-analysis-paths: ["analysis"]
-test-paths: ["tests"]
-data-paths: ["data"]
+require-dbt-version: [">=1.0.0", "<2.0.0"]
 macro-paths: ["macros"]
-
-target-path: "target"
-clean-targets:
-    - "target"
-    - "dbt_modules"

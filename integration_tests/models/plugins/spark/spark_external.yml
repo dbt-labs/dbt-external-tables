@@ -37,7 +37,7 @@ sources:
           <<: *csv-people-using
           partitions: &parts-of-the-people
             - name: section
-              data_type: varchar
+              data_type: string
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
