@@ -18,7 +18,7 @@
             {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
             {%- set col_expression -%}
                 {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column.name -%}
-                (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
+                (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' or {{col_id}} = '' then null else {{col_id}} end)
             {%- endset %}
             {{column_quoted}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
             {{- ',' if not loop.last -}}
