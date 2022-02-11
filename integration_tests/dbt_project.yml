@@ -24,9 +24,18 @@ dispatch:
 seeds:
   +quote_columns: false
 
+# FIXME: query-comment must be disabled for Athena to work because /* block comments are unsupported in Athena DML
+# Removing this line will result in a Runtime Error during the integration test 
+#   `2 of 5 (2) create external table dbt.people_csv_partitioned ...`. The error is
+#   "FAILED: ParseException line 1:0 cannot recognize input near '/' '*' '{".
+# Is there a better way around this?
+query-comment:
+
 sources:
   dbt_external_tables_integration_tests:
     plugins:
+      athena:
+        +enabled: "{{ target.type == 'athena' }}"
       redshift:
         +enabled: "{{ target.type == 'redshift' }}"
       snowflake:
@@ -43,6 +52,8 @@ sources:
 tests:
   dbt_external_tables_integration_tests:
     plugins:
+      athena:
+        +enabled: "{{ target.type == 'athena' }}"
       redshift:
         +enabled: "{{ target.type == 'redshift' }}"
       snowflake:

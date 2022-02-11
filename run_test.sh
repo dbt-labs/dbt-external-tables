@@ -14,6 +14,10 @@ if [[ ! -f $VENV ]]; then
     then
         echo "Installing dbt-sqlserver"
         pip install dbt-sqlserver --upgrade --pre
+    elif [ $1 == 'athena' ]
+    then
+        echo "Installing dbt-athena"
+        pip install git+https://github.com/Tomme/dbt-athena.git --upgrade --pre
     else
         echo "Installing dbt-$1"
         pip install dbt-$1 --upgrade --pre
@@ -34,6 +38,6 @@ echo "Starting integration tests"
 dbt deps --target $1
 dbt seed --full-refresh --target $1
 dbt run-operation prep_external --target $1
-dbt run-operation stage_external_sources --var 'ext_full_refresh: true' --target $1
-dbt run-operation stage_external_sources --target $1
+dbt  -dx --printer-width 500 run-operation stage_external_sources --var 'ext_full_refresh: true' --target $1
+dbt  -dx --printer-width 500 run-operation stage_external_sources --target $1
 dbt test --target $1
