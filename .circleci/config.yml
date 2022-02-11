@@ -122,6 +122,7 @@ workflows:
       - integration-snowflake
       - integration-bigquery
       - integration-databricks
+      - integration-athena
       #- integration-synapse
       #- integration-azuresql:
       #    requires:
