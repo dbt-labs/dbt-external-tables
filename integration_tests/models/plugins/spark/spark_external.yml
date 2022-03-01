@@ -41,6 +41,12 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
+      - name: people_csv_partitioned_inferred_using
+        external:
+          <<: *csv-people-using
+          recover_partitions: true
+        tests: *equal-to-the-people
+
 # ----- TODO: hive format
         
 #      - name: people_csv_unpartitioned_hive_format
