@@ -60,4 +60,11 @@ sources:
         #
         # if you do not specify *any* columns for a snowpiped table, dbt will also
         # include `value`, the JSON blob of all file contents.
-  
+        
+      - name: delta_tbl
+          description: "External table using Delta files"
+          external:
+            location: "@stage"                  # reference an existing external stage
+            file_format: "( type = parquet )"   # fully specified here, or reference an existing file format
+            table_format: delta                 # specify the table format
+            auto_refresh: false                  # requires configuring an event notification from Amazon S3 or Azure
