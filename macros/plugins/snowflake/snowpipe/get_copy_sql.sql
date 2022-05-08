@@ -16,9 +16,13 @@
         {% else -%}
         {%- for column in columns -%}
             {%- set col_expression -%}
-                {%- if is_csv -%}nullif(${{loop.index}},''){# special case: get columns by ordinal position #}
-                {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
-                {%- endif -%}
+                {%- if column.col_expression -%}
+                    {{column.col_expression}}
+                {%- else -%}
+                    {%- if is_csv -%}nullif(${{loop.index}},''){# special case: get columns by ordinal position #}
+                    {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
+                    {%- endif -%}
+                {% endif %}
             {%- endset -%}
             {{col_expression}}::{{column.data_type}} as {{column.name}},
         {% endfor -%}
