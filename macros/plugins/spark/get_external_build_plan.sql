@@ -19,7 +19,7 @@
         {% set build_plan = build_plan + dbt_external_tables.refresh_external_table(source_node) %}
     {% endif %}
 
-    {% set recover_partitions = spark__recover_partitions(source_node) %}
+    {% set recover_partitions = dbt_external_tables.spark__recover_partitions(source_node) %}
     {% if recover_partitions|length > 0 %}
     {% set build_plan = build_plan + [
         recover_partitions
