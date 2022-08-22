@@ -10,6 +10,17 @@ integration_tests:
   target: postgres
   outputs:
 
+    trino:
+      type: trino
+      method: none
+      user: "{{ env_var('TRINO_TEST_USER') }}"
+      password: "{{ env_var('TRINO_TEST_PASSWORD') }}"
+      host: "{{ env_var('TRINO_TEST_HOST') }}"
+      port: "{{ env_var('TRINO_TEST_PORT') | as_number }}"
+      database: "{{ env_var('TRINO_TEST_DBNAME') }}"
+      schema:  dbt_external_tables_integration_tests_trino
+      threads: 1
+
     redshift:
       type: redshift
       host: "{{ env_var('REDSHIFT_TEST_HOST') }}"

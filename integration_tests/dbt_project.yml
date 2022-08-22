@@ -27,6 +27,8 @@ seeds:
 sources:
   dbt_external_tables_integration_tests:
     plugins:
+      trino:
+        +enabled: "{{ target.type == 'trino' }}"
       redshift:
         +enabled: "{{ target.type == 'redshift' }}"
       snowflake:
@@ -43,6 +45,8 @@ sources:
 tests:
   dbt_external_tables_integration_tests:
     plugins:
+      trino:
+        +enabled: "{{ target.type == 'trino' }}"
       redshift:
         +enabled: "{{ target.type == 'redshift' }}"
       snowflake:

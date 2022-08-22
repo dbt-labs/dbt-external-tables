@@ -1,11 +1,21 @@
-
 version: 2.1
 
 orbs:
   azure-cli: circleci/azure-cli@1.1.0
 
 jobs:
-  
+
+  integration-trino:
+    docker:
+      - image: cimg/python:3.9.9
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - Trino"
+          command: ./run_test.sh trino
+      - store_artifacts:
+          path: ./logs
+
   integration-redshift:
     docker:
       - image: cimg/python:3.9.9
@@ -111,6 +121,7 @@ workflows:
       - integration-snowflake
       - integration-bigquery
       - integration-databricks
+      - integration-trino
       #- integration-synapse
       #- integration-azuresql:
       #    requires:

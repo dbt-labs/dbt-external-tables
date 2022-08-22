@@ -10,6 +10,10 @@ if [[ ! -f $VENV ]]; then
     then
         echo "Installing dbt-spark"
         pip install dbt-spark[ODBC] --upgrade --pre
+    elif [ $1 == 'trino' ]
+    then
+        echo "Installing dbt-trino"
+        pip install dbt-trino --upgrade --pre
     elif [ $1 == 'azuresql' ]
     then
         echo "Installing dbt-sqlserver"

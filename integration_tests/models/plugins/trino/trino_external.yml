@@ -1,0 +1,54 @@
+version: 2
+
+sources:
+  - name: trino_external
+    schema: "{{ target.schema }}"
+    tables:
+      - name: people_csv_unpartitioned
+        external: &csv-people
+          location: "s3://dbt-external-tables-testing/csv/"
+          file_format: CSV
+          table_properties:
+            skip_header_line_count: 1
+        columns: &cols-of-the-people
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+        tests: &equal-to-the-people
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+
+      - name: people_csv_partitioned
+        external:
+          <<: *csv-people
+          partitions: &parts-of-the-people
+            - name: section
+              data_type: varchar(1)
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+      # ensure that all partitions are created
+      - name: people_csv_multipartitioned
+        external:
+          <<: *csv-people
+          location: "s3://dbt-external-tables-testing/"
+          partitions:
+            - name: file_format
+              data_type: varchar(4)
+            - name: section
+              data_type: varchar(1)
+            - name: some_date
+              data_type: date
+            - name: file_name
+              data_type: varchar(10)
+        columns: *cols-of-the-people

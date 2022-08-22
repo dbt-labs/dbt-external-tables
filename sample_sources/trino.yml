@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: trino
+    tables:
+      - name: snowplow
+        description: "Snowplow events stored as CSV files in HDFS"
+        external:
+          location: "s3a://.../event.csv" # s3://, hdfs://, ...
+          file_format: CSV # file format: CSV, ORC, PARQUET, ...
+          table_properties: # as needed
+            skip_header_line_count: 1
+            csv_separator: ";"
+            csv_quote: '"'
+
+        columns:
+          - name: app_id
+            data_type: varchar
+            description: "Application ID"
+          - name: domain_sessionidx
+            data_type: int
+            description: "A visit / session index"
+          - name: etl_tstamp
+            data_type: timestamp
+            description: "Timestamp event began ETL"
