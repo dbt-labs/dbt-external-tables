@@ -10,6 +10,7 @@ if [[ ! -f $VENV ]]; then
     then
         echo "Installing dbt-spark"
         pip install dbt-spark[ODBC] --upgrade --pre
+        pip install pyodbc==4.0.32 # See https://github.com/dbt-labs/dbt-external-tables/issues/156
     elif [ $1 == 'azuresql' ]
     then
         echo "Installing dbt-sqlserver"
