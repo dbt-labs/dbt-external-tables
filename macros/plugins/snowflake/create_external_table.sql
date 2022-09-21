@@ -33,4 +33,5 @@
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
     file_format = {{external.file_format}}
+    {% if external.table_format -%} table_format = '{{external.table_format}}' {%- endif %}
 {% endmacro %}
