@@ -1,4 +1,4 @@
-{% macro snowflake__create_schema(source_node) %}
+{% macro bigquery__create_schema(source_node) %}
     {# https://cloud.google.com/bigquery/docs/reference/standard-sql/data-definition-language#create_schema_statement #}
 
     {% set ddl %}
