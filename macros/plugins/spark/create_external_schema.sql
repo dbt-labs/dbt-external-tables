@@ -1,4 +1,4 @@
-{% macro spark__create_schema(source_node) %}
+{% macro spark__create_external_schema(source_node) %}
     {# https://spark.apache.org/docs/latest/sql-ref-syntax-ddl-create-database.html #}
 
     {% set ddl %}

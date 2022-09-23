@@ -1,4 +1,4 @@
-{% macro snowflake__create_schema(source_node) %}
+{% macro snowflake__create_external_schema(source_node) %}
     {# https://docs.snowflake.com/en/sql-reference/sql/create-schema.html #}
 
     {% set ddl %}
