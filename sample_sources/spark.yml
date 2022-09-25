@@ -13,12 +13,9 @@ sources:
             header: 'true'
             timestampFormat: 'yyyy-MM-dd HH:mm'
           partitions:
-            - name: year
-              data_type: int
-            - name: month
-              data_type: int
-            - name: day
-              data_type: int
+            - year
+            - month
+            - day
 
         columns:
           - name: app_id

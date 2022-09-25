@@ -21,7 +21,11 @@
     ) {%- endif %}
     {% if partitions -%} partitioned by (
         {%- for partition in partitions -%}
-            {{partition.name}}{{', ' if not loop.last}}
+            {% if partition is mapping %}
+                {{partition.name}}{{', ' if not loop.last}}
+            {% else %}
+                {{partition}}{{', ' if not loop.last}}
+            {% endif %}        
         {%- endfor -%}
     ) {%- endif %}
     {% if external.row_format -%} row format {{external.row_format}} {%- endif %}
