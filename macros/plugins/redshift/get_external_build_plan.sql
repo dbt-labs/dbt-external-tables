@@ -2,7 +2,7 @@
 
     {% set build_plan = [] %}
     
-    {% set create_or_replace = (var('ext_full_refresh', false) or not redshift_is_ext_tbl(source_node)) %}
+    {% set create_or_replace = (var('ext_full_refresh', false) or not dbt_external_tables.redshift_is_ext_tbl(source_node)) %}
     
     {% if create_or_replace %}
 
