@@ -1,18 +1,18 @@
 {% macro snowflake_create_empty_table(source_node) %}
 
     {%- set columns = source_node.columns.values() %}
+    {%- set table_name = source_node.name %}%}
+    {%- set schema = source_node.source_name %}
 
     create or replace table {{source(source_node.source_name, source_node.name)}} (
-        {% if columns|length == 0 %}
-            value variant,
-        {% else -%}
-        {%- for column in columns -%}
-            {{column.name}} {{column.data_type}},
-        {% endfor -%}
-        {% endif %}
-            metadata_filename varchar,
-            metadata_file_row_number bigint,
-            _dbt_copied_at timestamp
-    );
+        using template (
+        select array_agg(object_construct(*))
+        from table(
+        infer_schema(
+           location=>'@staging.{{ schema }}.dms_{{ schema }}_production_stage/{{ table_name }}/'
+           , file_format=>'staging.{{ schema }}.parquet_format'
+           , ignore_case=>true
+        )
+      ));
 
 {% endmacro %}
