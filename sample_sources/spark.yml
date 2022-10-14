@@ -13,9 +13,12 @@ sources:
             header: 'true'
             timestampFormat: 'yyyy-MM-dd HH:mm'
           partitions:
-            - year
-            - month
-            - day
+            - name: year
+              data_type: int
+            - name: month
+              data_type: int
+            - name: day
+              data_type: int
 
         columns:
           - name: app_id
@@ -34,11 +37,3 @@ sources:
           - name: contexts
             data_type: string
             description: "Contexts attached to event by Tracker"
-
-            # Partitions need to be defined as a column including `data_type`
-          - name: year
-            data_type: int
-          - name: month
-            data_type: int
-          - name: day
-            data_type: int
