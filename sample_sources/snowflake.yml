@@ -68,3 +68,16 @@ sources:
             file_format: "( type = parquet )"   # fully specified here, or reference an existing file format
             table_format: delta                 # specify the table format
             auto_refresh: false                  # requires configuring an event notification from Amazon S3 or Azure
+
+        #
+        # Experimental support for Apache Iceberg "external table" option in DBT.
+        #  Note, according to announcement there will be a second "Snowflake native" iceberg table.
+        #  This here is only the read-only external table reader.
+        #
+      - name: iceberg_tbl
+          description: "External table using Apache Iceberg files"
+          external:
+            location: "@stage"                  # reference an existing external stage
+            file_format: "( type = parquet )"   # fully specified here, or reference an existing file format
+            table_format: iceberg               # specify the table format
+            auto_refresh: false                 # requires configuring an event notification from Amazon S3 or Azure
