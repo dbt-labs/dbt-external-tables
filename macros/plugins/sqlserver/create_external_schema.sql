@@ -1,5 +1,5 @@
 {% macro sqlserver__create_external_schema(source_node) %}
-    {# https://spark.apache.org/docs/latest/sql-ref-syntax-ddl-create-database.html #}
+    {# https://learn.microsoft.com/en-us/sql/t-sql/statements/create-schema-transact-sql?view=sql-server-ver16 #}
 
     {% set ddl %}
         IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{{ source_node.schema }}')
