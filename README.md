@@ -14,6 +14,7 @@ This package provides:
 * Spark
 * Synapse
 * Azure SQL
+* AWS Athena
 
 ![sample docs](etc/sample_docs.png)
 
@@ -56,6 +57,7 @@ The macros assume that you:
   - an accessible set of files (Spark)
 2. Have the appropriate permissions on to create tables using that scaffolding
 3. Have already created the database/project and/or schema/dataset in which dbt will create external tables (or snowpiped tables)
+4. Have set the top-level key `query-comment:` to an empty value in your `dbt_project.yml` file (Athena only)
 
 ## Spec
 

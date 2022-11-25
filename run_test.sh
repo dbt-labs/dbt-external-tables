@@ -15,6 +15,10 @@ if [[ ! -f $VENV ]]; then
     then
         echo "Installing dbt-sqlserver"
         pip install dbt-sqlserver --upgrade --pre
+    elif [ $1 == 'athena' ]
+    then
+        echo "Installing dbt-athena"
+        pip install git+https://github.com/Tomme/dbt-athena.git --upgrade --pre
     else
         echo "Installing dbt-$1"
         pip install dbt-$1 --upgrade --pre
