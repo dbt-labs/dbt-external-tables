@@ -5,16 +5,18 @@
     {%- set partitions = external.partitions -%}
     {%- set options = external.options -%}
 
-    {% set columns_and_partitions = columns|list %}
-    {% for i in partitions %}
-        {% if i.name not in columns_and_partitions|list|map(attribute='name') %}
-            {% do columns_and_partitions.append(i) %}
-        {% endif %}
-    {% endfor %}
+    {%- set columns_and_partitions = columns | list -%}
+    {%- if partitions -%}
+        {%- for i in partitions -%}
+            {%- if i.name not in columns_and_partitions | list | map(attribute='name') -%}
+                {%- do columns_and_partitions.append(i) -%}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
 
 {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
     create table {{source(source_node.source_name, source_node.name)}} 
-    {%- if columns|length > 0 %} (
+    {%- if columns | length > 0 %} (
         {% for column in columns_and_partitions %}
             {{column.name}} {{column.data_type}}
             {{- ',' if not loop.last -}}
