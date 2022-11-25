@@ -37,7 +37,7 @@ sources:
           options:
             format: csv
             skip_leading_rows: 1
-            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/csv'"
+            hive_partition_uri_prefix: 'gs://dbt-external-tables-testing/csv'
           partitions: &parts-of-the-people
             - name: section
               data_type: string
@@ -50,7 +50,7 @@ sources:
           options:
             format: csv
             skip_leading_rows: 1
-            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/csv'"
+            hive_partition_uri_prefix: 'gs://dbt-external-tables-testing/csv'
         tests: *equal-to-the-people
 
       - name: people_csv_override_uris
