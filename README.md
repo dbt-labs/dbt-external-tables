@@ -14,6 +14,7 @@ This package provides:
 * Spark
 * Synapse
 * Azure SQL
+* Doris/SelectDb
 
 ![sample docs](etc/sample_docs.png)
 
