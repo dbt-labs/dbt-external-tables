@@ -1,0 +1,55 @@
+version: 2
+
+sources:
+
+# doris mulit-catalog doc :https://doris.apache.org/docs/dev/ecosystem/external-table/multi-catalog/
+# Multi-Catalog is a feature introduced in Doris 1.2.0, which aims to make it easier to interface with external data sources to enhance Doris' data lake analysis and federated data query capabilities.
+# In previous versions of Doris, there were only two levels of user data: Database and Table. When we need to connect to an external data source, we can only connect at the Database or Table level. For example, create a mapping of a table in an external data source through create external table, or map a Database in an external data source through create external database. If there are too many Databases or Tables in the external data source, users need to manually map them one by one, and the experience is not good.
+# The new Multi-Catalog function adds a new layer of Catalog to the original metadata level, forming a three-layer metadata level of Catalog -> Database -> Table. Among them, Catalog can directly correspond to the external data source. Currently supported external data sources include:
+# Hive MetaStore,Elasticsearch and JDBC.
+# This function will be used as a supplement and enhancement to the previous external table connection method (External Table) to help users perform fast multi-catalog federated queries.
+
+
+  - name: hive_catalog.hive_database
+    tables:
+    - name: hive_table1
+      external:
+        type: hms
+        options:
+          hive.metastore.uris: thrift://172.21.0.1:7004
+          hadoop.username: hive
+          dfs.nameservices: service1
+          dfs.ha.namenodes. service1: nn1,nn2
+          dfs.namenode.rpc-address.HDFS8000871.nn1: 172.21.0.2:4007
+          dfs.namenode.rpc-address.HDFS8000871.nn2: 172.21.0.3:4007
+          dfs.client.failover.proxy.provider.HDFS8000871: org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider
+    - name: hive_table2
+    # Since the level of catalog is above the database, the catalog only needs to be declared once, and it can be reused for multiple tables
+    - name: hive_table3
+
+
+  - name: es_catalog.es_database
+    tables:
+    - name: es_table1
+      external:
+        type: es
+        options:
+          elasticsearch.hosts: http://127.0.0.1:9200
+          elasticsearch.nodes_discovery: false
+    - name: es_table2
+    - name: es_table3
+
+
+  - name: jdbc_catalog.jdbc_database
+    tables:
+    - name: jdbc_table1
+      external:
+        type: jdbc
+        options:
+          jdbc.user: root
+          jdbc.password: 123456
+          jdbc.jdbc_url: jdbc:mysql://127.0.0.1:13396/demo
+          jdbc.driver_url: file:/path/to/mysql-connector-java-5.1.47.jar
+          jdbc.driver_class: com.mysql.jdbc.Driver
+    - name: jdbc_table2
+    - name: jdbc_table3
