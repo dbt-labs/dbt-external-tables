@@ -11,7 +11,11 @@
     create catalog if not exists `{{source_node.source_name.split('.')[0]}}` PROPERTIES (
             'type' = '{{external.type}}' ,
         {% for column in options %}
-            '{{column}}' = '{{options[column]}}'
+            {% if options[column] %}
+                '{{column}}' = '{{options[column]}}'
+            {% else %}
+                '{{column}}' = ''
+            {% endif %}
             {{- ',' if not loop.last -}}
         {% endfor %}
     )
