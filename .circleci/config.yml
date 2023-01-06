@@ -110,7 +110,8 @@ workflows:
       - integration-redshift
       - integration-snowflake
       - integration-bigquery
-      - integration-databricks
+      - integration-databricks:
+          context: aws-credentials
       #- integration-synapse
       #- integration-azuresql:
       #    requires:
