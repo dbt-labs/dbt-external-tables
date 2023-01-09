@@ -107,12 +107,19 @@ workflows:
   version: 2
   test-all:
     jobs:
-      - integration-redshift
-      - integration-snowflake
-      - integration-bigquery
-      - integration-databricks:
-          context: aws-credentials
-      #- integration-synapse
+      - integration-redshift:
+          context: profile-redshift
+      - integration-snowflake:
+          context: profile-snowflake
+      - integration-bigquery:
+          context: profile-bigquery
+      #- integration-databricks:
+      #    context:
+      #      - aws-credentials
+      #      - profile-databricks
+      #- integration-synapse:
+      #    context: profile-synapse
       #- integration-azuresql:
+      #    context: profile-azure
       #    requires:
       #      - integration-synapse
