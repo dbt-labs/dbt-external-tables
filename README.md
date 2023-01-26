@@ -51,7 +51,7 @@ The macros assume that you:
   - an external stage (Snowflake)
   - an external schema + S3 bucket (Redshift Spectrum)
   - an external data source and file format (Synapse)
-  - an external data source and databse-scoped credential (Azure SQL)
+  - an external data source and database-scoped credential (Azure SQL)
   - a Google Cloud Storage bucket (BigQuery)
   - an accessible set of files (Spark)
 2. Have the appropriate permissions on to create tables using that scaffolding
@@ -70,12 +70,12 @@ sources:
             This source table is actually a set of files in external storage.
             The dbt-external-tables package provides handy macros for getting
             those files queryable, just in time for modeling.
-                            
+
         external:
           location:         # required: S3 file path, GCS file path, Snowflake stage, Synapse data source
-          
+
           ...               # database-specific properties of external table
-          
+
           partitions:       # optional
             - name: collector_date
               data_type: date
@@ -95,7 +95,7 @@ sources:
           ...
 ```
 
-The `stage_external_sources` macro will use this YAML config to compile and 
+The `stage_external_sources` macro will use this YAML config to compile and
 execute the appropriate `create`, `refresh`, and/or `drop` commands:
 
 ```
