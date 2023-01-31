@@ -113,7 +113,7 @@ workflows:
       - integration-databricks:
           context:
             - aws-credentials
-            - profile-databricks-jeryeo
+            - profile-databricks
       #- integration-synapse:
       #    context: profile-synapse
       #- integration-azuresql:
