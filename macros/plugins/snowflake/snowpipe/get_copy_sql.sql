@@ -25,7 +25,7 @@
         {% endif %}
             metadata$filename::varchar as metadata_filename,
             metadata$file_row_number::bigint as metadata_file_row_number,
-            current_timestamp::timestamp as _dbt_copied_at
+            sysdate()::timestamp as _dbt_copied_at
         from {{external.location}} {# stage #}
     )
     file_format = {{external.file_format}}

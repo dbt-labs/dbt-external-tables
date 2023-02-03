@@ -56,7 +56,7 @@ sources:
         # specified for a snowpiped table:
         #   `metadata_filename`: the file from which this row was loaded
         #   `metadata_file_row_number`: the numbered row this was in that file
-        #   `_dbt_copied_at`: the current_timestamp when this row was loaded (backfilled or piped)
+        #   `_dbt_copied_at`: the current timestamp (no timezone) when this row was loaded (backfilled or piped)
         #
         # if you do not specify *any* columns for a snowpiped table, dbt will also
         # include `value`, the JSON blob of all file contents.
