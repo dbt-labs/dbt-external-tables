@@ -70,6 +70,8 @@ version: 2
 
 sources:
   - name: snowplow
+    tags:
+    - daily                 # optional: associate tags to all tables in the source
     tables:
       - name: event
         description: >
@@ -86,7 +88,9 @@ sources:
             - name: collector_date
               data_type: date
               ...           # database-specific properties
-
+        tags:               # optional: associate additional tags to a table
+          - sales
+          - finance
         # Specify ALL column names + datatypes.
         # Column order must match for CSVs, column names must match for other formats.
         # Some databases support schema inference.
