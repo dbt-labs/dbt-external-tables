@@ -42,6 +42,12 @@ $ dbt run-operation stage_external_sources --args "select: snowplow logs"
 
 # stage a particular external source table:
 $ dbt run-operation stage_external_sources --args "select: snowplow.event"
+
+# stage a particular external sources having specific tags:
+$ dbt run-operation stage_external_sources --args "tags: finance sales"
+
+# stage a particular external sources and stage sources having specific tags:
+$ dbt run-operation stage_external_sources --args "select: logs, tags: finance"
 ```
 
 ## Setup
