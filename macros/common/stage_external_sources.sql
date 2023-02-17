@@ -1,4 +1,4 @@
-{% macro stage_external_sources(select=none) %}
+{% macro stage_external_sources(select=none, tags=none) %}
 
     {% set sources_to_stage = [] %}
     
@@ -23,8 +23,24 @@
                     {% endif %}
                     
                 {% endfor %}
-                        
-            {% else %}
+
+            {% endif%}
+            
+            -- Opitionally and additionally stage external sources having any
+            -- of the tags provided in the tags argument
+            {% if tags %}
+
+                {% for tag in tags.split(' ') %}
+                    
+                    {% if tag in node.tags and node not in sources_to_stage %}
+                        {% do sources_to_stage.append(node) %}
+                    {% endif %}
+
+                {% endfor %}
+            
+            {% endif %}
+
+            {% if not select and not tags %}
             
                 {% do sources_to_stage.append(node) %}
                 
