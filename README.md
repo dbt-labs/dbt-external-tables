@@ -88,7 +88,7 @@ sources:
             - name: collector_date
               data_type: date
               ...           # database-specific properties
-        tags:               # optional: associate additional tags to a table
+        tags:               # optional: associate additional tags to a source table
           - sales
           - finance
         # Specify ALL column names + datatypes.
