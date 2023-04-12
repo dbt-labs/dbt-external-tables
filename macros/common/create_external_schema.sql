@@ -4,8 +4,8 @@
 
 {% macro default__create_external_schema(source_node) %}
     {% set ddl %}
-        create schema if not exists {{ source_node.schema }}
+        create schema if not exists {{ source_node.database }}.{{ source_node.schema }}
     {% endset %}
 
-    {{return(ddl)}}
+    {{ return(ddl) }}
 {% endmacro %}
