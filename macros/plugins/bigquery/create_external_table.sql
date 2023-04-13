@@ -15,7 +15,8 @@
     create or replace external table {{source(source_node.source_name, source_node.name)}}
         {%- if columns -%}(
             {% for column in columns %}
-                {{column.name}} {{column.data_type}} {{- ',' if not loop.last -}}
+                {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
+                {{column_quoted}} {{column.data_type}} {{- ',' if not loop.last -}}
             {%- endfor -%}
         )
         {% endif %}

@@ -1,11 +1,9 @@
-
 version: 2.1
 
 orbs:
   azure-cli: circleci/azure-cli@1.1.0
 
 jobs:
-  
   integration-redshift:
     docker:
       - image: cimg/python:3.9.9
@@ -16,7 +14,7 @@ jobs:
           command: ./run_test.sh redshift
       - store_artifacts:
           path: ./logs
-      
+
   integration-snowflake:
     docker:
       - image: cimg/python:3.9.9
@@ -27,7 +25,7 @@ jobs:
           command: ./run_test.sh snowflake
       - store_artifacts:
           path: ./logs
-          
+
   integration-bigquery:
     environment:
       BIGQUERY_SERVICE_KEY_PATH: "/home/circleci/bigquery-service-key.json"
@@ -102,16 +100,23 @@ jobs:
       - store_artifacts:
           path: ./logs
 
-
 workflows:
   version: 2
   test-all:
     jobs:
-      - integration-redshift
-      - integration-snowflake
-      - integration-bigquery
-      - integration-databricks
-      #- integration-synapse
+      - integration-redshift:
+          context: profile-redshift
+      - integration-snowflake:
+          context: profile-snowflake
+      - integration-bigquery:
+          context: profile-bigquery
+      - integration-databricks:
+          context:
+            - aws-credentials
+            - profile-databricks
+      #- integration-synapse:
+      #    context: profile-synapse
       #- integration-azuresql:
+      #    context: profile-azure
       #    requires:
       #      - integration-synapse

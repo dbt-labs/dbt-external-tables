@@ -12,6 +12,7 @@
 
     {% if create_or_replace %}
         {% set build_plan = build_plan + [
+            dbt_external_tables.create_external_schema(source_node),
             dbt_external_tables.dropif(source_node), 
             dbt_external_tables.create_external_table(source_node)
         ] %}
@@ -19,8 +20,8 @@
         {% set build_plan = build_plan + dbt_external_tables.refresh_external_table(source_node) %}
     {% endif %}
 
-    {% set recover_partitions = spark__recover_partitions(source_node) %}
-    {% if recover_partitions|length > 0 %}
+    {% set recover_partitions = dbt_external_tables.recover_partitions(source_node) %}
+    {% if recover_partitions %}
     {% set build_plan = build_plan + [
         recover_partitions
     ] %}

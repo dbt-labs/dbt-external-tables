@@ -12,6 +12,7 @@
 
     {% if create_or_replace %}
         {% set build_plan = build_plan + [ 
+            dbt_external_tables.create_external_schema(source_node),
             dbt_external_tables.dropif(source_node), 
             dbt_external_tables.create_external_table(source_node)
         ] %}

@@ -12,6 +12,13 @@ sources:
             sep: '|'
             header: 'true'
             timestampFormat: 'yyyy-MM-dd HH:mm'
+          partitions:
+            - name: year
+              data_type: int
+            - name: month
+              data_type: int
+            - name: day
+              data_type: int
 
         columns:
           - name: app_id
