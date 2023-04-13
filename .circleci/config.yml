@@ -11,7 +11,9 @@ jobs:
       - checkout
       - run:
           name: "Run Tests - Redshift"
-          command: ./run_test.sh redshift
+          command: |
+            set -e
+            ./run_test.sh redshift
       - store_artifacts:
           path: ./logs
 
@@ -22,7 +24,9 @@ jobs:
       - checkout
       - run:
           name: "Run Tests - Snowflake"
-          command: ./run_test.sh snowflake
+          command: |
+            set -e
+            ./run_test.sh snowflake
       - store_artifacts:
           path: ./logs
 
@@ -38,7 +42,9 @@ jobs:
           command: echo $BIGQUERY_SERVICE_ACCOUNT_JSON > ${HOME}/bigquery-service-key.json
       - run:
           name: "Run Tests - BigQuery"
-          command: ./run_test.sh bigquery
+          command: |
+            set -e
+            ./run_test.sh bigquery
       - store_artifacts:
           path: ./logs
 
@@ -55,7 +61,9 @@ jobs:
       - checkout
       - run:
           name: "Run Tests - Databricks"
-          command: ./run_test.sh databricks
+          command: |
+            set -e
+            ./run_test.sh databricks
       - store_artifacts:
           path: ./logs
 
@@ -96,7 +104,9 @@ jobs:
       - azure-cli/login-with-service-principal: *azure-creds
       - run:
           name: "Run Tests - azuresql"
-          command: ./run_test.sh azuresql
+          command: |
+            set -e
+            ./run_test.sh azuresql
       - store_artifacts:
           path: ./logs
 
