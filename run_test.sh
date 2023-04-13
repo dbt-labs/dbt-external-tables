@@ -34,6 +34,6 @@ echo "Starting integration tests"
 dbt deps --target $1
 dbt seed --full-refresh --target $1
 dbt run-operation prep_external --target $1
-dbt run-operation stage_external_sources --var 'ext_full_refresh: true' --target $1
+dbt run-operation stage_external_sources --vars 'ext_full_refresh: true' --target $1
 dbt run-operation stage_external_sources --target $1
 dbt test --target $1
