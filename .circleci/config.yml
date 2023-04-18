@@ -12,8 +12,8 @@ jobs:
       - run:
           name: "Run Tests - Redshift"
           command: ./run_test.sh redshift
-      - store_artifacts:
-          path: ./logs
+      - store_artifacts: &artifacts-path
+          path: integration_tests/logs
 
   integration-snowflake:
     docker:
@@ -23,8 +23,7 @@ jobs:
       - run:
           name: "Run Tests - Snowflake"
           command: ./run_test.sh snowflake
-      - store_artifacts:
-          path: ./logs
+      - store_artifacts: *artifacts-path
 
   integration-bigquery:
     environment:
@@ -39,8 +38,7 @@ jobs:
       - run:
           name: "Run Tests - BigQuery"
           command: ./run_test.sh bigquery
-      - store_artifacts:
-          path: ./logs
+      - store_artifacts: *artifacts-path
 
   integration-databricks:
     environment:
@@ -56,8 +54,7 @@ jobs:
       - run:
           name: "Run Tests - Databricks"
           command: ./run_test.sh databricks
-      - store_artifacts:
-          path: ./logs
+      - store_artifacts: *artifacts-path
 
   # DISABLED FOR NOW
   integration-synapse:
