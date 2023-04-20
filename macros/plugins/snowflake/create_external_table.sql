@@ -27,6 +27,9 @@
     {%- endif -%}
     {% if partitions %} partition by ({{partitions|map(attribute='name')|join(', ')}}) {% endif %}
     location = {{external.location}} {# stage #}
+    {% if external.refresh_on_create in (true, false) -%}
+      refresh_on_create = {{external.refresh_on_create}}
+    {%- endif %}
     {% if external.auto_refresh in (true, false) -%}
       auto_refresh = {{external.auto_refresh}}
     {%- endif %}

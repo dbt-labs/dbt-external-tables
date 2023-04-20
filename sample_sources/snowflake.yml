@@ -67,4 +67,5 @@ sources:
             location: "@stage"                  # reference an existing external stage
             file_format: "( type = parquet )"   # fully specified here, or reference an existing file format
             table_format: delta                 # specify the table format
-            auto_refresh: false                  # requires configuring an event notification from Amazon S3 or Azure
+            auto_refresh: false                 # requires configuring an event notification from Amazon S3 or Azure
+            refresh_on_create: false
