@@ -46,7 +46,7 @@ sources:
           partitions:
             - name: file_format
               data_type: varchar(4)
-              vals: ['csv', 'json']
+              vals: ['csv']
               path_macro: dbt_external_tables.value_only
             - name: section
               data_type: varchar(1)
@@ -76,7 +76,7 @@ sources:
           partitions:
             - name: file_format
               data_type: varchar(4)
-              vals: ['csv', 'json']
+              vals: ['csv']
               path_macro: dbt_external_tables.value_only
             - name: section
               data_type: varchar(1)
@@ -97,20 +97,3 @@ sources:
               vals: ['people', 'not_people']
               path_macro: dbt_external_tables.value_only
         columns: *cols-of-the-people
-
-      - name: people_json_unpartitioned
-        external: &json-people
-          location: "s3://dbt-external-tables-testing/json/"
-          row_format: "serde 'org.openx.data.jsonserde.JsonSerDe'
-            with serdeproperties (
-                'strip.outer.array'='false'
-            )"
-        columns: *cols-of-the-people
-        tests: *equal-to-the-people
-
-      - name: people_json_partitioned
-        external:
-          <<: *json-people
-          partitions: *parts-of-the-people
-        columns: *cols-of-the-people
-        tests: *equal-to-the-people

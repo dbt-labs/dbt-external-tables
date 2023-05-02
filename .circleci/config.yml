@@ -4,6 +4,18 @@ orbs:
   azure-cli: circleci/azure-cli@1.1.0
 
 jobs:
+
+  integration-athena:
+    docker:
+      - image: cimg/python:3.9.9
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - Athena"
+          command: ./run_test.sh athena
+      - store_artifacts:
+          path: ./logs
+
   integration-redshift:
     docker:
       - image: cimg/python:3.9.9
@@ -103,6 +115,8 @@ workflows:
     jobs:
       - integration-redshift:
           context: profile-redshift
+      - integration-athena:
+          context: profile-athena
       - integration-snowflake:
           context: profile-snowflake
       - integration-bigquery:
