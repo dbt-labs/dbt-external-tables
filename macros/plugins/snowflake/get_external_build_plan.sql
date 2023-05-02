@@ -8,6 +8,7 @@
         identifier = source_node.identifier
     ) %}
     
+    {% set table_format = source_node.external.get('table_format', none) %}
     {% set create_or_replace = (old_relation is none or var('ext_full_refresh', false)) %}
 
     {% if source_node.external.get('snowpipe', none) is not none %}
@@ -30,10 +31,13 @@
                 dbt_external_tables.create_external_schema(source_node),
                 dbt_external_tables.create_external_table(source_node)
             ] %}
+            {% if table_format == 'delta' %}
+                {% set build_plan = build_plan + dbt_external_tables.refresh_external_table(source_node) %}
+            {% endif %}
         {% else %}
             {% set build_plan = build_plan + dbt_external_tables.refresh_external_table(source_node) %}
         {% endif %}
-        
+
     {% endif %}
 
     {% do return(build_plan) %}
