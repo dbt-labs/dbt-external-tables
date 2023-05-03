@@ -5,17 +5,6 @@ orbs:
 
 jobs:
 
-  integration-athena:
-    docker:
-      - image: cimg/python:3.9.9
-    steps:
-      - checkout
-      - run:
-          name: "Run Tests - Athena"
-          command: ./run_test.sh athena
-      - store_artifacts:
-          path: ./logs
-
   integration-redshift:
     docker:
       - image: cimg/python:3.9.9
@@ -26,6 +15,16 @@ jobs:
           command: ./run_test.sh redshift
       - store_artifacts: &artifacts-path
           path: integration_tests/logs
+
+  integration-athena:
+    docker:
+      - image: cimg/python:3.9.9
+    steps:
+      - checkout
+      - run:
+          name: "Run Tests - Athena"
+          command: ./run_test.sh athena
+      - store_artifacts: *artifacts-path
 
   integration-snowflake:
     docker:
