@@ -5,7 +5,7 @@
     {%- if partitions -%}
         {%- if hive_compatible_partitions -%}
             {% set ddl -%}
-                msck repair table {{source(source_node.source_name, source_node.name)}}
+                msck repair table {{source(source_node.source_name, source_node.name).render_hive()}}
             {%- endset %}
             {{ return([ddl]) }}
         {% else %}
@@ -52,7 +52,7 @@
                     {% do finals.append(construct) %}
                 {%- endfor -%}
             {%- endif -%}
-            {%- set ddl = dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals) -%}
+            {%- set ddl = dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals, is_athena=True) -%}
             {{ return(ddl) }}
             {% do return([]) %}
         {% endif %}

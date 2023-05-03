@@ -3,7 +3,7 @@
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     
-    create external table {{source(source_node.source_name, source_node.name)}} (
+    create external table {{source(source_node.source_name, source_node.name).render_hive()}} (
     {% for column in columns %}
         {{column.name}} {{column.data_type}}
         {{- ',' if not loop.last -}}
