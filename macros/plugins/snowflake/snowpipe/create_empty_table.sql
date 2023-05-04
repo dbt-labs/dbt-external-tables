@@ -4,15 +4,15 @@
 
     create or replace table {{source(source_node.source_name, source_node.name)}} (
         {% if columns|length == 0 %}
-            value variant,
+        value variant,
         {% else -%}
-        {%- for column in columns -%}
-            {{column.name}} {{column.data_type}},
+        {%- for column in columns %}
+        {{column.name}} {{column.data_type}},
         {% endfor -%}
         {% endif %}
-            metadata_filename varchar,
-            metadata_file_row_number bigint,
-            _dbt_copied_at timestamp
+        filename string not null,
+        file_row_seq number not null,
+        rldts timestamp not null
     );
 
 {% endmacro %}
