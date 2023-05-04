@@ -2,7 +2,7 @@
 
     {%- set columns = source_node.columns.values() %}
 
-    create or replace table {{source(source_node.source_name, source_node.name)}} (
+    create or replace transient table {{source(source_node.source_name, source_node.name)}} (
         {% if columns|length == 0 %}
         value variant,
         {% else -%}
