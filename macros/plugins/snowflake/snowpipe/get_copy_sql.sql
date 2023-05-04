@@ -19,13 +19,13 @@
                 {%- if is_csv -%}nullif(${{loop.index}},''){# special case: get columns by ordinal position #}
                 {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
-            {%- endset -%}
+            {%- endset %}
             {{col_expression}}::{{column.data_type}} as {{column.name}},
         {% endfor -%}
         {% endif %}
-            metadata$filename::varchar as metadata_filename,
-            metadata$file_row_number::bigint as metadata_file_row_number,
-            current_timestamp::timestamp as _dbt_copied_at
+            metadata$filename as filename,
+            metadata$file_row_number as file_row_number,
+            metadata$start_scan_time as rldts
         from {{external.location}} {# stage #}
     )
     file_format = {{external.file_format}}
