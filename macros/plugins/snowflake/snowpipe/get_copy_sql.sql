@@ -23,7 +23,7 @@
             {{col_expression}}::{{column.data_type}} as {{column.name}},
         {% endfor -%}
         {% endif %}
-            metadata$filename as filename,
+            metadata$filename as rsrc,
             metadata$file_row_number as file_row_number,
             metadata$start_scan_time as rldts
         from {{external.location}} {# stage #}

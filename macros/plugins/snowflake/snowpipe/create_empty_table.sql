@@ -10,7 +10,7 @@
         {{column.name}} {{column.data_type}},
         {% endfor -%}
         {% endif %}
-        filename string not null,
+        rsrc string not null,
         file_row_seq number not null,
         rldts timestamp not null
     );
