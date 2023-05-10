@@ -7,7 +7,7 @@
         value variant,
         {% else -%}
         {%- for column in columns %}
-        {{column.name}} {{column.data_type}},
+        {{column.meta.db_name if column.meta.db_name else column.name}} {{column.data_type}},
         {% endfor -%}
         {% endif %}
         rsrc string not null,

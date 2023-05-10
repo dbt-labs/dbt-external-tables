@@ -20,7 +20,7 @@
                 {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
             {%- endset -%}
-            {{col_expression}}::{{column.data_type}} as {{column.name}},
+            {{col_expression}}::{{column.data_type}} as {{column.meta.db_name if column.meta.db_name else column.name}},
         {% endfor -%}
         {% endif %}
             metadata$filename as rsrc,
