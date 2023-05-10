@@ -32,6 +32,11 @@ sources:
           - name: etl_tstamp
             data_type: timestamp
             description: "Timestamp event began ETL"
+          - name: etl_date
+            data_type: date
+            description: "Date event began ETL"
+            # Expressions can manipulate the variant value prior to casting to data_type.
+            expression: TRY_TO_DATE(VALUE:etl_date::VARCHAR, 'YYYYMMDD')
           - name: contexts
             data_type: variant
             description: "Contexts attached to event by Tracker"
