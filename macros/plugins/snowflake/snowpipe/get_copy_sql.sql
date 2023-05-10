@@ -17,10 +17,10 @@
         {%- for column in columns -%}
             {%- set col_expression -%}
                 {%- if is_csv -%}nullif(${{loop.index}},''){# special case: get columns by ordinal position #}
-                {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
+                {%- else -%}nullif($1:{{column.meta.original_name if column.meta.original_name else column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
             {%- endset -%}
-            {{col_expression}}::{{column.data_type}} as {{column.meta.db_name if column.meta.db_name else column.name}},
+            {{col_expression}}::{{column.data_type}} as {{column.name}},
         {% endfor -%}
         {% endif %}
             metadata$filename as rsrc,
