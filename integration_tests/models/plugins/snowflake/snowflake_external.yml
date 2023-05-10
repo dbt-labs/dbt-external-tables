@@ -20,6 +20,9 @@ sources:
             data_type: varchar(64)
           - name: email
             data_type: varchar(64)
+          - name: email_domain
+            data_type: varchar(64)
+            expression: split_part(value:email, '@', 2)
         tests: &equal-to-the-people
           - dbt_utils.equality:
               compare_model: ref('people')
