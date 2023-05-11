@@ -16,11 +16,20 @@
         {%- endfor -%}{%- endif -%}
         {%- for column in columns %}
             {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
+            {%- set column_identifier -%}
+                {%- if 'identifier' in column and column.quote -%}
+                    {{adapter.quote(column.identifier)}}
+                {%- elif 'identifier' in column -%}
+                    {{column.identifier}}
+                {%- else -%}
+                    {{column_quoted}}
+                {%- endif -%}
+            {%- endset %}
             {%- set col_expression -%}
                 {%- if column.expression -%}
                     {{column.expression}}
                 {%- else -%}
-                    {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_quoted -%}
+                    {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_identifier -%}
                     (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                 {%- endif -%}
             {%- endset %}
