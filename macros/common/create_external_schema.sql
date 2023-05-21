@@ -4,7 +4,7 @@
 
 {%- macro default__create_external_schema(source_node) -%}
     {%- set fqn -%}
-        {%- if source_node.database is not none -%}
+        {%- if source_node.database -%}
             {{ source_node.database }}.{{ source_node.schema }}
         {%- else -%}
             {{ source_node.schema }}
