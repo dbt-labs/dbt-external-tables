@@ -1,11 +1,7 @@
-{%- macro create_external_schema(source_node) -%}
-    {{ adapter.dispatch('create_external_schema', 'dbt_external_tables')(source_node) }}
-{%- endmacro -%}
-
-{%- macro default__create_external_schema(source_node) -%}
+{%- macro bigquery__create_external_schema(source_node) -%}
     {%- set fqn -%}
         {%- if source_node.database -%}
-            {{ source_node.database }}.{{ source_node.schema }}
+            `{{ source_node.database }}`.{{ source_node.schema }}
         {%- else -%}
             {{ source_node.schema }}
         {%- endif -%}
