@@ -62,9 +62,26 @@ sources:
         # include `value`, the JSON blob of all file contents.
         
       - name: delta_tbl
-          description: "External table using Delta files"
-          external:
-            location: "@stage"                  # reference an existing external stage
-            file_format: "( type = parquet )"   # fully specified here, or reference an existing file format
-            table_format: delta                 # specify the table format
-            auto_refresh: false                  # requires configuring an event notification from Amazon S3 or Azure
+        description: "External table using Delta files"
+        external:
+          location: "@stage"                  # reference an existing external stage
+          file_format: "( type = parquet )"   # fully specified here, or reference an existing file format
+          table_format: delta                 # specify the table format
+          auto_refresh: false                  # requires configuring an event notification from Amazon S3 or Azure
+
+
+      - name: parquet_with_inferred_schema
+        description: "External table using Parquet and inferring the schema"
+        external:
+          location: "@stage"                  # reference an existing external stage
+          file_format: "my_file_format"       # we need a named file format for infer to work
+          infer_schema: true                  # parameter to tell Snowflake we want to infer the table schema
+          partitions:
+            - name: section                   # we can define partitions on top of the schema columns
+              data_type: varchar(64)
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        columns:                              # columns can still be listed for documentation/testing purpose
+          - name: id
+            description: this is an id
+          - name: name
+            description: and this is a name
