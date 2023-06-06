@@ -115,3 +115,40 @@ sources:
               data_type: varchar
               expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
         tests: *same-rowcount
+
+      - name: people_parquet_column_list_unpartitioned
+        external: &parquet-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet'
+          file_format: '{{ target.schema }}.dbt_external_tables_testing_parquet'
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+      - name: people_parquet_column_list_partitioned
+        external: 
+          <<: *parquet-people
+          partitions: *parts-of-the-people
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+      - name: people_parquet_infer_schema_unpartitioned
+        external: 
+          <<: *parquet-people
+          infer_schema: true
+        tests: *equal-to-the-people
+
+      - name: people_parquet_infer_schema_partitioned
+        external: 
+          <<: *parquet-people
+          partitions: *parts-of-the-people
+          infer_schema: true
+        tests: *equal-to-the-people
+
+      - name: people_parquet_infer_schema_partitioned_and_column_desc
+        external: 
+          <<: *parquet-people
+          partitions: *parts-of-the-people
+          infer_schema: true
+        tests: *equal-to-the-people
+        columns:
+          - name: id
+            description: "the unique ID for people"
