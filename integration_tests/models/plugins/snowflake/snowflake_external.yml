@@ -119,7 +119,7 @@ sources:
       - name: people_parquet_column_list_unpartitioned
         external: &parquet-people
           location: '@{{ target.schema }}.dbt_external_tables_testing/parquet'
-          file_format: '{{ target.schema }}_dbt_external_tables_testing_parquet'
+          file_format: '{{ target.schema }}.dbt_external_tables_testing_parquet'
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 

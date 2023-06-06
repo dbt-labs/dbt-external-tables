@@ -1,7 +1,7 @@
 {% macro snowflake__prep_external() %}
 
     {% set external_stage = target.schema ~ '.dbt_external_tables_testing' %}
-    {% set parquet_file_format = target.schema ~ '_dbt_external_tables_testing_parquet' %}
+    {% set parquet_file_format = target.schema ~ '.dbt_external_tables_testing_parquet' %}
 
     {% set create_external_stage_and_file_format %}
     
