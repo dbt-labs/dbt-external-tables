@@ -4,8 +4,6 @@ sources:
   - name: snowflake_external
     schema: "{{ target.schema }}"
     loader: S3
-    +meta:
-      task_schedule: "15 minute"
 
     tables:
       
