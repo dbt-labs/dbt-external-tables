@@ -17,7 +17,8 @@
                 dbt_external_tables.create_external_schema(source_node),
                 dbt_external_tables.snowflake_create_empty_table(source_node),
                 dbt_external_tables.snowflake_get_copy_sql(source_node, explicit_transaction=true),
-                dbt_external_tables.snowflake_create_snowpipe(source_node)
+                dbt_external_tables.snowflake_create_snowpipe(source_node),
+                dbt_external_tables.snowflake_create_source_master_task(source_node)
             ] %}
         {% else %}
             {% set build_plan = build_plan + dbt_external_tables.snowflake_refresh_snowpipe(source_node) %}
