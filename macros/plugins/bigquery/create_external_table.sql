@@ -20,15 +20,15 @@
             {%- endfor -%}
         )
         {% endif %}
-        {% if options and options.get('connection_name', none) %}
-        with connection {{options.get('connection_name'}} (
+        {% if connection_name %}
+        with connection `{{connection_name}}`
         {% endif %}
-        {% if options and options.get('hive_partition_uri_prefix', none) %}
-        with partition columns {%- if partitions %} (
+        {% if options and options.get('hive_partition_uri_prefix', none) and partitions %}
+        with partition columns (
             {%- for partition in partitions %}
                 {{partition.name}} {{partition.data_type}}{{',' if not loop.last}}
             {%- endfor -%}
-        ) {% endif -%}
+        )
         {% endif %}
         options (
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
