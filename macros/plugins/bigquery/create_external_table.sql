@@ -20,6 +20,9 @@
             {%- endfor -%}
         )
         {% endif %}
+        {% if options and options.get('connection_name', none) %}
+        with connection {{options.get('connection_name'}} (
+        {% endif %}
         {% if options and options.get('hive_partition_uri_prefix', none) %}
         with partition columns {%- if partitions %} (
             {%- for partition in partitions %}
