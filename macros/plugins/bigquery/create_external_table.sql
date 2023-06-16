@@ -20,8 +20,8 @@
             {%- endfor -%}
         )
         {% endif %}
-        {% if connection_name %}
-        with connection `{{connection_name}}`
+        {% if options and options.get('connection_name', none) %}
+        with connection `{{options.get('connection_name')}}`
         {% endif %}
         {% if options and options.get('hive_partition_uri_prefix', none) and partitions %}
         with partition columns (
@@ -34,11 +34,13 @@
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
             {%- if options is mapping -%}
             {%- for key, value in options.items() if key != 'uris' %}
+                {% if key != 'connection_name' %}
                 {%- if value is string -%}
                 , {{key}} = '{{value}}'
                 {%- else -%}
                 , {{key}} = {{value}}
                 {%- endif -%}
+                {% endif %}
             {%- endfor -%}
             {%- endif -%}
         )
