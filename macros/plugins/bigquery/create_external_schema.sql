@@ -20,7 +20,8 @@
         {%- set ddl -%}
             create schema if not exists {{ fqn }}
         {%- endset -%}
-    {%- endif -%}
-
-    {{ return(ddl) }}
+        {{ return(ddl) }}
+    {%- else -%}
+        {{ return('') }}
+    {% endif %} 
 {%- endmacro -%}
