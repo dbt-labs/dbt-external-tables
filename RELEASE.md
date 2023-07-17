@@ -5,7 +5,7 @@ There's a few scenarios that might prompt a release:
 
 | Scenario                                   | Release type |
 |--------------------------------------------|--------------|
-| Breaking changes to existing macros        | major        |
+| Breaking changes to existing macros        | minor        |
 | New functionality                          | minor        |
 | Fixes to existing macros                   | patch        |
 
