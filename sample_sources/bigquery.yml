@@ -58,3 +58,12 @@ sources:
               - 'gs://bucket_a/path/*'
               - 'gs://bucket_b/path/*'
               - 'gs://bucket_c/more/specific/path/file.csv'
+
+      #  you can use BigQuery table expiry if you want to automatically delete tables after a period of time
+      - name: table_expiry
+        external:
+          location: 'gs://bucket/path/*'
+          hours_to_expiration: 24
+          options:
+            format: csv
+            skip_leading_rows: 1

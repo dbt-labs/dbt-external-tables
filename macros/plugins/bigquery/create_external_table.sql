@@ -4,7 +4,8 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set options = external.options -%}
-    
+    {%- set hours_to_expiration = external.get('hours_to_expiration') -%}
+
     {%- set uris = [] -%}
     {%- if options is mapping and options.get('uris', none) -%}
         {%- set uris = external.options.get('uris') -%}
@@ -37,6 +38,9 @@
                 , {{key}} = {{value}}
                 {%- endif -%}
             {%- endfor -%}
+            {%- endif -%}
+            {%- if hours_to_expiration -%}
+                , expiration_timestamp = TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL {{hours_to_expiration}} hour)
             {%- endif -%}
         )
 {% endmacro %}
