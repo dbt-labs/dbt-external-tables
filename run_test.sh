@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Setting up virtual environment"
+echo "Setting up virtual environment for dbt-$1"
 VENV="venv/bin/activate"
 
 if [[ ! -f $VENV ]]; then
