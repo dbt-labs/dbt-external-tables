@@ -18,7 +18,7 @@ if [[ ! -f $VENV ]]; then
     elif [ $1 == 'athena' ]
     then
         echo "Installing dbt-athena"
-        pip install dbt-athena-community>=1.4.1 --upgrade --pre
+        pip install dbt-athena-community>=1.6.1 --upgrade --pre
     else
         echo "Installing dbt-$1"
         pip install dbt-$1 --upgrade --pre

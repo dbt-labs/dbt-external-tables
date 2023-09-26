@@ -31,4 +31,5 @@
     {% if external.serde_properties -%} with serdeproperties {{external.serde_properties}} {%- endif %}
     {% if external.location -%} location '{{external.location}}' {%- endif %}
     {% if external.table_properties -%} tblproperties {{external.table_properties}} {%- endif %}
+    ;
 {% endmacro %}
