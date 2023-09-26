@@ -120,10 +120,10 @@ workflows:
           context: profile-snowflake
       - integration-bigquery:
           context: profile-bigquery
-      - integration-databricks:
-          context:
-            - aws-credentials
-            - profile-databricks
+      # - integration-databricks:
+      #     context:
+      #       - aws-credentials
+      #       - profile-databricks
       #- integration-synapse:
       #    context: profile-synapse
       #- integration-azuresql:
