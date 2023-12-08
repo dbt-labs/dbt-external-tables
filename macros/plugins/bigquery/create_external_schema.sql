@@ -8,7 +8,7 @@
     {%- endset -%}
 
     {% set schema_exists_query %}
-        select * from {{ source_node.database }}.INFORMATION_SCHEMA.SCHEMATA where schema_name = '{{ source_node.schema }}' limit 1
+        select * from `{{ source_node.database }}`.INFORMATION_SCHEMA.SCHEMATA where schema_name = '{{ source_node.schema }}' limit 1
     {% endset %}
     {% if execute %}
         {% set schema_exists = run_query(schema_exists_query)|length > 0 %}
