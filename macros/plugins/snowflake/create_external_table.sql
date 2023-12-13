@@ -51,6 +51,9 @@
     {% if external.auto_refresh in (true, false) -%}
       auto_refresh = {{external.auto_refresh}}
     {%- endif %}
+    {% if external.aws_sns_topic -%}
+      aws_sns_topic = '{{external.aws_sns_topic}}'
+    {%- endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
     file_format = {{external.file_format}}
