@@ -15,8 +15,8 @@ sources:
             skip_leading_rows: 1
 
             # if you want a partitioned table, file paths MUST be Hive-style:
-            #   "gs://bucket/path/collector_hour=2020-01-01/"
-            #   "gs://bucket/path/collector_hour=2020-01-02/" (etc)
+            #   'gs://bucket/path/collector_hour=2020-01-01/'
+            #   'gs://bucket/path/collector_hour=2020-01-02/' (etc)
             hive_partition_uri_prefix: "gs://bucket/path/"
           partitions:
             - name: collector_date
