@@ -3,5 +3,5 @@
 {% endmacro %}
 
 {% macro default__update_external_table_columns(source_node) %}
-    {% do return([]) %}
+    {% return() %}
 {% endmacro %}
