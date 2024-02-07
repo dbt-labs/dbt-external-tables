@@ -2,10 +2,11 @@ version: 2
 
 sources:
   - name: bigquery_external
-    schema: '{{ target.schema }}'
+    schema: "{{ target.schema }}"
     loader: Cloud Storage
 
     tables:
+      
       - name: people_csv_unpartitioned
         external:
           location: 'gs://dbt-external-tables-testing/csv/*'
@@ -15,7 +16,7 @@ sources:
         columns: &cols-of-the-people
           - name: id
             data_type: int64
-            description: id_of_column
+            description: id_of_the_person
           - name: first_name
             data_type: string
           - name: last_name
@@ -43,7 +44,7 @@ sources:
               data_type: string
         columns: *cols-of-the-people
         tests: *equal-to-the-people
-
+        
       - name: people_csv_schema_auto_detect
         external:
           location: 'gs://dbt-external-tables-testing/csv/*'
@@ -66,6 +67,7 @@ sources:
               - 'gs://dbt-external-tables-testing/csv/section=d/people_d.csv'
         columns: *cols-of-the-people
         tests: *equal-to-the-people
+
 #      - name: people_json_unpartitioned
 #        external: &json-people
 #          location: 'gs://dbt-external-tables-testing/json/*'
@@ -79,16 +81,16 @@ sources:
 #          location: 'gs://dbt-external-tables-testing/json/*'
 #          options:
 #            format: json
-#            hive_partition_uri_prefix: ''gs://dbt-external-tables-testing/json''
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
 #          partitions: *parts-of-the-people
 #        columns: *cols-of-the-people
 #        tests: *equal-to-the-people
-#
+#        
 #      - name: people_json_schema_auto_detect
 #        external:
 #          location: 'gs://dbt-external-tables-testing/json/*'
 #          options:
 #            format: csv
 #            skip_leading_rows: 1
-#            hive_partition_uri_prefix: ''gs://dbt-external-tables-testing/json''
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
 #        tests: *equal-to-the-people
