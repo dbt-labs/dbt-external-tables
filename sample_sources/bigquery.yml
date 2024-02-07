@@ -1,60 +1,95 @@
 version: 2
 
 sources:
-  - name: snowplow
-    database: analytics
-    loader: gcloud storage
+  - name: bigquery_external
+    schema: "{{ target.schema }}"
+    loader: Cloud Storage
 
     tables:
-      - name: event
-        description: 'External table of Snowplow events, stored as CSV files in Cloud Storage'
+      
+      - name: people_csv_unpartitioned
         external:
-          location: 'gs://bucket/path/*'
+          location: 'gs://dbt-external-tables-testing/csv/*'
           options:
             format: csv
             skip_leading_rows: 1
+        columns: &cols-of-the-people
+          - name: id
+            data_type: int64
+          - name: first_name
+            data_type: string
+          - name: last_name
+            data_type: string
+          - name: email
+            data_type: string
+        tests: &equal-to-the-people
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
 
-            # if you want a partitioned table, file paths MUST be Hive-style:
-            #   'gs://bucket/path/collector_hour=2020-01-01/'
-            #   'gs://bucket/path/collector_hour=2020-01-02/' (etc)
-            hive_partition_uri_prefix: 'gs://bucket/path/'
-          partitions:
-            - name: collector_date
-              data_type: date
-
-        columns:
-          - name: app_id
-            data_type: varchar(255)
-            description: 'Application ID'
-          - name: domain_sessionidx
-            data_type: int
-            description: 'A visit / session index'
-          - name: etl_tstamp
-            data_type: timestamp
-            description: 'Timestamp event began ETL'
-          - name: contexts
-            data_type: variant
-            description: 'Contexts attached to event by Tracker'
-
-      # alternatively, BigQuery can infer your schema (columns + partitions)
-      - name: event_inferred
+      - name: people_csv_partitioned
         external:
-          location: 'gs://bucket/path/*'
+          location: 'gs://dbt-external-tables-testing/csv/*'
           options:
             format: csv
             skip_leading_rows: 1
-            hive_partition_uri_prefix: 'gs://bucket/path/'
-
-      # optionally, BigQuery can pull data from multiple GCS paths, instead of just one
-      - name: event_multiple_paths
+            hive_partition_uri_prefix: 'gs://dbt-external-tables-testing/csv'
+          partitions: &parts-of-the-people
+            - name: section
+              data_type: string
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+        
+      - name: people_csv_schema_auto_detect
         external:
-          location: this is still a required property, but it will be ignored
+          location: 'gs://dbt-external-tables-testing/csv/*'
           options:
             format: csv
             skip_leading_rows: 1
+            hive_partition_uri_prefix: 'gs://dbt-external-tables-testing/csv'
+        tests: *equal-to-the-people
 
-            # list all file paths with relevant source data
+      - name: people_csv_override_uris
+        external:
+          location: this can be anything
+          options:
+            format: csv
+            skip_leading_rows: 1
             uris:
-              - 'gs://bucket_a/path/*'
-              - 'gs://bucket_b/path/*'
-              - 'gs://bucket_c/more/specific/path/file.csv'
+              - 'gs://dbt-external-tables-testing/csv/section=a/people_a.csv'
+              - 'gs://dbt-external-tables-testing/csv/section=b/people_b.csv'
+              - 'gs://dbt-external-tables-testing/csv/section=c/people_c.csv'
+              - 'gs://dbt-external-tables-testing/csv/section=d/people_d.csv'
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+#      - name: people_json_unpartitioned
+#        external: &json-people
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: json
+#        columns: *cols-of-the-people
+#        tests: *equal-to-the-people
+#
+#      - name: people_json_partitioned
+#        external:
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: json
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
+#          partitions: *parts-of-the-people
+#        columns: *cols-of-the-people
+#        tests: *equal-to-the-people
+#        
+#      - name: people_json_schema_auto_detect
+#        external:
+#          location: 'gs://dbt-external-tables-testing/json/*'
+#          options:
+#            format: csv
+#            skip_leading_rows: 1
+#            hive_partition_uri_prefix: "'gs://dbt-external-tables-testing/json'"
+#        tests: *equal-to-the-people
