@@ -65,9 +65,6 @@
             {% do log(loop_label ~ ' (' ~ loop.index ~ ') ' ~ log_msg, info = true) %}
             
         {% endfor %}
-        
-        -- {% set update_columns = dbt_external_tables.update_external_table_columns(node) %}
-        -- {{ update_columns }}
 
     {% endfor %}
     
