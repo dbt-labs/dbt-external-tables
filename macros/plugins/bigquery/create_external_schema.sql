@@ -1,5 +1,4 @@
 {%- macro bigquery__create_external_schema(source_node) -%}
-
     {%- set fqn -%}
         {%- if source_node.database -%}
             `{{ source_node.database }}`.{{ source_node.schema }}
