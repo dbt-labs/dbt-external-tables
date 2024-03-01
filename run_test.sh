@@ -18,8 +18,7 @@ if [[ ! -f $VENV ]]; then
     else
         echo "Installing dbt-$1"
         pip install dbt-$1 --upgrade --pre
-        # Workaround untill the DBT 1.7.9 is released on PyPI
-        pip install protobuf==4.25.3
+        pip install dbt-core --upgrade --pre
     fi
 fi
 
