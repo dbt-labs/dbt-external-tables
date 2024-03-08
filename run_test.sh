@@ -18,6 +18,8 @@ if [[ ! -f $VENV ]]; then
     else
         echo "Installing dbt-$1"
         pip install dbt-$1 --upgrade --pre
+        # remove the protobuf installation when all the dbt-provider packaged are updated with dbt core 1.7.9
+        pip install protobuf==4.25.3
     fi
 fi
 
