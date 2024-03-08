@@ -4,6 +4,7 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set options = external.options -%}
+    {%- set infer_schema = external.infer_schema -%}
 
     {% if options is mapping and options.get('connection_name', none) %}
         {% set connection_name = options.pop('connection_name') %}
@@ -17,7 +18,7 @@
     {%- endif -%}
 
     create or replace external table {{source(source_node.source_name, source_node.name)}}
-        {%- if columns -%}(
+        {%- if columns and not infer_schema -%}(
             {% for column in columns %}
                 {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
                 {{column_quoted}} {{column.data_type}} {{- ',' if not loop.last -}}
