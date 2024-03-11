@@ -6,7 +6,7 @@ orbs:
 jobs:
   integration-redshift:
     docker:
-      - image: cimg/python:3.9.9
+      - image: cimg/python:3.12.2
     steps:
       - checkout
       - run:
@@ -17,7 +17,7 @@ jobs:
 
   integration-snowflake:
     docker:
-      - image: cimg/python:3.9.9
+      - image: cimg/python:3.12.2
     steps:
       - checkout
       - run:
@@ -29,7 +29,7 @@ jobs:
     environment:
       BIGQUERY_SERVICE_KEY_PATH: "/home/circleci/bigquery-service-key.json"
     docker:
-      - image: cimg/python:3.9.9
+      - image: cimg/python:3.12.2
     steps:
       - checkout
       - run:

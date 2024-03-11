@@ -4,7 +4,7 @@ echo "Setting up virtual environment for dbt-$1"
 VENV="venv/bin/activate"
 
 if [[ ! -f $VENV ]]; then
-    python3.8 -m venv venv
+    python -m venv venv
     . $VENV
     pip install --upgrade pip setuptools
     if [ $1 == 'databricks' ]
