@@ -115,10 +115,10 @@ workflows:
     jobs:
       - integration-redshift:
           context: profile-redshift
-      # - integration-snowflake:
-      #     context: profile-snowflake
-      # - integration-bigquery:
-      #     context: profile-bigquery
+      - integration-snowflake:
+          context: profile-snowflake
+      - integration-bigquery:
+          context: profile-bigquery
       # - integration-databricks:
       #     context:
       #       - aws-credentials
