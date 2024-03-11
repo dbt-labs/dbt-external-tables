@@ -1,14 +1,18 @@
 version: 2.1
 
 orbs:
-  azure-cli: circleci/azure-cli@1.1.0
+  python: circleci/python@2.1.1
 
 jobs:
   integration-redshift:
-    docker:
-      - image: cimg/python:3.9.9
+    executor: python/default
     steps:
       - checkout
+      - python/install-packages:
+          args: dbt-redshift
+          pkg-manager: pip
+          pip-dependency-file: ''
+          pypi-cache: false
       - run:
           name: "Run Tests - Redshift"
           command: ./run_test.sh redshift
@@ -16,10 +20,14 @@ jobs:
           path: integration_tests/logs
 
   integration-snowflake:
-    docker:
-      - image: cimg/python:3.9.9
+    executor: python/default
     steps:
       - checkout
+      - python/install-packages:
+          args: dbt-snowflake
+          pkg-manager: pip
+          pip-dependency-file: ''
+          pypi-cache: false
       - run:
           name: "Run Tests - Snowflake"
           command: ./run_test.sh snowflake
@@ -28,13 +36,17 @@ jobs:
   integration-bigquery:
     environment:
       BIGQUERY_SERVICE_KEY_PATH: "/home/circleci/bigquery-service-key.json"
-    docker:
-      - image: cimg/python:3.9.9
+    executor: python/default
     steps:
       - checkout
       - run:
           name: "Set up credentials"
           command: echo $BIGQUERY_SERVICE_ACCOUNT_JSON > ${HOME}/bigquery-service-key.json
+      - python/install-packages:
+          args: dbt-bigquery
+          pkg-manager: pip
+          pip-dependency-file: ''
+          pypi-cache: false
       - run:
           name: "Run Tests - BigQuery"
           command: ./run_test.sh bigquery
