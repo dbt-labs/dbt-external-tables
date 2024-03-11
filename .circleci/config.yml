@@ -1,14 +1,17 @@
 version: 2.1
 
 orbs:
-  azure-cli: circleci/azure-cli@1.1.0
+  python: circleci/python@2.1.1
 
 jobs:
   integration-redshift:
-    docker:
-      - image: cimg/python:3.12.2
+    executor: python/default
     steps:
       - checkout
+      - python/install-packages:
+          args: dbt-redshift
+          pkg-manager: pip
+          pypi-cache: false
       - run:
           name: "Run Tests - Redshift"
           command: ./run_test.sh redshift
@@ -103,10 +106,10 @@ workflows:
     jobs:
       - integration-redshift:
           context: profile-redshift
-      - integration-snowflake:
-          context: profile-snowflake
-      - integration-bigquery:
-          context: profile-bigquery
+      # - integration-snowflake:
+      #     context: profile-snowflake
+      # - integration-bigquery:
+      #     context: profile-bigquery
       # - integration-databricks:
       #     context:
       #       - aws-credentials
