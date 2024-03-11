@@ -11,6 +11,7 @@ jobs:
       - python/install-packages:
           args: dbt-redshift
           pkg-manager: pip
+          pip-dependency-file: ''
           pypi-cache: false
       - run:
           name: "Run Tests - Redshift"
