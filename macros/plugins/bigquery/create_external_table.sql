@@ -5,6 +5,8 @@
     {%- set partitions = external.partitions -%}
     {%- set options = external.options -%}
     {%- set hours_to_expiration = external.get('hours_to_expiration') -%}
+    {%- set non_string_options = ['max_staleness', 'hours_to_expiration'] %}
+
     {% if options is mapping and options.get('connection_name', none) %}
         {% set connection_name = options.pop('connection_name') %}
     {% endif %}
@@ -38,7 +40,7 @@
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
             {%- if options is mapping -%}
             {%- for key, value in options.items() if key != 'uris' %}
-                {%- if value is string -%}
+                {%- if value is string and key not in non_string_options -%}
                 , {{key}} = '{{value}}'
                 {%- else -%}
                 , {{key}} = {{value}}
