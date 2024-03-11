@@ -1,5 +1,4 @@
 {% macro bigquery__create_external_table(source_node) %}
-
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}

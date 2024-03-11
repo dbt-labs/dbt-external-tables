@@ -16,6 +16,7 @@ sources:
         columns: &cols-of-the-people
           - name: id
             data_type: int64
+            description: id_of_the_person
           - name: first_name
             data_type: string
           - name: last_name
