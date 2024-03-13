@@ -1,0 +1,61 @@
+version: 2
+
+sources:
+  - name: dbt
+    tables:
+      - name: hrsl
+        database: awscatalog
+        schema: dbt
+        external:
+          location: 's3://dataforgood-fb-data/csv/'
+          row_format: "SERDE 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'"
+          serde_properties: "('serialization.format' = '\t\t', 'field.delim' = '\t')"
+          table_properties: ('has_encrypted_data'='false')
+          hive_compatible_partitions: true
+          partitions:
+            - name: month
+              data_type: string
+            - name: country
+              data_type: string
+            - name: type
+              data_type: string
+        columns:
+          - name: latitude
+            data_type: float
+          - name: longitude
+            data_type: float
+          - name: population
+            data_type: float
+
+      - name: planet_history
+        database: awscatalog
+        schema: dbt
+        external:
+          location: 's3://osm-pds/planet/'
+          file_format: ORCFILE
+          comment: "This is a table comment"
+        columns:
+          - name: id
+            data_type: 'BIGINT'
+          - name: type
+            data_type: 'STRING'
+          - name: tags
+            data_type: 'MAP<STRING,STRING>'
+          - name: lat
+            data_type: 'DECIMAL(9,7)'
+          - name: lon
+            data_type: 'DECIMAL(10,7)'
+          - name: nds
+            data_type: 'ARRAY<STRUCT<ref: BIGINT>>'
+          - name: members
+            data_type: 'ARRAY<STRUCT<type: STRING, ref: BIGINT, role: STRING>>'
+          - name: changeset
+            data_type: 'BIGINT'
+          - name: timestamp
+            data_type: 'TIMESTAMP'
+          - name: uid
+            data_type: 'BIGINT'
+          - name: user
+            data_type: 'STRING'
+          - name: version
+            data_type: 'BIGINT'

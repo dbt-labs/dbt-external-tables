@@ -18,7 +18,7 @@
           - path (string): The path to be added as a partition for the particular
               combination of columns defined in the 'partition_by'
 #}
-{% macro redshift_alter_table_add_partitions(source_node, partitions) %}
+{% macro redshift_alter_table_add_partitions(source_node, partitions, is_athena=False) %}
 
   {{ log("Generating ADD PARTITION statement for partition set between " 
          ~ partitions[0]['path'] ~ " and " ~ (partitions|last)['path']) }}
@@ -26,9 +26,9 @@
   {% set ddl = [] %}
   
   {% if partitions|length > 0 %}
-  
+
     {% set alter_table_add %}
-        alter table {{source(source_node.source_name, source_node.name)}} add if not exists 
+        alter table {{source(source_node.source_name, source_node.name)['render_hive' if is_athena else 'render']()}} add if not exists 
     {% endset %}
   
     {%- set alters -%}

@@ -10,6 +10,16 @@ integration_tests:
   target: postgres
   outputs:
 
+    athena:
+      type: athena
+      database: "{{ env_var('ATHENA_TEST_DBNAME') }}"
+      region_name: "{{ env_var('AWS_REGION') }}"
+      s3_staging_dir: "s3://{{ env_var('ATHENA_TEST_BUCKET') }}"
+      work_group: "{{ env_var('ATHENA_TEST_WORKGROUP') }}"
+      schema:  dbt_external_tables_integration_tests_athena
+      threads: 1
+      retries: 1
+
     redshift:
       type: redshift
       host: "{{ env_var('REDSHIFT_TEST_HOST') }}"
