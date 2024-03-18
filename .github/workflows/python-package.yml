@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.11"]
-        data-platform: ["snowflake"]
+        data-platform: ["redshift"]
         dbt-version: ["1.7"]
         # python-version: ["3.9", "3.10", "3.11", "3.12"]
         # data-platform: ["redshift", "snowflake","bigquery"]
@@ -56,3 +56,4 @@ jobs:
         SNOWFLAKE_TEST_USER: ${{ secrets.SNOWFLAKE_TEST_USER }}
         SNOWFLAKE_TEST_PASS: ${{ secrets.SNOWFLAKE_TEST_PASS }}
         SNOWFLAKE_TEST_WHNAME: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
+        SNOWFLAKE_TEST_ROLE: ${{ secrets.SNOWFLAKE_TEST_ROLE }}
