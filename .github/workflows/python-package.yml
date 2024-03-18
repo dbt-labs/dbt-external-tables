@@ -16,14 +16,14 @@ jobs:
     environment:
       name: ci_testing
     strategy:
-      fail-fast: false
+      fail-fast: true
+      max-parallel: 1
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.11", "3.12"]
+        dbt-version: ["1.6", "1.7"]
         data-platform: ["redshift"]
-        dbt-version: ["1.7"]
         # python-version: ["3.9", "3.10", "3.11", "3.12"]
         # data-platform: ["redshift", "snowflake","bigquery"]
-        # dbt-version: ["1.5","1.6", "1.7"]
 
     steps:
     - uses: actions/checkout@v3
