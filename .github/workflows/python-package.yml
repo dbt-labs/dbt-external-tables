@@ -13,13 +13,17 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    environment:
+      name: ci_testing
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.11"]
+        data-platform: ["redshift"]
+        dbt-version: ["1.7"]
         # python-version: ["3.9", "3.10", "3.11", "3.12"]
-        data-platform: ["redshift", "snowflake","bigquery"]
-        dbt-version: ["1.5.0","1.6.0", "1.7.0"]
+        # data-platform: ["redshift", "snowflake","bigquery"]
+        # dbt-version: ["1.5","1.6", "1.7"]
 
     steps:
     - uses: actions/checkout@v3
@@ -27,18 +31,23 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest
-        python -m pip install "dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}"
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    # - name: Lint with flake8
-    #   run: |
-    #     # stop the build if there are Python syntax errors or undefined names
-    #     flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-    #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    # - name: Test with pytest
-    #   run: |
-    #     pytest
+        python -m pip install "dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}.0"
+    - name: run integration_tests project on ${{ matrix.data-platform }}
+      run: |
+        cd integration_tests
+        export DBT_PROFILES_DIR=.
+        dbt deps --target ${{ matrix.data-platform }}
+        dbt seed --full-refresh --target ${{ matrix.data-platform }}
+        dbt run-operation prep_external --target ${{ matrix.data-platform }}
+        dbt run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
+        dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
+        dbt test --target ${{ matrix.data-platform }}
+      env: 
+        REDSHIFT_TEST_HOST: ${{ secrets.REDSHIFT_TEST_HOST }}
+        REDSHIFT_TEST_USER: ${{ secrets.REDSHIFT_TEST_USER }}
+        REDSHIFT_TEST_PASS: ${{ secrets.REDSHIFT_TEST_PASS }}
+        REDSHIFT_TEST_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
+        REDSHIFT_TEST_DBNAME: ${{ secrets.REDSHIFT_TEST_DBNAME }}
