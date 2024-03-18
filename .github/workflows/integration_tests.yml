@@ -1,7 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
-name: Python package
+name: Integration Testing
 
 on:
   push:
@@ -16,14 +13,12 @@ jobs:
     environment:
       name: ci_testing
     strategy:
-      fail-fast: false
+      fail-fast: true
+      max-parallel: 3
       matrix:
-        python-version: ["3.11"]
-        data-platform: ["redshift"]
-        dbt-version: ["1.7"]
-        # python-version: ["3.9", "3.10", "3.11", "3.12"]
-        # data-platform: ["redshift", "snowflake","bigquery"]
-        # dbt-version: ["1.5","1.6", "1.7"]
+        python-version: [ "3.11"] # "3.10", "3.12"]
+        dbt-version: ["1.7.0"] # "1.6.0", , "1.8.0b1"]
+        data-platform: ["redshift", "snowflake", "bigquery"]
 
     steps:
     - uses: actions/checkout@v3
@@ -34,7 +29,7 @@ jobs:
     - name: Install dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}
       run: |
         python -m pip install --upgrade pip
-        python -m pip install "dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}.0"
+        python -m pip install "dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}"
     - name: run integration_tests project on ${{ matrix.data-platform }}
       run: |
         cd integration_tests
@@ -51,7 +46,10 @@ jobs:
         REDSHIFT_TEST_PASS: ${{ secrets.REDSHIFT_TEST_PASS }}
         REDSHIFT_TEST_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
         REDSHIFT_TEST_DBNAME: ${{ secrets.REDSHIFT_TEST_DBNAME }}
+        REDSHIFT_SPECTRUM_IAM_ROLE: ${{ secrets.REDSHIFT_SPECTRUM_IAM_ROLE }}
         SNOWFLAKE_TEST_ACCOUNT: ${{ secrets.SNOWFLAKE_TEST_ACCOUNT }}
         SNOWFLAKE_TEST_USER: ${{ secrets.SNOWFLAKE_TEST_USER }}
         SNOWFLAKE_TEST_PASS: ${{ secrets.SNOWFLAKE_TEST_PASS }}
         SNOWFLAKE_TEST_WHNAME: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
+        SNOWFLAKE_TEST_ROLE: ${{ secrets.SNOWFLAKE_TEST_ROLE }}
+        SNOWFLAKE_TEST_DBNAME: ${{ secrets.SNOWFLAKE_TEST_DBNAME }}
