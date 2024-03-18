@@ -7,7 +7,7 @@ config:
     use_colors: True
 
 integration_tests:
-  target: postgres
+  target: redshift
   outputs:
 
     redshift:
