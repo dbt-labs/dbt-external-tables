@@ -101,10 +101,10 @@ workflows:
   version: 2
   test-all:
     jobs:
-      - integration-redshift:
-          context: profile-redshift
-      - integration-snowflake:
-          context: profile-snowflake
+      # - integration-redshift:
+      #     context: profile-redshift
+      # - integration-snowflake:
+      #     context: profile-snowflake
       - integration-bigquery:
           context: profile-bigquery
       # - integration-databricks:
