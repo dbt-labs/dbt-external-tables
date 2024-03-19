@@ -29,7 +29,7 @@ jobs:
     - name: Install dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}
       run: |
         python -m pip install --upgrade pip
-        python -m pip install "dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}"
+        python -m pip install "dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}" "dbt-core~=${{ matrix.dbt-version }}"
     - name: run integration_tests project on ${{ matrix.data-platform }}
       run: |
         cd integration_tests
