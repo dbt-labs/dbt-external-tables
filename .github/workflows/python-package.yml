@@ -21,7 +21,7 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12"]
         dbt-version: ["1.6", "1.7"]
-        data-platform: ["redshift"]
+        data-platform: ["redshift", "snowflake"]
         # python-version: ["3.9", "3.10", "3.11", "3.12"]
         # data-platform: ["redshift", "snowflake","bigquery"]
 
