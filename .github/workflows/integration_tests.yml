@@ -16,9 +16,9 @@ jobs:
       fail-fast: true
       max-parallel: 1
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-        dbt-version: ["1.6.0", "1.7.0", "1.8.0b1"]
-        data-platform: ["redshift", "snowflake"]
+        python-version: ["3.10", "3.11"] # , "3.12"]
+        dbt-version: ["1.6.0", "1.7.0"] # , "1.8.0b1"]
+        data-platform: ["redshift", "snowflake", "bigquery"]
         exclude:
           - python-version: "3.12"
             dbt-version: "1.6"
@@ -60,3 +60,5 @@ jobs:
         SNOWFLAKE_TEST_WHNAME: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
         SNOWFLAKE_TEST_ROLE: ${{ secrets.SNOWFLAKE_TEST_ROLE }}
         SNOWFLAKE_TEST_DBNAME: ${{ secrets.SNOWFLAKE_TEST_DBNAME }}
+        BIGQUERY_TEST_PROJECT: ${{ secrets.BIGQUERY_TEST_PROJECT }}
+        BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}

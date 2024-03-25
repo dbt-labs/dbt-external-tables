@@ -34,8 +34,8 @@ integration_tests:
     bigquery:
       type: bigquery
       method: service-account
-      keyfile: "{{ env_var('BIGQUERY_SERVICE_KEY_PATH') }}"
-      project: "{{ env_var('BIGQUERY_TEST_DBNAME') }}"
+      keyfile_json: "{{ env_var('BIGQUERY_KEYFILE_JSON') }}"
+      project: "{{ env_var('BIGQUERY_TEST_PROJECT') }}"
       schema: dbt_external_tables_integration_tests_bigquery
       threads: 1
 
