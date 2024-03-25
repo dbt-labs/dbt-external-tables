@@ -5,3 +5,4 @@
 **/logs/
 **/env/
 **/venv/
+**/test.env
