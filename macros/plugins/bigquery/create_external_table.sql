@@ -5,6 +5,7 @@
     {%- set partitions = external.partitions -%}
     {%- set options = external.options -%}
     {%- set infer_schema = external.infer_schema -%}
+    {%- set non_string_options = ['max_staleness'] %}
 
     {% if options is mapping and options.get('connection_name', none) %}
         {% set connection_name = options.pop('connection_name') %}
@@ -39,7 +40,7 @@
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
             {%- if options is mapping -%}
             {%- for key, value in options.items() if key != 'uris' %}
-                {%- if value is string -%}
+                {%- if value is string and key not in non_string_options -%}
                 , {{key}} = '{{value}}'
                 {%- else -%}
                 , {{key}} = {{value}}
