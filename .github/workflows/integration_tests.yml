@@ -18,7 +18,7 @@ jobs:
       matrix:
         python-version: [ "3.11"] # "3.10", "3.12"]
         dbt-version: ["1.7.0"] # "1.6.0", , "1.8.0b1"]
-        data-platform: ["redshift", "snowflake", "bigquery"]
+        data-platform: ["redshift", "snowflake", "bigquery", "athena"]
 
     steps:
     - uses: actions/checkout@v3
@@ -58,3 +58,7 @@ jobs:
         BIGQUERY_PRIVATE_KEY_ID: ${{ secrets.BIGQUERY_PRIVATE_KEY_ID }}
         BIGQUERY_CLIENT_EMAIL: ${{ secrets.BIGQUERY_CLIENT_EMAIL }}
         BIGQUERY_CLIENT_ID: ${{ secrets.BIGQUERY_CLIENT_ID }}
+        ATHENA_TEST_DBNAME: ${{ secrets.ATHENA_TEST_DBNAME }}
+        AWS_REGION: ${{ secrets.ATHENA_AWS_REGION }}
+        ATHENA_TEST_BUCKET: ${{ secrets.ATHENA_TEST_BUCKET }}
+        ATHENA_TEST_WORKGROUP: ${{ secrets.ATHENA_TEST_WORKGROUP }}
