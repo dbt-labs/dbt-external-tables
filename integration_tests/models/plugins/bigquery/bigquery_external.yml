@@ -67,6 +67,16 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
+      - name: people_csv_with_max_staleness
+        external:
+          location: 'gs://dbt-external-tables-testing/csv/*'
+          options:
+            format: csv
+            skip_leading_rows: 1
+            max_staleness: INTERVAL 1 HOUR
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
 #      - name: people_json_unpartitioned
 #        external: &json-people
 #          location: 'gs://dbt-external-tables-testing/json/*'
