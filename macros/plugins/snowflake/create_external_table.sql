@@ -54,6 +54,9 @@
     {% if external.aws_sns_topic -%}
       aws_sns_topic = '{{external.aws_sns_topic}}'
     {%- endif %}
+    {% if external.table_format | lower == "delta" %}
+      refresh_on_create = false
+    {% endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
     file_format = {{external.file_format}}
