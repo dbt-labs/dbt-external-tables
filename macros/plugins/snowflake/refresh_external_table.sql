@@ -5,8 +5,9 @@
     
     {% set auto_refresh = external.get('auto_refresh', false) %}
     {% set partitions = external.get('partitions', none) %}
+    {% set delta_format = (external.table_format | lower == "delta") %}
     
-    {% set manual_refresh = (partitions and not auto_refresh) %}
+    {% set manual_refresh = not auto_refresh %}
     
     {% if manual_refresh %}
 

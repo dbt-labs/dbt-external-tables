@@ -53,6 +53,9 @@
     {% if external.auto_refresh in (true, false) -%}
       auto_refresh = {{external.auto_refresh}}
     {%- endif %}
+    {% if external.table_format | lower == "delta" %}
+      refresh_on_create = false
+    {% endif %}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
     file_format = {{external.file_format}}
