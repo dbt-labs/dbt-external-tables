@@ -97,3 +97,11 @@ sources:
             description: this is an id
           - name: name
             description: and this is a name
+
+      - name: aws_sns_refresh_tbl
+        description: "External table using AWS SNS for auto-refresh"
+        external:
+          location: "@stage"                  # reference an existing external stage
+          file_format: "( type = csv )"   
+          # auto_refresh is assumed, setting to false is not supported
+          aws_sns_topic: "arn:aws:sns:us-east-1:123456789012:my_topic" # SNS topic ARN
