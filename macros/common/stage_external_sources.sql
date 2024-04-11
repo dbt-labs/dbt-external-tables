@@ -66,6 +66,9 @@
             
         {% endfor %}
         
+        {% set update_columns = dbt_external_tables.update_external_table_columns(node) %}
+        {{ update_columns }}
+
     {% endfor %}
     
 {% endmacro %}

@@ -12,6 +12,7 @@
         {% endif %}
             metadata_filename varchar,
             metadata_file_row_number bigint,
+            metadata_file_last_modified timestamp,
             _dbt_copied_at timestamp
     );
 
