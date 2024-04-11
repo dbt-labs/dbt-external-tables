@@ -51,6 +51,9 @@
     {% if external.auto_refresh in (true, false) -%}
       auto_refresh = {{external.auto_refresh}}
     {%- endif %}
+    {% if external.aws_sns_topic -%}
+      aws_sns_topic = '{{external.aws_sns_topic}}'
+    {%- endif %}
     {% if external.table_format | lower == "delta" %}
       refresh_on_create = false
     {% endif %}
