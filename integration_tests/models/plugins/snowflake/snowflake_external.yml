@@ -19,10 +19,7 @@ sources:
           - name: last_name
             data_type: varchar(64)
           - name: email
-            data_type: varchar(64)
-          - name: email
-            alias: email_alias
-            data_type: varchar(64)          
+            data_type: varchar(64)         
         tests: &equal-to-the-people
           - dbt_utils.equality:
               compare_model: ref('people')
@@ -96,6 +93,14 @@ sources:
             quote: true
             data_type: varchar(64)
         tests: *same-rowcount
+      - name: people_csv_with_alias_colname
+        external: *csv-people
+        columns:
+          - name: email
+            alias: email_alias
+            data_type: varchar(64)
+        tests: *same-rowcount
+      
           
       - name: people_json_unpartitioned_no_columns
         external: *json-people
