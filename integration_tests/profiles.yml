@@ -24,18 +24,28 @@ integration_tests:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_TEST_ACCOUNT') }}"
       user: "{{ env_var('SNOWFLAKE_TEST_USER') }}"
-      password: "{{ env_var('SNOWFLAKE_TEST_PASSWORD') }}"
+      password: "{{ env_var('SNOWFLAKE_TEST_PASS') }}"
       role: "{{ env_var('SNOWFLAKE_TEST_ROLE') }}"
-      database: "{{ env_var('SNOWFLAKE_TEST_DATABASE') }}"
-      warehouse: "{{ env_var('SNOWFLAKE_TEST_WAREHOUSE') }}"
+      database: "{{ env_var('SNOWFLAKE_TEST_DBNAME') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_TEST_WHNAME') }}"
       schema: dbt_external_tables_integration_tests_snowflake
       threads: 1
 
     bigquery:
       type: bigquery
-      method: service-account
-      keyfile: "{{ env_var('BIGQUERY_SERVICE_KEY_PATH') }}"
-      project: "{{ env_var('BIGQUERY_TEST_DATABASE') }}"
+      method: service-account-json
+      keyfile_json:
+        type: "service_account"
+        project_id: "{{ env_var('BIGQUERY_TEST_PROJECT') }}"
+        private_key: "{{ env_var('BIGQUERY_PRIVATE_KEY') }}"
+        private_key_id: "{{ env_var('BIGQUERY_PRIVATE_KEY_ID') }}"
+        client_email: "{{ env_var('BIGQUERY_CLIENT_EMAIL') }}"
+        client_id: "{{ env_var('BIGQUERY_CLIENT_ID') }}"
+        auth_uri: "https://accounts.google.com/o/oauth2/auth"
+        token_uri: "https://oauth2.googleapis.com/token"
+        auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs"
+        client_x509_cert_url: https://www.googleapis.com/robot/v1/metadata/x509/{{ env_var('BIGQUERY_CLIENT_EMAIL') | urlencode }}"
+      project: "{{ env_var('BIGQUERY_TEST_PROJECT') }}"
       schema: dbt_external_tables_integration_tests_bigquery
       threads: 1
 
@@ -44,17 +54,17 @@ integration_tests:
       method: odbc
       port: 443
       driver: "{{ env_var('ODBC_DRIVER') }}"
-      host: "{{ env_var('DBT_DATABRICKS_HOST_NAME') }}"
-      endpoint: "{{ env_var('DBT_DATABRICKS_ENDPOINT') }}"
-      token: "{{ env_var('DBT_DATABRICKS_TOKEN') }}"
+      host: "{{ env_var('DATABRICKS_TEST_HOST') }}"
+      endpoint: "{{ env_var('DATBRICKS_TEST_ENDPOINT') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
       schema: dbt_external_tables_integration_tests_databricks
 
     synapse:
       type: synapse
       driver: "ODBC Driver 17 for SQL Server"
       port: 1433
-      host: "{{ env_var('DBT_SYNAPSE_SERVER') }}.sql.azuresynapse.net"
-      database: "{{ env_var('DBT_SYNAPSE_DB') }}"
+      host: "{{ env_var('SYNAPSE_TEST_SERVER') }}.sql.azuresynapse.net"
+      database: "{{ env_var('SYNAPSE_TEST_DBNAME') }}"
       authentication: CLI
       schema: dbt_external_tables_integration_tests_synapse
       threads: 1
@@ -63,8 +73,8 @@ integration_tests:
       type: sqlserver
       driver: "ODBC Driver 17 for SQL Server"
       port: 1433
-      host: "{{ env_var('DBT_AZURESQL_SERVER') }}"
-      database: "{{ env_var('DBT_AZURESQL_DB') }}"
+      host: "{{ env_var('AZURESQL_TEST_SERVER') }}"
+      database: "{{ env_var('AZURESQL_TEST_DBNAME') }}"
       authentication: CLI
       schema: dbt_external_tables_integration_tests_azuresql
       threads: 1
