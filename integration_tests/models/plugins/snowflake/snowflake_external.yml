@@ -20,6 +20,9 @@ sources:
             data_type: varchar(64)
           - name: email
             data_type: varchar(64)
+          - name: email
+            alias: email_alias
+            data_type: varchar(64)          
         tests: &equal-to-the-people
           - dbt_utils.equality:
               compare_model: ref('people')
@@ -28,6 +31,7 @@ sources:
                 - first_name
                 - last_name
                 - email
+                - email_alias
 
       - name: people_csv_partitioned
         external:
