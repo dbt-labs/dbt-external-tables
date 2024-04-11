@@ -93,7 +93,8 @@ sources:
             quote: true
             data_type: varchar(64)
         tests: *same-rowcount
-      - name: people_csv_with_alias_colname
+
+      - name: people_csv_with_alias_col
         external: *csv-people
         columns:
           - name: email
