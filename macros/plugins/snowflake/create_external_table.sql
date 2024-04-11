@@ -7,7 +7,7 @@
 
     {% if infer_schema %}
         {% set query_infer_schema %}
-            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}', ignore_case=>{{external.ignore_case}} ) )
+            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}'{%- if external.ignore_case -%}, ignore_case=>{{external.ignore_case}} {%- endif %} ) )
         {% endset %}
         {% if execute %}
             {% set columns_infer = run_query(query_infer_schema) %}
