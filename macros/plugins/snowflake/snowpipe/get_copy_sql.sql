@@ -26,7 +26,7 @@
             metadata$filename::varchar as metadata_filename,
             metadata$file_row_number::bigint as metadata_file_row_number,
             metadata$file_last_modified::timestamp as metadata_file_last_modified,
-            current_timestamp::timestamp as _dbt_copied_at
+            metadata$start_scan_time::timestamp as _dbt_copied_at
         from {{external.location}} {# stage #}
     )
     file_format = {{external.file_format}}
