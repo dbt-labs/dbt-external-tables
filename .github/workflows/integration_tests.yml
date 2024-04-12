@@ -36,6 +36,7 @@ jobs:
         export DBT_PROFILES_DIR=.
         dbt deps --target ${{ matrix.data-platform }}
         dbt seed --full-refresh --target ${{ matrix.data-platform }}
+        dbt run --target ${{ matrix.data-platform }}
         dbt run-operation prep_external --target ${{ matrix.data-platform }}
         dbt run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
         dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
