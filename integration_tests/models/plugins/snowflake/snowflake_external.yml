@@ -25,6 +25,7 @@ sources:
             quote: true
             identifier: email
             expression: split_part(value:email::VARCHAR, '@', 2)
+          tests: &equal-to-the-people
           - dbt_utils.equality:
               compare_model: ref('people')
               compare_columns:
