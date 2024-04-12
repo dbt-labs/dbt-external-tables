@@ -24,6 +24,12 @@ dispatch:
 seeds:
   +quote_columns: false
 
+models:
+  dbt_external_tables_integration_tests:
+    plugins:
+      snowflake:
+        +enabled: "{{ target.type == 'snowflake' }}"
+
 sources:
   dbt_external_tables_integration_tests:
     plugins:
