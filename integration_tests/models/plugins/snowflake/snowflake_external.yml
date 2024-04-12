@@ -25,10 +25,6 @@ sources:
             quote: true
             identifier: email
             expression: split_part(value:email::VARCHAR, '@', 2)
-          - name: email
-            alias: email_alias
-            data_type: varchar(64)          
-        tests: &equal-to-the-people
           - dbt_utils.equality:
               compare_model: ref('people')
               compare_columns:
@@ -36,7 +32,6 @@ sources:
                 - first_name
                 - last_name
                 - email
-                - email_alias
 
       - name: people_csv_partitioned
         external:
@@ -161,3 +156,25 @@ sources:
         columns:
           - name: id
             description: "the unique ID for people"
+
+        # test for column aliasing
+      - name: people_csv_aliased
+        external: *csv-people
+        columns:
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            alias: email_alias
+            data_type: varchar(64)
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_alias')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email_alias
