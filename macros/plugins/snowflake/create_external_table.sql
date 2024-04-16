@@ -26,8 +26,6 @@
         {%- endfor -%}{%- endif -%}
         {%- if not infer_schema -%}
             {%- for column in columns %}
-                {# {%- set column_alias = column.alias if column.alias else column.name %}
-                {%- set column_alias_quoted = adapter.quote(column_alias) if column.quote else column_alias %} #}
                 {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
                 {%- set column_alias -%}
                     {%- if 'alias' in column and column.quote -%}
