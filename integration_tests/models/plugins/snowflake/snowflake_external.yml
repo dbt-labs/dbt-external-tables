@@ -176,8 +176,8 @@ sources:
                 - email_alias
 
         # test for column expression
-      - name: people_csv_expression
-        external: *csv-people
+      - name: people_json_expression
+        external: *json-people
         columns:
           - name: id
             data_type: int
@@ -189,8 +189,8 @@ sources:
             data_type: varchar(64)
           - name: email_domain
             data_type: varchar(64)
+            alias: EMAIL_DOMAIN
             quote: true
-            identifier: email
             expression: split_part(value:email::VARCHAR, '@', 2)
         tests:
           - dbt_utils.equality:
