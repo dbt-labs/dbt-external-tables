@@ -35,8 +35,8 @@ sources:
           - name: etl timestamp
             # Use double-quoted identifiers for name and identifier
             quote: true
-            # Specifying identifier lets us rename etl_tstamp to "etl timestamp"
-            identifier: etl_tstamp
+            # Specifying alias lets us rename etl timestamp to "etl_timestamp"
+            alias: etl_timestamp
             data_type: timestamp
             description: "Timestamp event began ETL with a double quoted identifier"
           - name: etl_date
