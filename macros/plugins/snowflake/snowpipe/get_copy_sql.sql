@@ -5,11 +5,11 @@
     {%- set external = source_node.external -%}
     {%- set is_csv = dbt_external_tables.is_csv(external.file_format) %}
     {%- set copy_options = external.snowpipe.get('copy_options', none) -%}
-   
+
     {%- if explicit_transaction -%} begin; {%- endif %}
-    
+
     copy into {{source(source_node.source_name, source_node.name)}}
-    from ( 
+    from (
         select
         {% if columns|length == 0 %}
             $1::variant as value,
@@ -25,13 +25,14 @@
         {% endif %}
             metadata$filename::varchar as metadata_filename,
             metadata$file_row_number::bigint as metadata_file_row_number,
-            current_timestamp::timestamp as _dbt_copied_at
+            metadata$file_last_modified::timestamp as metadata_file_last_modified,
+            metadata$start_scan_time::timestamp as _dbt_copied_at
         from {{external.location}} {# stage #}
     )
     file_format = {{external.file_format}}
     {% if external.pattern -%} pattern = '{{external.pattern}}' {%- endif %}
     {% if copy_options %} {{copy_options}} {% endif %};
-    
+
     {% if explicit_transaction -%} commit; {%- endif -%}
 
 {% endmacro %}
