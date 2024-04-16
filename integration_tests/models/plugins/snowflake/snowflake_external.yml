@@ -20,7 +20,7 @@ sources:
             data_type: varchar(64)
           - name: email
             data_type: varchar(64)
-          - name: email domain
+          - name: email_domain
             data_type: varchar(64)
             quote: true
             identifier: email
