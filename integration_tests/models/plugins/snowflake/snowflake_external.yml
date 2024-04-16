@@ -20,11 +20,6 @@ sources:
             data_type: varchar(64)
           - name: email
             data_type: varchar(64)
-          - name: email_domain
-            data_type: varchar(64)
-            quote: true
-            identifier: email
-            expression: split_part(value:email::VARCHAR, '@', 2)
         tests: &equal-to-the-people
           - dbt_utils.equality:
               compare_model: ref('people')
@@ -179,3 +174,30 @@ sources:
                 - first_name
                 - last_name
                 - email_alias
+
+        # test for column expression
+      - name: people_csv_expression
+        external: *csv-people
+        columns:
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+          - name: email_domain
+            data_type: varchar(64)
+            quote: true
+            identifier: email
+            expression: split_part(value:email::VARCHAR, '@', 2)
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_expression')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+                - email_domain
