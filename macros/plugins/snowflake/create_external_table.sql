@@ -4,10 +4,11 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set infer_schema = external.infer_schema -%}
+    {%- set ignore_case = external.ignore_case -%}
 
     {% if infer_schema %}
         {% set query_infer_schema %}
-            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}'{%- if external.ignore_case -%}, ignore_case=>{{external.ignore_case}} {%- endif %} ) )
+            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}'{%- if ignore_case -%}, ignore_case=>{{ignore_case}} {%- endif %} ) )
         {% endset %}
         {% if execute %}
             {% set columns_infer = run_query(query_infer_schema) %}
