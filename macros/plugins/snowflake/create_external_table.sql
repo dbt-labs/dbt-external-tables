@@ -41,7 +41,7 @@
         {%- for column in columns_infer %}
                 {%- set col_expression -%}
                     {%- set col_id = 'value:' ~ column[0] -%}
-                    (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
+                    (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {% if ignore_case -%} GET_IGNORE_CASE(value, '{{column[0]}}') {%- else -%} {{col_id}} {%- endif %} end)
                 {%- endset %}
                 {{column[0]}} {{column[1]}} as ({{col_expression}}::{{column[1]}})
                 {{- ',' if not loop.last -}}
