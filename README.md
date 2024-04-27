@@ -16,6 +16,7 @@ This package provides:
 * Azure SQL
 * AWS Athena via [dbt-athena-community](https://pypi.org/project/dbt-athena-community/)>=1.4.1 ([version changed quoting mechanism](https://github.com/dbt-athena/dbt-athena/pull/152))
   * Tested with [Athena Engine version 3](https://docs.aws.amazon.com/athena/latest/ug/engine-versions-reference-0003.html)
+  * [Example minimal IAM permissions](./athena_iam_permissions,json)
 
 
 ![sample docs](etc/sample_docs.png)

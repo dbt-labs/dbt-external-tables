@@ -12,7 +12,7 @@ integration_tests:
 
     athena:
       type: athena
-      database: "{{ env_var('ATHENA_TEST_DBNAME') }}"
+      database: "{{ env_var('ATHENA_TEST_DBNAME', 'AwsDataCatalog') }}"
       region_name: "{{ env_var('ATHENA_AWS_REGION') }}"
       s3_staging_dir: "s3://{{ env_var('ATHENA_TEST_BUCKET') }}"
       work_group: "{{ env_var('ATHENA_TEST_WORKGROUP') }}"
