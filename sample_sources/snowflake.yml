@@ -32,6 +32,18 @@ sources:
           - name: etl_tstamp
             data_type: timestamp
             description: "Timestamp event began ETL"
+          - name: etl timestamp
+            # Use double-quoted identifiers for name and identifier
+            quote: true
+            # Specifying alias lets us rename etl timestamp to "etl_timestamp"
+            alias: etl_timestamp
+            data_type: timestamp
+            description: "Timestamp event began ETL with a double quoted identifier"
+          - name: etl_date
+            data_type: date
+            description: "Date event began ETL"
+            # Expressions can manipulate the variant value prior to casting to data_type.
+            expression: TRY_TO_DATE(VALUE:etl_tstamp::VARCHAR, 'YYYYMMDD')
           - name: contexts
             data_type: variant
             description: "Contexts attached to event by Tracker"
@@ -85,3 +97,11 @@ sources:
             description: this is an id
           - name: name
             description: and this is a name
+
+      - name: aws_sns_refresh_tbl
+        description: "External table using AWS SNS for auto-refresh"
+        external:
+          location: "@stage"                  # reference an existing external stage
+          file_format: "( type = csv )"   
+          # auto_refresh is assumed, setting to false is not supported
+          aws_sns_topic: "arn:aws:sns:us-east-1:123456789012:my_topic" # SNS topic ARN

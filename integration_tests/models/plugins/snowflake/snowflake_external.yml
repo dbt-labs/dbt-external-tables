@@ -152,3 +152,52 @@ sources:
         columns:
           - name: id
             description: "the unique ID for people"
+
+        # test for column aliasing
+      - name: people_csv_aliased
+        external: *csv-people
+        columns:
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            alias: email_alias
+            data_type: varchar(64)
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_alias')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email_alias
+
+        # test for column expression
+      - name: people_json_expression
+        external: *json-people
+        columns:
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+          - name: email_domain
+            data_type: varchar(64)
+            alias: EMAIL_DOMAIN
+            quote: true
+            expression: split_part(value:email::VARCHAR, '@', 2)
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_expression')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+                - email_domain
