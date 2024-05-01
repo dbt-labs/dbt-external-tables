@@ -4,10 +4,11 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set infer_schema = external.infer_schema -%}
+    {%- set ignore_case = external.ignore_case -%}
 
     {% if infer_schema %}
         {% set query_infer_schema %}
-            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}') )
+            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}'{%- if ignore_case -%}, ignore_case=>{{ignore_case}} {%- endif %} ) )
         {% endset %}
         {% if execute %}
             {% set columns_infer = run_query(query_infer_schema) %}
@@ -50,7 +51,11 @@
         {% else %}
         {%- for column in columns_infer %}
                 {%- set col_expression -%}
-                    {%- set col_id = 'value:' ~ column[0] -%}
+                    {%- if not ignore_case -%}
+                        {%- set col_id = 'value:' ~ column[0] -%}
+                    {%- else -%}
+                        {%- set col_id = "get_ignore_case(value, '{}')".format(column[0]) -%}
+                    {%- endif -%}
                     (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                 {%- endset %}
                 {{column[0]}} {{column[1]}} as ({{col_expression}}::{{column[1]}})
