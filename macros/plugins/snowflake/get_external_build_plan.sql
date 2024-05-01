@@ -20,7 +20,7 @@
                 dbt_external_tables.snowflake_create_snowpipe(source_node)
             ] %}
         {% else %}
-            {% set build_plan = build_plan + dbt_external_tables.snowflake_refresh_snowpipe(source_node) %}
+            {% set build_plan = build_plan + dbt_external_tables.refresh_external_table(source_node) %}
         {% endif %}
             
     {% else %}

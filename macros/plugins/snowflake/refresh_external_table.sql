@@ -19,6 +19,10 @@
         
         {% do return([ddl]) %}
     
+     {% elif snowpipe is not none %}
+     
+        {% do return([]) %}
+
     {% else %}
     
         {% do return([]) %}

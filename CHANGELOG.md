@@ -1,5 +1,11 @@
 # Changelog
 
+## dbt-external-tables VNEXT
+
+
+### Snowflake
+* Snowpipes should never refresh even if `auto_refresh` is set to `True` ([#250](https://github.com/dbt-labs/dbt-external-tables/issues/250)
+
 ## dbt-external-tables v0.9.0
 
 ### Snowflake
