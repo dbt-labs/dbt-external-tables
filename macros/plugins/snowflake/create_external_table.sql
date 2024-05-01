@@ -27,14 +27,25 @@
         {%- endfor -%}{%- endif -%}
         {%- if not infer_schema -%}
             {%- for column in columns %}
-                {%- set column_alias = column.alias if column.alias else column.name %}
-                {%- set column_alias_quoted = adapter.quote(column_alias) if column.quote else column_alias %}
                 {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
-                {%- set col_expression -%}
-                    {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_quoted -%}
-                    (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
+                {%- set column_alias -%}
+                    {%- if 'alias' in column and column.quote -%}
+                        {{adapter.quote(column.alias)}}
+                    {%- elif 'alias' in column -%}
+                        {{column.alias}}
+                    {%- else -%}
+                        {{column_quoted}}
+                    {%- endif -%}
                 {%- endset %}
-                {{column_alias_quoted}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
+                {%- set col_expression -%}
+                    {%- if column.expression -%}
+                        {{column.expression}}
+                    {%- else -%}
+                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_alias -%}
+                        (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
+                    {%- endif -%}
+                {%- endset %}
+                {{column_alias}} {{column.data_type}} as ({{col_expression}}::{{column.data_type}})
                 {{- ',' if not loop.last -}}
             {% endfor %}
         {% else %}
