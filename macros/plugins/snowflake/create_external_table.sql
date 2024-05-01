@@ -51,8 +51,12 @@
         {% else %}
         {%- for column in columns_infer %}
                 {%- set col_expression -%}
-                    {%- set col_id = 'value:' ~ column[0] -%}
-                    (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {% if ignore_case -%} GET_IGNORE_CASE(value, '{{column[0]}}') {%- else -%} {{col_id}} {%- endif %} end)
+                    {%- if not ignore_case -%}
+                        {%- set col_id = 'value:' ~ column[0] -%}
+                    {%- else -%}
+                        {%- set col_id = "get_ignore_case(value, '{}')".format(column[0]) -%}
+                    {%- endif -%}
+                    (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                 {%- endset %}
                 {{column[0]}} {{column[1]}} as ({{col_expression}}::{{column[1]}})
                 {{- ',' if not loop.last -}}
