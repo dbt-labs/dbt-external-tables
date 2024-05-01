@@ -1,5 +1,37 @@
 # Changelog
 
+## dbt-external-tables v0.9.0
+
+### Snowflake
+* Add metadata_file_last_modified for snowpiped tables by @Catisyf in https://github.com/dbt-labs/dbt-external-tables/pull/239
+* snowflake delta format by @danielefrigo in https://github.com/dbt-labs/dbt-external-tables/pull/240
+* Support aws_sns_topic property in Snowflake by @jtmcn in https://github.com/dbt-labs/dbt-external-tables/pull/243
+* alias column for snowflake external table by @cakkinep in https://github.com/dbt-labs/dbt-external-tables/pull/257
+* Snowflake: Add expression parameter to columns by @kyleburke-meq @jpear3 in https://github.com/dbt-labs/dbt-external-tables/pull/275
+
+### BigQuery
+* Handle BigQuery non-string option 'max_staleness' by @marcbllv in https://github.com/dbt-labs/dbt-external-tables/pull/237
+* quote project name by @thomas-vl in https://github.com/dbt-labs/dbt-external-tables/pull/242
+* update external table columns by @thomas-vl in https://github.com/dbt-labs/dbt-external-tables/pull/252
+
+### under the hood
+* Fix protobuf v5 issue in CI by @thomas-vl in https://github.com/dbt-labs/dbt-external-tables/pull/258
+* move to GitHub Actions by @dataders in https://github.com/dbt-labs/dbt-external-tables/pull/265
+* Rebase test by @dataders in https://github.com/dbt-labs/dbt-external-tables/pull/273
+* run workflow in context of base repo by @dataders in https://github.com/dbt-labs/dbt-external-tables/pull/278
+* actual test case for #257 by @dataders in https://github.com/dbt-labs/dbt-external-tables/pull/290
+
+## New Contributors
+* @marcbllv made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/237
+* @Catisyf made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/239
+* @danielefrigo made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/240
+* @jtmcn made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/243
+* @cakkinep made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/257
+* @kyleburke-meq made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/275
+* @jpear3 made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/275
+
+**Full Changelog**: https://github.com/dbt-labs/dbt-external-tables/compare/0.8.7...0.9.0
+
 ## dbt-external-tables v0.8.0
 
 This release supports any version (minor and patch) of v1, which means far less need for compatibility releases in the future.
