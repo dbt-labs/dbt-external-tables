@@ -1,0 +1,61 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "athena_glue",
+            "Effect": "Allow",
+            "Action": [
+                "glue:BatchCreatePartition",
+                "athena:StartQueryExecution",
+                "athena:ListDataCatalogs",
+                "glue:DeleteDatabase",
+                "glue:GetPartitions",
+                "glue:BatchDeletePartition",
+                "glue:UpdateTable",
+                "athena:GetQueryResults",
+                "glue:DeleteTable",
+                "athena:GetDatabase",
+                "athena:GetDataCatalog",
+                "athena:ListQueryExecutions",
+                "athena:GetWorkGroup",
+                "athena:StopQueryExecution",
+                "glue:CreatePartition",
+                "glue:UpdatePartition",
+                "glue:CreateTable",
+                "glue:GetTables",
+                "glue:BatchUpdatePartition",
+                "glue:BatchGetPartition",
+                "glue:GetDatabases",
+                "glue:GetTable",
+                "glue:GetDatabase",
+                "glue:GetPartition",
+                "athena:ListDatabases",
+                "glue:CreateDatabase",
+                "athena:GetQueryExecution",
+                "glue:DeletePartition",
+                "athena:BatchGetQueryExecution"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "s3_via_athena",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucketMultipartUploads",
+                "s3:AbortMultipartUpload",
+                "s3:ListBucket",
+                "s3:DeleteObject",
+                "s3:GetBucketLocation",
+                "s3:ListMultipartUploadParts"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "ForAnyValue:StringEquals": {
+                    "aws:CalledVia": "athena.amazonaws.com"
+                }
+            }
+        }
+    ]
+}
