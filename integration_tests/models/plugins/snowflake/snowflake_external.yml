@@ -1,49 +1,88 @@
 version: 2
 
+models:
+  - name: people_csv_unpartitioned
+    config: &config_csv_people
+      materialized: external_table
+      location: '@{{ target.schema }}.dbt_external_tables_testing/csv'
+      file_format: '( type = csv skip_header = 1 )'
+    columns: &cols-of-the-people
+    - name: id
+      data_type: int
+    - name: first_name
+      data_type: varchar(64)
+    - name: last_name
+      data_type: varchar(64)
+    - name: email
+      data_type: varchar(64)
+    tests: &equal-to-the-people
+    - dbt_utils.equality:
+        compare_model: ref('people')
+        compare_columns:
+          - id
+          - first_name
+          - last_name
+          - email
+  - name: people_csv_partitioned
+    config:
+      <<: *config_csv_people
+      auto_refresh: false   # make sure this templates right
+      partitions: &parts-of-the-people
+      - name: section
+        data_type: varchar
+        expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+    columns: *cols-of-the-people
+    tests: *equal-to-the-people
+  - name: people_json_unpartitioned
+    config: &json-people
+      materialized: external_table
+      location: '@{{ target.schema }}.dbt_external_tables_testing/json'
+      file_format: '( type = json )'
+    columns: *cols-of-the-people
+    tests: *equal-to-the-people
+  - name: people_json_partitioned
+    config:
+      <<: *json-people
+      partitions: *parts-of-the-people
+    columns: *cols-of-the-people
+    tests: *equal-to-the-people
+  - name: people_json_snowpipe
+    config:
+      materialized: external_table
+      location: '@{{ target.schema }}.dbt_external_tables_testing/json'
+      file_format: '( type = json )'
+      <<: *json-people
+      snowpipe:
+        auto_ingest: false
+        copy_options: ''
+    columns: *cols-of-the-people
+    tests: *equal-to-the-people
+
 sources:
   - name: snowflake_external
     schema: "{{ target.schema }}"
     loader: S3
 
     tables:
-      
-      - name: people_csv_unpartitioned
+      - name: people
+      - name: people_csv_unpartitioned3
         external: &csv-people
           location: '@{{ target.schema }}.dbt_external_tables_testing/csv'
           file_format: '( type = csv skip_header = 1 )'
-        columns: &cols-of-the-people
-          - name: id
-            data_type: int
-          - name: first_name
-            data_type: varchar(64)
-          - name: last_name
-            data_type: varchar(64)
-          - name: email
-            data_type: varchar(64)
-        tests: &equal-to-the-people
-          - dbt_utils.equality:
-              compare_model: ref('people')
-              compare_columns:
-                - id
-                - first_name
-                - last_name
-                - email
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
 
       - name: people_csv_partitioned
         external:
           <<: *csv-people
           auto_refresh: false   # make sure this templates right
-          partitions: &parts-of-the-people
-            - name: section
-              data_type: varchar
-              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+          partitions: *parts-of-the-people
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
       - name: people_json_unpartitioned
-        external: &json-people
-          location: '@{{ target.schema }}.dbt_external_tables_testing/json'
-          file_format: '( type = json )'
+        external: *json-people
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
