@@ -17,6 +17,9 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+flags:
+  send_anonymous_usage_stats: False
+
 dispatch:
   - macro_namespace: dbt_external_tables
     search_order: ['dbt_external_tables_integration_tests', 'dbt_external_tables']
@@ -46,7 +49,7 @@ sources:
       azuresql:
         +enabled: "{{ target.type == 'sqlserver' }}"
 
-tests:
+data_tests:
   dbt_external_tables_integration_tests:
     plugins:
       redshift:
