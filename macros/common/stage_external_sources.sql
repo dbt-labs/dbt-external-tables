@@ -17,7 +17,7 @@
                             {% do sources_to_stage.append(node) %}
                         {% endif %}
                     {% else %}
-                        {% if src == node.source_name %}
+                        {% if src == node.name %}
                             {% do sources_to_stage.append(node) %}
                         {% endif %}
                     {% endif %}
