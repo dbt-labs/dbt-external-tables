@@ -23,14 +23,14 @@ jobs:
         # redshift
         REDSHIFT_HOST: ${{ secrets.REDSHIFT_TEST_HOST }}
         REDSHIFT_USER: ${{ secrets.REDSHIFT_TEST_USER }}
+        REDSHIFT_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
         REDSHIFT_DATABASE: ${{ secrets.REDSHIFT_TEST_DBNAME }}
         REDSHIFT_SCHEMA: "integration_tests_redshift_${{ github.run_number }}"
-        REDSHIFT_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
          # snowflake
         SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_TEST_USER }}
+        SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
         SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_TEST_ROLE }}
         SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_TEST_DBNAME }}
-        SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
         SNOWFLAKE_SCHEMA: "integration_tests_snowflake_${{ github.run_number }}"
       secrets:
         DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.REDSHIFT_TEST_PASS }}
