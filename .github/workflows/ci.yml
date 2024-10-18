@@ -21,18 +21,23 @@ jobs:
       uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@v1
       with:
         # redshift
-        REDSHIFT_HOST: ${{ secrets.REDSHIFT_TEST_HOST }}
-        REDSHIFT_USER: ${{ secrets.REDSHIFT_TEST_USER }}
-        REDSHIFT_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
-        REDSHIFT_DATABASE: ${{ secrets.REDSHIFT_TEST_DBNAME }}
+        REDSHIFT_HOST: ${{ vars.REDSHIFT_HOST }}
+        REDSHIFT_USER: ${{ vars.REDSHIFT_USER }}
+        REDSHIFT_PORT: ${{ vars.REDSHIFT_PORT }}
+        REDSHIFT_DATABASE: ${{ vars.REDSHIFT_DATABASE }}
         REDSHIFT_SCHEMA: "integration_tests_redshift_${{ github.run_number }}"
-         # snowflake
-        SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_TEST_USER }}
-        SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
-        SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_TEST_ROLE }}
-        SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_TEST_DBNAME }}
+        # snowflake
+        SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
+        SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+        SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+        SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
         SNOWFLAKE_SCHEMA: "integration_tests_snowflake_${{ github.run_number }}"
+        # bigquery
+        BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
+        BIGQUERY_SCHEMA: "integration_tests_bigquery_${{ github.run_number }}"
+
       secrets:
-        DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.REDSHIFT_TEST_PASS }}
-        SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_TEST_ACCOUNT }}
-        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.SNOWFLAKE_TEST_PASS }}
+        DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
+        SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.DBT_ENV_SECRET_SNOWFLAKE_PASS }}
+        BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}

@@ -48,7 +48,7 @@ jobs:
         DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.REDSHIFT_TEST_PASS }}
         REDSHIFT_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
         REDSHIFT_DATABASE: ${{ secrets.REDSHIFT_TEST_DBNAME }}
-        # TODO: below value - does it need to be secret or could we hard code it in tox and here?
+        # TODO: below value - does it need to be env-var or could we hard code it in tox and here?
         REDSHIFT_SPECTRUM_IAM_ROLE: ${{ secrets.REDSHIFT_SPECTRUM_IAM_ROLE }}
         REDSHIFT_SCHEMA: "dbt_external_tables_integration_tests_redshift"
         #snowflake
@@ -60,8 +60,6 @@ jobs:
         SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_TEST_DBNAME }}
         SNOWFLAKE_SCHEMA: "dbt_external_tables_integration_tests_snowflake"
         # bigquery
-        BIGQUERY_TEST_PROJECT: ${{ secrets.BIGQUERY_TEST_PROJECT }}
-        BIGQUERY_PRIVATE_KEY: ${{ secrets.BIGQUERY_PRIVATE_KEY }}
-        BIGQUERY_PRIVATE_KEY_ID: ${{ secrets.BIGQUERY_PRIVATE_KEY_ID }}
-        BIGQUERY_CLIENT_EMAIL: ${{ secrets.BIGQUERY_CLIENT_EMAIL }}
-        BIGQUERY_CLIENT_ID: ${{ secrets.BIGQUERY_CLIENT_ID }}
+        BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
+        BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}
+        BIGQUERY_SCHEMA: "dbt_external_tables_integration_tests_bigquery"
