@@ -11,25 +11,25 @@ integration_tests:
   outputs:
 
     redshift:
-      type: redshift
-      host: "{{ env_var('REDSHIFT_TEST_HOST') }}"
-      user: "{{ env_var('REDSHIFT_TEST_USER') }}"
-      pass: "{{ env_var('REDSHIFT_TEST_PASS') }}"
-      dbname: "{{ env_var('REDSHIFT_TEST_DBNAME') }}"
-      port: "{{ env_var('REDSHIFT_TEST_PORT') | as_number }}"
-      schema: dbt_external_tables_integration_tests_redshift
-      threads: 1
+      type: "redshift"
+      host: "{{ env_var('REDSHIFT_HOST') }}"
+      user: "{{ env_var('REDSHIFT_USER') }}"
+      pass: "{{ env_var('DBT_ENV_SECRET_REDSHIFT_PASS') }}"
+      dbname: "{{ env_var('REDSHIFT_DATABASE') }}"
+      port: "{{ env_var('REDSHIFT_PORT') | as_number }}"
+      schema: "{{ env_var('REDSHIFT_SCHEMA') }}"
+      threads: 5
       
     snowflake:
-      type: snowflake
-      account: "{{ env_var('SNOWFLAKE_TEST_ACCOUNT') }}"
-      user: "{{ env_var('SNOWFLAKE_TEST_USER') }}"
-      password: "{{ env_var('SNOWFLAKE_TEST_PASS') }}"
-      role: "{{ env_var('SNOWFLAKE_TEST_ROLE') }}"
-      database: "{{ env_var('SNOWFLAKE_TEST_DBNAME') }}"
-      warehouse: "{{ env_var('SNOWFLAKE_TEST_WHNAME') }}"
-      schema: dbt_external_tables_integration_tests_snowflake
-      threads: 1
+      type: "snowflake"
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('DBT_ENV_SECRET_SNOWFLAKE_PASS') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"
+      threads: 10
 
     bigquery:
       type: bigquery
