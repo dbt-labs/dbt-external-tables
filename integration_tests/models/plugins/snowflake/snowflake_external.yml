@@ -201,3 +201,33 @@ sources:
                 - last_name
                 - email
                 - email_domain
+
+
+      - name: people_parquet_infer_schema_ignore_case_unpartitioned
+        external: 
+          <<: *parquet-people
+          infer_schema: true
+          ignore_case: true
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_ignore_case')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email         
+
+      - name: people_parquet_column_list_ignore_case_partitioned
+        external: 
+          <<: *parquet-people
+          partitions: *parts-of-the-people
+          ignore_case: true
+        columns: *cols-of-the-people
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_ignore_case')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email        
