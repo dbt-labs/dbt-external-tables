@@ -40,7 +40,7 @@
                     {%- if column.expression -%}
                         {{column.expression}}
                     {%- else -%}
-                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_alias -%}
+                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_quoted -%}
                         (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                     {%- endif -%}
                 {%- endset %}
