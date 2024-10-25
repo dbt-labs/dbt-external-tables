@@ -42,9 +42,9 @@
                         {{column.expression}}
                     {%- else -%}
                         {%- if ignore_case -%}
-                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'GET_IGNORE_CASE($1, ' ~ "'"~ column_alias ~"'"~ ')' -%}
+                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'GET_IGNORE_CASE($1, ' ~ "'"~ column_quoted ~"'"~ ')' -%}
                         {%- else -%}
-                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_alias -%}
+                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_quoted -%}
                         {%- endif -%}
                         (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                     {%- endif -%}
