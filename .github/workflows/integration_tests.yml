@@ -17,7 +17,7 @@ jobs:
       max-parallel: 3
       matrix:
         python-version: [ "3.11"] # "3.10", "3.12"]
-        dbt-version: ["1.7.0"] # "1.6.0", , "1.8.0b1"]
+        dbt-version: ["1.8.0"] # "1.6.0", , "1.8.0b1"]
         data-platform: ["redshift", "snowflake", "bigquery"]
 
     steps:
@@ -38,9 +38,9 @@ jobs:
         dbt seed --full-refresh --target ${{ matrix.data-platform }}
         dbt run --target ${{ matrix.data-platform }}
         dbt run-operation prep_external --target ${{ matrix.data-platform }}
-        dbt run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
+        dbt -d run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
         dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
-        dbt test --target ${{ matrix.data-platform }}
+        dbt -d test --target ${{ matrix.data-platform }}
       env: 
         REDSHIFT_TEST_HOST: ${{ secrets.REDSHIFT_TEST_HOST }}
         REDSHIFT_TEST_USER: ${{ secrets.REDSHIFT_TEST_USER }}
