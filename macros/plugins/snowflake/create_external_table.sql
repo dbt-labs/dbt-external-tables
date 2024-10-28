@@ -4,11 +4,11 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set infer_schema = external.infer_schema -%}
-    {%- set ignore_case = external.ignore_case -%}
+    {%- set ignore_case = external.ignore_case or false  -%}
 
     {% if infer_schema %}
         {% set query_infer_schema %}
-            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}', ignore_case=>true) )
+            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}', ignore_case=> {{ ignore_case }}) )
         {% endset %}
         {% if execute %}
             {% set columns_infer = run_query(query_infer_schema) %}
@@ -19,6 +19,8 @@
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
+
+{% set ddl %}
     create or replace external table {{source(source_node.source_name, source_node.name)}}
     {%- if columns or partitions or infer_schema -%}
     (
@@ -83,4 +85,7 @@
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
     file_format = {{external.file_format}}
     {% if external.table_format -%} table_format = '{{external.table_format}}' {%- endif %}
+{% endset %}
+{# {{ log('ddl: ' ~ ddl, info=True) }} #}
+{{ ddl }};
 {% endmacro %}

@@ -1,5 +1,17 @@
 # Changelog
 
+## dbt-external-tables v0.10.0
+
+### Snowflake
+* Refactor create_external_table.sql in snowflake plugin by @kyleburke-meq in https://github.com/dbt-labs/dbt-external-tables/pull/318
+* stage_external_sources Comparing source_name of the node instead of the name of the node by @ward-resa in https://github.com/dbt-labs/dbt-external-tables/pull/312
+* added ignore_case for Snowflake by @cakkinep in https://github.com/dbt-labs/dbt-external-tables/pull/308
+
+## New Contributors
+* @ward-resa made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/312
+
+**Full Changelog**: https://github.com/dbt-labs/dbt-external-tables/compare/0.9.0...0.10.0-b1
+
 ## dbt-external-tables v0.9.0
 
 ### Snowflake
