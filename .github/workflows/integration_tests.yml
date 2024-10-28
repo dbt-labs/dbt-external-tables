@@ -38,9 +38,9 @@ jobs:
         dbt seed --full-refresh --target ${{ matrix.data-platform }}
         dbt run --target ${{ matrix.data-platform }}
         dbt run-operation prep_external --target ${{ matrix.data-platform }}
-        dbt run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
+        dbt -d run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
         dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
-        dbt test --target ${{ matrix.data-platform }}
+        dbt -d test --target ${{ matrix.data-platform }}
       env: 
         REDSHIFT_TEST_HOST: ${{ secrets.REDSHIFT_TEST_HOST }}
         REDSHIFT_TEST_USER: ${{ secrets.REDSHIFT_TEST_USER }}
