@@ -4,10 +4,11 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set infer_schema = external.infer_schema -%}
+    {%- set ignore_case = external.ignore_case or false  -%}
 
     {% if infer_schema %}
         {% set query_infer_schema %}
-            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}') )
+            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{external.file_format}}', ignore_case=> {{ ignore_case }}) )
         {% endset %}
         {% if execute %}
             {% set columns_infer = run_query(query_infer_schema) %}
@@ -18,6 +19,8 @@
 
 {# https://docs.snowflake.net/manuals/sql-reference/sql/create-external-table.html #}
 {# This assumes you have already created an external stage #}
+
+{% set ddl %}
     create or replace external table {{source(source_node.source_name, source_node.name)}}
     {%- if columns or partitions or infer_schema -%}
     (
@@ -40,7 +43,11 @@
                     {%- if column.expression -%}
                         {{column.expression}}
                     {%- else -%}
-                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_alias -%}
+                        {%- if ignore_case -%}
+                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'GET_IGNORE_CASE($1, ' ~ "'"~ column_quoted ~"'"~ ')' -%}
+                        {%- else -%}
+                        {%- set col_id = 'value:c' ~ loop.index if is_csv else 'value:' ~ column_quoted -%}
+                        {%- endif -%}
                         (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                     {%- endif -%}
                 {%- endset %}
@@ -50,7 +57,11 @@
         {% else %}
         {%- for column in columns_infer %}
                 {%- set col_expression -%}
+                {%- if ignore_case -%}
+                    {%- set col_id = 'GET_IGNORE_CASE($1, ' ~ "'"~ column[0] ~"'"~ ')' -%}
+                {%- else -%}
                     {%- set col_id = 'value:' ~ column[0] -%}
+                {%- endif -%}
                     (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                 {%- endset %}
                 {{column[0]}} {{column[1]}} as ({{col_expression}}::{{column[1]}})
@@ -74,4 +85,7 @@
     {% if external.integration -%} integration = '{{external.integration}}' {%- endif %}
     file_format = {{external.file_format}}
     {% if external.table_format -%} table_format = '{{external.table_format}}' {%- endif %}
+{% endset %}
+{# {{ log('ddl: ' ~ ddl, info=True) }} #}
+{{ ddl }};
 {% endmacro %}
