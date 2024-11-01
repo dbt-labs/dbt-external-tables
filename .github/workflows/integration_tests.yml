@@ -10,8 +10,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    environment:
-      name: ci_testing
     strategy:
       fail-fast: true
       max-parallel: 3
