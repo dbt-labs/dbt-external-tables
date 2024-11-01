@@ -43,20 +43,20 @@ jobs:
 
         env: 
         # redshift
-        REDSHIFT_HOST: ${{ secrets.REDSHIFT_TEST_HOST }}
-        REDSHIFT_USER: ${{ secrets.REDSHIFT_TEST_USER }}
-        DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.REDSHIFT_TEST_PASS }}
-        REDSHIFT_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
-        REDSHIFT_DATABASE: ${{ secrets.REDSHIFT_TEST_DBNAME }}
+        REDSHIFT_HOST: ${{ secrets.REDSHIFT_HOST }}
+        REDSHIFT_USER: ${{ secrets.REDSHIFT_USER }}
+        DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
+        REDSHIFT_PORT: ${{ secrets.REDSHIFT_PORT }}
+        REDSHIFT_DATABASE: ${{ secrets.REDSHIFT_DATABASE }}
         REDSHIFT_SPECTRUM_IAM_ROLE: ${{ secrets.REDSHIFT_SPECTRUM_IAM_ROLE }}
         REDSHIFT_SCHEMA: "dbt_external_tables_integration_tests_redshift"
         #snowflake
-        SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_TEST_ACCOUNT }}
-        SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_TEST_USER }}
-        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.SNOWFLAKE_TEST_PASS }}
-        SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
-        SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_TEST_ROLE }}
-        SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_TEST_DBNAME }}
+        SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+        SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.DBT_ENV_SECRET_SNOWFLAKE_PASS }}
+        SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+        SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+        SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
         SNOWFLAKE_SCHEMA: "dbt_external_tables_integration_tests_snowflake"
         # bigquery
         BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
