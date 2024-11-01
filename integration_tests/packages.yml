@@ -1,4 +1,3 @@
-
 packages:
   - local: ../
   - package: dbt-labs/dbt_utils

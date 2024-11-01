@@ -8,7 +8,7 @@
             {{ external_schema }}
             from data catalog
             database '{{ external_schema }}'
-            iam_role '{{ env_var("REDSHIFT_SPECTRUM_IAM_ROLE") }}'
+            iam_role 'arn:aws:iam::859831564954:role/RedshiftSpectrumTesting'
             create external database if not exists;
             
     {% endset %}

@@ -6,3 +6,4 @@
 **/env/
 **/venv/
 **/test.env
+integration_tests/vars.env
