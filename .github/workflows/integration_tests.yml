@@ -10,14 +10,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    environment:
-      name: ci_testing
     strategy:
       fail-fast: true
       max-parallel: 3
       matrix:
         python-version: [ "3.11"] # "3.10", "3.12"]
-        dbt-version: ["1.7.0"] # "1.6.0", , "1.8.0b1"]
+        dbt-version: ["1.8.0"] # "1.6.0", , "1.8.0b1"]
         data-platform: ["redshift", "snowflake", "bigquery"]
 
     steps:
@@ -38,24 +36,29 @@ jobs:
         dbt seed --full-refresh --target ${{ matrix.data-platform }}
         dbt run --target ${{ matrix.data-platform }}
         dbt run-operation prep_external --target ${{ matrix.data-platform }}
-        dbt run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
+        dbt -d run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
         dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
         dbt test --target ${{ matrix.data-platform }}
-      env: 
-        REDSHIFT_TEST_HOST: ${{ secrets.REDSHIFT_TEST_HOST }}
-        REDSHIFT_TEST_USER: ${{ secrets.REDSHIFT_TEST_USER }}
-        REDSHIFT_TEST_PASS: ${{ secrets.REDSHIFT_TEST_PASS }}
-        REDSHIFT_TEST_PORT: ${{ secrets.REDSHIFT_TEST_PORT }}
-        REDSHIFT_TEST_DBNAME: ${{ secrets.REDSHIFT_TEST_DBNAME }}
+      env:
+
+        env: 
+        # redshift
+        REDSHIFT_HOST: ${{ secrets.REDSHIFT_HOST }}
+        REDSHIFT_USER: ${{ secrets.REDSHIFT_USER }}
+        DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
+        REDSHIFT_PORT: ${{ secrets.REDSHIFT_PORT }}
+        REDSHIFT_DATABASE: ${{ secrets.REDSHIFT_DATABASE }}
         REDSHIFT_SPECTRUM_IAM_ROLE: ${{ secrets.REDSHIFT_SPECTRUM_IAM_ROLE }}
-        SNOWFLAKE_TEST_ACCOUNT: ${{ secrets.SNOWFLAKE_TEST_ACCOUNT }}
-        SNOWFLAKE_TEST_USER: ${{ secrets.SNOWFLAKE_TEST_USER }}
-        SNOWFLAKE_TEST_PASS: ${{ secrets.SNOWFLAKE_TEST_PASS }}
-        SNOWFLAKE_TEST_WHNAME: ${{ secrets.SNOWFLAKE_TEST_WHNAME }}
-        SNOWFLAKE_TEST_ROLE: ${{ secrets.SNOWFLAKE_TEST_ROLE }}
-        SNOWFLAKE_TEST_DBNAME: ${{ secrets.SNOWFLAKE_TEST_DBNAME }}
-        BIGQUERY_TEST_PROJECT: ${{ secrets.BIGQUERY_TEST_PROJECT }}
-        BIGQUERY_PRIVATE_KEY: ${{ secrets.BIGQUERY_PRIVATE_KEY }}
-        BIGQUERY_PRIVATE_KEY_ID: ${{ secrets.BIGQUERY_PRIVATE_KEY_ID }}
-        BIGQUERY_CLIENT_EMAIL: ${{ secrets.BIGQUERY_CLIENT_EMAIL }}
-        BIGQUERY_CLIENT_ID: ${{ secrets.BIGQUERY_CLIENT_ID }}
+        REDSHIFT_SCHEMA: "dbt_external_tables_integration_tests_redshift"
+        #snowflake
+        SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+        SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.DBT_ENV_SECRET_SNOWFLAKE_PASS }}
+        SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+        SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+        SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+        SNOWFLAKE_SCHEMA: "dbt_external_tables_integration_tests_snowflake"
+        # bigquery
+        BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
+        BIGQUERY_SCHEMA: "dbt_external_tables_integration_tests_bigquery"
+        BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}

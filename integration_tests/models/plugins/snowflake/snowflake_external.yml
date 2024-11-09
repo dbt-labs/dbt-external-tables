@@ -118,7 +118,7 @@ sources:
 
       - name: people_parquet_column_list_unpartitioned
         external: &parquet-people
-          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet'
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet/'
           file_format: '{{ target.schema }}.dbt_external_tables_testing_parquet'
         columns: *cols-of-the-people
         tests: *equal-to-the-people
@@ -201,3 +201,35 @@ sources:
                 - last_name
                 - email
                 - email_domain
+
+
+      - name: people_parquet_infer_schema_ignore_case_unpartitioned
+        external: 
+          <<: *parquet-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet_capitalized'
+          infer_schema: true
+          ignore_case: true
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email         
+
+      - name: people_parquet_column_list_ignore_case_partitioned
+        external: 
+          <<: *parquet-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet_capitalized'
+          partitions: *parts-of-the-people
+          ignore_case: true
+        columns: *cols-of-the-people
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email        
