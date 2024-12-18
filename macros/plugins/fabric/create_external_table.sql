@@ -1,4 +1,4 @@
-{% macro sqlserver__create_external_table(source_node) %}
+{% macro fabric__create_external_table(source_node) %}
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}

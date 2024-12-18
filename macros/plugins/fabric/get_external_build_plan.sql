@@ -1,4 +1,4 @@
-{% macro sqlserver__get_external_build_plan(source_node) %}
+{% macro fabric__get_external_build_plan(source_node) %}
 
     {% set build_plan = [] %}
 

@@ -1,4 +1,4 @@
-{% macro sqlserver__dropif(node) %}
+{% macro fabric__dropif(node) %}
     
     {% set ddl %}
       if object_id ('{{source(node.source_name, node.name)}}') is not null
