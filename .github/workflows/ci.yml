@@ -35,9 +35,18 @@ jobs:
         # bigquery
         BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
         BIGQUERY_SCHEMA: "integration_tests_bigquery_${{ github.run_number }}"
+        # synapse
+        SYNAPSE_DRIVER: ${{ vars.SYNAPSE_DRIVER }}
+        SYNAPSE_HOST: ${{ vars.SYNAPSE_HOST }}
+        SYNAPSE_PORT: ${{ vars.SYNAPSE_PORT }}
+        SYNAPSE_DATABASE: ${{ vars.SYNAPSE_DATABASE }}
+        SYNAPSE_AUTHENTICATION: ${{ vars.SYNAPSE_AUTHENTICATION }}
+        SYNAPSE_TENANT_ID: ${{ vars.SYNAPSE_TENANT_ID }}
+        SYNAPSE_CLIENT_ID: ${{ vars.SYNAPSE_CLIENT_ID }}
 
       secrets:
         DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
         SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
         DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.DBT_ENV_SECRET_SNOWFLAKE_PASS }}
         BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}
+        SYNAPSE_CLIENT_SECRET: ${{ secrets.SYNAPSE_CLIENT_SECRET }}
