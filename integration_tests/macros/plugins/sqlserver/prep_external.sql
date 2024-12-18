@@ -1,4 +1,4 @@
-{% macro sqlserver__prep_external() %}
+{% macro fabric__prep_external() %}
 
     {% set external_data_source = target.schema ~ '.dbt_external_tables_testing' %}
 
