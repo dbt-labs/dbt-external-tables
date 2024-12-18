@@ -1,6 +1,16 @@
 # Changelog
 
-## dbt-external-tables v0.10.0
+## dbt-external-tables v0.10.1
+
+* [FIX] OOPS! Revert https://github.com/dbt-labs/dbt-external-tables/pull/330 "stage_external_sources Comparing source_name of the node instead of the name of the node" by @dataders in https://github.com/dbt-labs/dbt-external-tables/pull/330
+* Update CI trigger to run off forks by @emmyoop in https://github.com/dbt-labs/dbt-external-tables/pull/329
+
+
+**Full Changelog**: https://github.com/dbt-labs/dbt-external-tables/compare/0.10.1...0.10.0
+
+## BROKEN dbt-external-tables v0.10.0
+
+DO NOT USE THIS VERSION. USE `v0.10.1` or higher.
 
 ### Snowflake
 * Refactor create_external_table.sql in snowflake plugin by @kyleburke-meq in https://github.com/dbt-labs/dbt-external-tables/pull/318
@@ -10,7 +20,7 @@
 ## New Contributors
 * @ward-resa made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/312
 
-**Full Changelog**: https://github.com/dbt-labs/dbt-external-tables/compare/0.9.0...0.10.0-b1
+**Full Changelog**: https://github.com/dbt-labs/dbt-external-tables/compare/0.9.0...0.10.0
 
 ## dbt-external-tables v0.9.0
 
