@@ -56,7 +56,7 @@ integration_tests:
       authentication: "{{ env_var('SYNAPSE_AUTHENTICATION') }}"
       tenant_id: "{{ env_var('SYNAPSE_TENANT_ID') }}"
       client_id: "{{ env_var('SYNAPSE_CLIENT_ID') }}"
-      client_secret: "{{ env_var('SYNAPSE_CLIENT_SECRET') }}"
+      client_secret: "{{ env_var('DBT_ENV_SECRET_SYNAPSE_CLIENT_SECRET') }}"
       schema: dbt_external_tables_integration_tests_synapse
       threads: 1
 
