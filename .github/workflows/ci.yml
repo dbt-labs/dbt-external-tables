@@ -36,13 +36,14 @@ jobs:
         BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
         BIGQUERY_SCHEMA: "integration_tests_bigquery_${{ github.run_number }}"
         # synapse
-        SYNAPSE_DRIVER: ${{ vars.SYNAPSE_DRIVER }}
-        SYNAPSE_HOST: ${{ vars.SYNAPSE_HOST }}
-        SYNAPSE_PORT: ${{ vars.SYNAPSE_PORT }}
-        SYNAPSE_DATABASE: ${{ vars.SYNAPSE_DATABASE }}
-        SYNAPSE_AUTHENTICATION: ${{ vars.SYNAPSE_AUTHENTICATION }}
-        SYNAPSE_TENANT_ID: ${{ vars.SYNAPSE_TENANT_ID }}
-        SYNAPSE_CLIENT_ID: ${{ vars.SYNAPSE_CLIENT_ID }}
+        # temporarily removed until we can get the cluster hooked up to the blob correctly
+        # SYNAPSE_DRIVER: ${{ vars.SYNAPSE_DRIVER }}
+        # SYNAPSE_HOST: ${{ vars.SYNAPSE_HOST }}
+        # SYNAPSE_PORT: ${{ vars.SYNAPSE_PORT }}
+        # SYNAPSE_DATABASE: ${{ vars.SYNAPSE_DATABASE }}
+        # SYNAPSE_AUTHENTICATION: ${{ vars.SYNAPSE_AUTHENTICATION }}
+        # SYNAPSE_TENANT_ID: ${{ vars.SYNAPSE_TENANT_ID }}
+        # SYNAPSE_CLIENT_ID: ${{ vars.SYNAPSE_CLIENT_ID }}
 
       secrets:
         DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
