@@ -29,6 +29,28 @@ sources:
                 - last_name
                 - email
 
+      - name: users_csv_unpartitioned
+        external: &csv-users
+          location: '@{{ target.schema }}.dbt_external_tables_testing/csv'
+          file_format: '( type = csv skip_header = 1 )'
+        columns: &cols-of-the-users
+          - name: user.id
+            data_type: int
+          - name: user.first_name
+            data_type: varchar(64)
+          - name: user.last_name
+            data_type: varchar(64)
+          - name: user.email
+            data_type: varchar(64)
+        tests: &equal-to-the-users
+          - dbt_utils.equality:
+              compare_model: ref('users')
+              compare_columns:
+                - user.id
+                - user.first_name
+                - user.last_name
+                - user.email
+
       - name: people_csv_partitioned
         external:
           <<: *csv-people
@@ -40,12 +62,30 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
+      - name: users_csv_partitioned
+        external:
+          <<: *csv-users
+          auto_refresh: false   # make sure this templates right
+          partitions: &parts-of-the-users
+            - name: section
+              data_type: varchar
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        columns: *cols-of-the-users
+        tests: *equal-to-the-users
+
       - name: people_json_unpartitioned
         external: &json-people
           location: '@{{ target.schema }}.dbt_external_tables_testing/json'
           file_format: '( type = json )'
         columns: *cols-of-the-people
         tests: *equal-to-the-people
+
+      - name: users_json_unpartitioned
+        external: &json-users
+          location: '@{{ target.schema }}.dbt_external_tables_testing/json'
+          file_format: '( type = json )'
+        columns: *cols-of-the-users
+        tests: *equal-to-the-users
 
       - name: people_json_partitioned
         external:
@@ -123,6 +163,13 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
+      - name: users_parquet_column_list_unpartitioned
+        external: &parquet-users
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet/'
+          file_format: '{{ target.schema }}.dbt_external_tables_testing_parquet'
+        columns: *cols-of-the-users
+        tests: *equal-to-the-users
+
       - name: people_parquet_column_list_partitioned
         external: 
           <<: *parquet-people
@@ -136,12 +183,25 @@ sources:
           infer_schema: true
         tests: *equal-to-the-people
 
+      - name: users_parquet_infer_schema_unpartitioned_quoted
+        external: 
+          <<: *parquet-users
+          infer_schema: 'quote'
+        tests: *equal-to-the-users
+
       - name: people_parquet_infer_schema_partitioned
         external: 
           <<: *parquet-people
           partitions: *parts-of-the-people
           infer_schema: true
         tests: *equal-to-the-people
+
+      - name: users_parquet_infer_schema_partitioned
+        external: 
+          <<: *parquet-users
+          partitions: *parts-of-the-users
+          infer_schema: 'quote'
+        tests: *equal-to-the-users
 
       - name: people_parquet_infer_schema_partitioned_and_column_desc
         external: 
