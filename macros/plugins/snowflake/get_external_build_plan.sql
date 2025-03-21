@@ -10,7 +10,13 @@
     
     {% set create_or_replace = (old_relation is none or var('ext_full_refresh', false)) %}
 
-    {% if source_node.external.get('snowpipe', none) is not none %}
+    {% if source_node.external.get('table_format') == 'iceberg' %}
+
+        {% set build_plan = build_plan + [
+            dbt_external_tables.snowflake_create_iceberg_source(source_node)
+        ] %}
+
+    {% elif source_node.external.get('snowpipe', none) is not none %}
     
         {% if create_or_replace %}
             {% set build_plan = build_plan + [
@@ -22,7 +28,7 @@
         {% else %}
             {% set build_plan = build_plan + dbt_external_tables.snowflake_refresh_snowpipe(source_node) %}
         {% endif %}
-            
+
     {% else %}
     
         {% if create_or_replace %}
