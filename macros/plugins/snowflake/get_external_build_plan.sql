@@ -13,6 +13,7 @@
     {% if source_node.external.get('table_format') == 'iceberg' %}
 
         {% set build_plan = build_plan + [
+            dbt_external_tables.create_external_schema(source_node),
             dbt_external_tables.snowflake_create_iceberg_source(source_node)
         ] %}
 
