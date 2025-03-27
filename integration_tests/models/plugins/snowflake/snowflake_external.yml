@@ -240,15 +240,7 @@ sources:
           catalog: test_dbt_external_tables_glue_catalog
           catalog_table_name: people_csv
           catalog_namespace: test_dbt_external_tables_db
-          tests:
-            - dbt_utils.equality:
-              compare_model: ref('people')
-              compare_columns:
-                - id
-                - first_name
-                - last_name
-                - email
-
+        tests: *equal-to-the-people
 
       - name: people_iceberg_with_optional_configs
         external: 
@@ -256,11 +248,4 @@ sources:
           replace_invalid_characters: true
           auto_refresh: true
           comment: "testing adding comments"
-          tests:
-            - dbt_utils.equality:
-              compare_model: ref('people')
-              compare_columns:
-                - id
-                - first_name
-                - last_name
-                - email
+        tests: *equal-to-the-people
