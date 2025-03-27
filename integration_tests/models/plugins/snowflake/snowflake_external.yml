@@ -6,7 +6,6 @@ sources:
     loader: S3
 
     tables:
-      
       - name: people_csv_unpartitioned
         external: &csv-people
           location: '@{{ target.schema }}.dbt_external_tables_testing/csv'
@@ -239,10 +238,29 @@ sources:
           table_format: iceberg
           external_volume: test_dbt_external_tables
           catalog: test_dbt_external_tables_glue_catalog
-          catalog_table_name: people
+          catalog_table_name: people_csv
           catalog_namespace: test_dbt_external_tables_db
-        {# external:
-          
+          tests:
+            - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+
+
+      - name: people_iceberg_with_optional_configs
+        external: 
+          <<: *iceberg-people
           replace_invalid_characters: true
           auto_refresh: true
-          comment: "testing adding comments" #}
+          comment: "testing adding comments"
+          tests:
+            - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
