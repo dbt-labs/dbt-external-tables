@@ -105,3 +105,26 @@ sources:
           file_format: "( type = csv )"   
           # auto_refresh is assumed, setting to false is not supported
           aws_sns_topic: "arn:aws:sns:us-east-1:123456789012:my_topic" # SNS topic ARN
+
+      - name: my_iceberg_table
+        description: |
+          Iceberg table using an external AWS Glue or REST catalog
+          Additional Details: https://docs.snowflake.com/en/sql-reference/sql/create-iceberg-table#external-iceberg-catalog
+        external:
+          table_format: iceberg
+          # existing external volume
+          external_volume: my_external_volume                     
+          # existing catalog integration
+          catalog: my_catalog_integration
+          # name of the table in the external catalog
+          catalog_table_name: my_iceberg_table                  
+          # namespace of the namespace in the external catalog
+          # Hint: in AWS Glue this is the "Database"
+          catalog_namespace: my_iceberg_table_namespace
+          # optional; Specifies whether to replace invalid UTF-8 characters withthe Unicode replacement character in query results
+          replace_invalid_characters: true
+          # optional; Specifies whether Snowflake should automatically poll the external Iceberg catalog
+          # associated with the table for metadata updates when you use automated refresh
+          auto_refresh: true
+          # optional; Specifies a comment for the table.
+          comment: "my comments"
