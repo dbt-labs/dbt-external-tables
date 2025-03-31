@@ -36,6 +36,7 @@ jobs:
         dbt seed --full-refresh --target ${{ matrix.data-platform }}
         dbt run --target ${{ matrix.data-platform }}
         dbt run-operation prep_external --target ${{ matrix.data-platform }}
+        dbt run-operation stage_external_sources --args "select: snowflake_external.people_iceberg_no_optional_configs" --vars "ext_full_refresh: true"  --target ${{ matrix.data-platform }}
         dbt -d run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
         dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
         dbt test --target ${{ matrix.data-platform }}
