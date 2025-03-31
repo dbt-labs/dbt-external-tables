@@ -28,210 +28,210 @@ sources:
                 - last_name
                 - email
 
-      # - name: people_csv_partitioned
-      #   external:
-      #     <<: *csv-people
-      #     auto_refresh: false   # make sure this templates right
-      #     partitions: &parts-of-the-people
-      #       - name: section
-      #         data_type: varchar
-      #         expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
-      #   columns: *cols-of-the-people
-      #   tests: *equal-to-the-people
+      - name: people_csv_partitioned
+        external:
+          <<: *csv-people
+          auto_refresh: false   # make sure this templates right
+          partitions: &parts-of-the-people
+            - name: section
+              data_type: varchar
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
 
-      # - name: people_json_unpartitioned
-      #   external: &json-people
-      #     location: '@{{ target.schema }}.dbt_external_tables_testing/json'
-      #     file_format: '( type = json )'
-      #   columns: *cols-of-the-people
-      #   tests: *equal-to-the-people
+      - name: people_json_unpartitioned
+        external: &json-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/json'
+          file_format: '( type = json )'
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
 
-      # - name: people_json_partitioned
-      #   external:
-      #     <<: *json-people
-      #     partitions: *parts-of-the-people
-      #   columns: *cols-of-the-people
-      #   tests: *equal-to-the-people
+      - name: people_json_partitioned
+        external:
+          <<: *json-people
+          partitions: *parts-of-the-people
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
         
-      # - name: people_json_snowpipe
-      #   external:
-      #     <<: *json-people
-      #     snowpipe:
-      #       auto_ingest: false
-      #       copy_options: ''
-      #   columns: *cols-of-the-people
-      #   tests: *equal-to-the-people
+      - name: people_json_snowpipe
+        external:
+          <<: *json-people
+          snowpipe:
+            auto_ingest: false
+            copy_options: ''
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
 
-      # - name: people_json_snowpipe_pattern
-      #   external:
-      #     <<: *json-people
-      #     pattern: '.*[.]json'
-      #     snowpipe:
-      #       auto_ingest: false
-      #       copy_options: ''
-      #   columns: *cols-of-the-people
-      #   tests: *equal-to-the-people
+      - name: people_json_snowpipe_pattern
+        external:
+          <<: *json-people
+          pattern: '.*[.]json'
+          snowpipe:
+            auto_ingest: false
+            copy_options: ''
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
         
-      # # just to test syntax
-      # - name: people_csv_unpartitioned_no_columns
-      #   external: *csv-people
-      #   tests: &same-rowcount
-      #     - dbt_utils.equal_rowcount:
-      #         compare_model: ref('people')
+      # just to test syntax
+      - name: people_csv_unpartitioned_no_columns
+        external: *csv-people
+        tests: &same-rowcount
+          - dbt_utils.equal_rowcount:
+              compare_model: ref('people')
         
-      # - name: people_csv_partitioned_no_columns
-      #   external:
-      #     <<: *csv-people
-      #     partitions: *parts-of-the-people
-      #   tests: *same-rowcount
+      - name: people_csv_partitioned_no_columns
+        external:
+          <<: *csv-people
+          partitions: *parts-of-the-people
+        tests: *same-rowcount
       
-      # - name: people_csv_with_keyword_colname
-      #   external: *csv-people
-      #   columns:
-      #     - name: UNION
-      #       quote: true
-      #       data_type: varchar(64)
-      #   tests: *same-rowcount
+      - name: people_csv_with_keyword_colname
+        external: *csv-people
+        columns:
+          - name: UNION
+            quote: true
+            data_type: varchar(64)
+        tests: *same-rowcount
           
-      # - name: people_json_unpartitioned_no_columns
-      #   external: *json-people
-      #   tests: *same-rowcount
+      - name: people_json_unpartitioned_no_columns
+        external: *json-people
+        tests: *same-rowcount
         
-      # - name: people_json_partitioned_no_columns
-      #   external:
-      #     <<: *json-people
-      #     partitions: *parts-of-the-people
-      #   tests: *same-rowcount
+      - name: people_json_partitioned_no_columns
+        external:
+          <<: *json-people
+          partitions: *parts-of-the-people
+        tests: *same-rowcount
           
-      # - name: people_json_multipartitioned_no_columns
-      #   external:
-      #     <<: *json-people
-      #     partitions:
-      #       - name: file_type
-      #         data_type: varchar
-      #         expression: "split_part(metadata$filename, 'section=', 1)"
-      #       - name: section
-      #         data_type: varchar
-      #         expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
-      #   tests: *same-rowcount
+      - name: people_json_multipartitioned_no_columns
+        external:
+          <<: *json-people
+          partitions:
+            - name: file_type
+              data_type: varchar
+              expression: "split_part(metadata$filename, 'section=', 1)"
+            - name: section
+              data_type: varchar
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        tests: *same-rowcount
 
-      # - name: people_parquet_column_list_unpartitioned
-      #   external: &parquet-people
-      #     location: '@{{ target.schema }}.dbt_external_tables_testing/parquet/'
-      #     file_format: '{{ target.schema }}.dbt_external_tables_testing_parquet'
-      #   columns: *cols-of-the-people
-      #   tests: *equal-to-the-people
+      - name: people_parquet_column_list_unpartitioned
+        external: &parquet-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet/'
+          file_format: '{{ target.schema }}.dbt_external_tables_testing_parquet'
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
 
-      # - name: people_parquet_column_list_partitioned
-      #   external: 
-      #     <<: *parquet-people
-      #     partitions: *parts-of-the-people
-      #   columns: *cols-of-the-people
-      #   tests: *equal-to-the-people
+      - name: people_parquet_column_list_partitioned
+        external: 
+          <<: *parquet-people
+          partitions: *parts-of-the-people
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
 
-      # - name: people_parquet_infer_schema_unpartitioned
-      #   external: 
-      #     <<: *parquet-people
-      #     infer_schema: true
-      #   tests: *equal-to-the-people
+      - name: people_parquet_infer_schema_unpartitioned
+        external: 
+          <<: *parquet-people
+          infer_schema: true
+        tests: *equal-to-the-people
 
-      # - name: people_parquet_infer_schema_partitioned
-      #   external: 
-      #     <<: *parquet-people
-      #     partitions: *parts-of-the-people
-      #     infer_schema: true
-      #   tests: *equal-to-the-people
+      - name: people_parquet_infer_schema_partitioned
+        external: 
+          <<: *parquet-people
+          partitions: *parts-of-the-people
+          infer_schema: true
+        tests: *equal-to-the-people
 
-      # - name: people_parquet_infer_schema_partitioned_and_column_desc
-      #   external: 
-      #     <<: *parquet-people
-      #     partitions: *parts-of-the-people
-      #     infer_schema: true
-      #   tests: *equal-to-the-people
-      #   columns:
-      #     - name: id
-      #       description: "the unique ID for people"
+      - name: people_parquet_infer_schema_partitioned_and_column_desc
+        external: 
+          <<: *parquet-people
+          partitions: *parts-of-the-people
+          infer_schema: true
+        tests: *equal-to-the-people
+        columns:
+          - name: id
+            description: "the unique ID for people"
 
-      #   # test for column aliasing
-      # - name: people_csv_aliased
-      #   external: *csv-people
-      #   columns:
-      #     - name: id
-      #       data_type: int
-      #     - name: first_name
-      #       data_type: varchar(64)
-      #     - name: last_name
-      #       data_type: varchar(64)
-      #     - name: email
-      #       alias: email_alias
-      #       data_type: varchar(64)
-      #   tests:
-      #     - dbt_utils.equality:
-      #         compare_model: ref('people_alias')
-      #         compare_columns:
-      #           - id
-      #           - first_name
-      #           - last_name
-      #           - email_alias
+        # test for column aliasing
+      - name: people_csv_aliased
+        external: *csv-people
+        columns:
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            alias: email_alias
+            data_type: varchar(64)
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_alias')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email_alias
 
-      #   # test for column expression
-      # - name: people_json_expression
-      #   external: *json-people
-      #   columns:
-      #     - name: id
-      #       data_type: int
-      #     - name: first_name
-      #       data_type: varchar(64)
-      #     - name: last_name
-      #       data_type: varchar(64)
-      #     - name: email
-      #       data_type: varchar(64)
-      #     - name: email_domain
-      #       data_type: varchar(64)
-      #       alias: EMAIL_DOMAIN
-      #       quote: true
-      #       expression: split_part(value:email::VARCHAR, '@', 2)
-      #   tests:
-      #     - dbt_utils.equality:
-      #         compare_model: ref('people_expression')
-      #         compare_columns:
-      #           - id
-      #           - first_name
-      #           - last_name
-      #           - email
-      #           - email_domain
+        # test for column expression
+      - name: people_json_expression
+        external: *json-people
+        columns:
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+          - name: email_domain
+            data_type: varchar(64)
+            alias: EMAIL_DOMAIN
+            quote: true
+            expression: split_part(value:email::VARCHAR, '@', 2)
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people_expression')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
+                - email_domain
 
 
-      # - name: people_parquet_infer_schema_ignore_case_unpartitioned
-      #   external: 
-      #     <<: *parquet-people
-      #     location: '@{{ target.schema }}.dbt_external_tables_testing/parquet_capitalized'
-      #     infer_schema: true
-      #     ignore_case: true
-      #   tests:
-      #     - dbt_utils.equality:
-      #         compare_model: ref('people')
-      #         compare_columns:
-      #           - id
-      #           - first_name
-      #           - last_name
-      #           - email         
+      - name: people_parquet_infer_schema_ignore_case_unpartitioned
+        external: 
+          <<: *parquet-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet_capitalized'
+          infer_schema: true
+          ignore_case: true
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email         
 
-      # - name: people_parquet_column_list_ignore_case_partitioned
-      #   external: 
-      #     <<: *parquet-people
-      #     location: '@{{ target.schema }}.dbt_external_tables_testing/parquet_capitalized'
-      #     partitions: *parts-of-the-people
-      #     ignore_case: true
-      #   columns: *cols-of-the-people
-      #   tests:
-      #     - dbt_utils.equality:
-      #         compare_model: ref('people')
-      #         compare_columns:
-      #           - id
-      #           - first_name
-      #           - last_name
-      #           - email
+      - name: people_parquet_column_list_ignore_case_partitioned
+        external: 
+          <<: *parquet-people
+          location: '@{{ target.schema }}.dbt_external_tables_testing/parquet_capitalized'
+          partitions: *parts-of-the-people
+          ignore_case: true
+        columns: *cols-of-the-people
+        tests:
+          - dbt_utils.equality:
+              compare_model: ref('people')
+              compare_columns:
+                - id
+                - first_name
+                - last_name
+                - email
 
       - name: people_iceberg_no_optional_configs
         external: &iceberg-people
