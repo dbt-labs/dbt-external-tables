@@ -98,6 +98,24 @@ sources:
           - name: name
             description: and this is a name
 
+      - name: parquet_with_inferred_schema_and_quoted_columns
+        description: "External table using Parquet, inferring the schema, quoting the columns"
+        external:
+          location: "@stage"                  # reference an existing external stage
+          file_format: "my_file_format"       # we need a named file format for infer to work
+          infer_schema: "quote"               # infer the table schema and quote the columns
+          partitions:
+            - name: section                   # we can define partitions on top of the schema columns
+              data_type: varchar(64)
+              expression: "substr(split_part(metadata$filename, 'section=', 2), 1, 1)"
+        columns:                              # columns can still be listed for documentation/testing purpose
+          - name: user.id
+            description: this is a user id
+            quote: true
+          - name: user.name
+            description: and this is a user name
+            quote: true
+
       - name: aws_sns_refresh_tbl
         description: "External table using AWS SNS for auto-refresh"
         external:
