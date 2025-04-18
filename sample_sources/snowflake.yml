@@ -6,7 +6,7 @@ sources:
     schema: snowplow_external
     loader: S3
     loaded_at_field: collector_hour
-    
+
     tables:
       - name: event_ext_tbl
         description: "External table of Snowplow events stored as JSON files"
@@ -14,11 +14,12 @@ sources:
           location: "@raw.snowplow.snowplow"  # reference an existing external stage
           file_format: "( type = json )"      # fully specified here, or reference an existing file format
           auto_refresh: true                  # requires configuring an event notification from Amazon S3 or Azure
+          refresh_on_create: false            # default is true, useful when refresh after table creation needs to be skipped
           partitions:
             - name: collector_hour
               data_type: timestamp
               expression: to_timestamp(substr(metadata$filename, 8, 13), 'YYYY/MM/DD/HH24')
-              
+
         # all Snowflake external tables natively include a `metadata$filename` pseudocolumn
         # and a `value` column (JSON blob-ified version of file contents), so there is no need to specify
         # them here. you may optionally specify columns to unnest or parse from the file:
@@ -47,8 +48,8 @@ sources:
           - name: contexts
             data_type: variant
             description: "Contexts attached to event by Tracker"
-        
-              
+
+
       - name: event_snowpipe
         description: "Table of Snowplow events, stored as JSON files, loaded in near-real time via Snowpipe"
         loader: S3 + snowpipe    # this is just for your reference
@@ -63,7 +64,7 @@ sources:
             aws_sns_topic:  # Amazon S3
             integration:    # Google Cloud or Azure
             copy_options:   "on_error = continue, enforce_length = false" # e.g.
-              
+
         # dbt will include three metadata columns in addition to any `columns`
         # specified for a snowpiped table:
         #   `metadata_filename`: the file from which this row was loaded
@@ -72,7 +73,7 @@ sources:
         #
         # if you do not specify *any* columns for a snowpiped table, dbt will also
         # include `value`, the JSON blob of all file contents.
-        
+
       - name: delta_tbl
         description: "External table using Delta files"
         external:
@@ -102,7 +103,7 @@ sources:
         description: "External table using AWS SNS for auto-refresh"
         external:
           location: "@stage"                  # reference an existing external stage
-          file_format: "( type = csv )"   
+          file_format: "( type = csv )"
           # auto_refresh is assumed, setting to false is not supported
           aws_sns_topic: "arn:aws:sns:us-east-1:123456789012:my_topic" # SNS topic ARN
 
@@ -113,11 +114,11 @@ sources:
         external:
           table_format: iceberg
           # existing external volume
-          external_volume: my_external_volume                     
+          external_volume: my_external_volume
           # existing catalog integration
           catalog: my_catalog_integration
           # name of the table in the external catalog
-          catalog_table_name: my_iceberg_table                  
+          catalog_table_name: my_iceberg_table
           # namespace of the namespace in the external catalog
           # Hint: in AWS Glue this is the "Database"
           catalog_namespace: my_iceberg_table_namespace
