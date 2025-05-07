@@ -75,6 +75,9 @@
     {% if external.auto_refresh in (true, false) -%}
       auto_refresh = {{external.auto_refresh}}
     {%- endif %}
+    {% if external.refresh_on_create in (true, false) -%}
+      refresh_on_create = {{external.refresh_on_create}}
+    {%- endif %}
     {% if external.aws_sns_topic -%}
       aws_sns_topic = '{{external.aws_sns_topic}}'
     {%- endif %}
