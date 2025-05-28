@@ -49,7 +49,6 @@ $ dbt run-operation stage_external_sources --args "select: snowplow.event"
 The macros assume that you:
 1. Have already created your database's required scaffolding for external resources:
   - an external stage (Snowflake)
-  - an external volume and catalog integration (Snowflake Iceberg)
   - an external schema + S3 bucket (Redshift Spectrum)
   - an external data source and file format (Synapse)
   - an external data source and databse-scoped credential (Azure SQL)
