@@ -17,6 +17,10 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+flags:
+  send_anonymous_usage_stats: False
+  use_colors: True
+
 dispatch:
   - macro_namespace: dbt_external_tables
     search_order: ['dbt_external_tables_integration_tests', 'dbt_external_tables']

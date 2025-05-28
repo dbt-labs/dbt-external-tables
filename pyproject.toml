@@ -1,0 +1,14 @@
+[project]
+name = "dbt-external-tables"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dbt-bigquery>=1.9.0",
+    "dbt-core>=1.9.1",
+    "dbt-redshift>=1.9.0",
+    "dbt-snowflake>=1.9.0",
+    "dbt-synapse>=1.8.2",
+    "tox>=4.23.2",
+]

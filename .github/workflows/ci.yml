@@ -1,0 +1,53 @@
+# **what?**
+# Run tests for dbt-external-tables against supported adapters
+
+# **why?**
+# To ensure that dbt-external-tables works as expected with all supported adapters
+
+# **when?**
+# On every PR, and every push to main and when manually triggered
+
+name: Package Integration Tests
+
+on:
+    push:
+        branches:
+            - main
+    pull_request_target:
+    workflow_dispatch:
+
+jobs:
+  run-tests:
+      uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@v1
+      with:
+        # redshift
+        REDSHIFT_HOST: ${{ vars.REDSHIFT_HOST }}
+        REDSHIFT_USER: ${{ vars.REDSHIFT_USER }}
+        REDSHIFT_PORT: ${{ vars.REDSHIFT_PORT }}
+        REDSHIFT_DATABASE: ${{ vars.REDSHIFT_DATABASE }}
+        REDSHIFT_SCHEMA: "integration_tests_redshift_${{ github.run_number }}"
+        # snowflake
+        SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER }}
+        SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }}
+        SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+        SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+        SNOWFLAKE_SCHEMA: "integration_tests_snowflake_${{ github.run_number }}"
+        # bigquery
+        BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
+        BIGQUERY_SCHEMA: "integration_tests_bigquery_${{ github.run_number }}"
+        # synapse
+        # temporarily removed until we can get the cluster hooked up to the blob correctly
+        # SYNAPSE_DRIVER: ${{ vars.SYNAPSE_DRIVER }}
+        # SYNAPSE_HOST: ${{ vars.SYNAPSE_HOST }}
+        # SYNAPSE_PORT: ${{ vars.SYNAPSE_PORT }}
+        # SYNAPSE_DATABASE: ${{ vars.SYNAPSE_DATABASE }}
+        # SYNAPSE_AUTHENTICATION: ${{ vars.SYNAPSE_AUTHENTICATION }}
+        # SYNAPSE_TENANT_ID: ${{ vars.SYNAPSE_TENANT_ID }}
+        # SYNAPSE_CLIENT_ID: ${{ vars.SYNAPSE_CLIENT_ID }}
+
+      secrets:
+        DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
+        SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.DBT_ENV_SECRET_SNOWFLAKE_PASS }}
+        BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}
+        DBT_ENV_SECRET_SYNAPSE_CLIENT_SECRET: ${{ secrets.DBT_ENV_SECRET_SYNAPSE_CLIENT_SECRET }}
