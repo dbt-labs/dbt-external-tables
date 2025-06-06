@@ -1,0 +1,74 @@
+version: 2
+
+sources:
+  - name: external
+    tables:
+      # CSV external table example
+      - name: ext_table_csv
+        external:
+          location: "oss://bucket/path"
+          stored_by: "com.aliyun.odps.CsvStorageHandler"
+          partitions:
+            - name: dp
+              data_type: string
+              vals:
+                macro: dbt.dates_in_range
+                args:
+                  start_date_str: "20241220"
+                  end_date_str: "{{modules.datetime.date.today().strftime('%Y%m%d')}}"
+                  in_fmt: "%Y%m%d"
+                  out_fmt: "%Y%m%d"
+              path_macro: dbt_external_tables.year_month_day
+          serdeproperties:
+            "odps.text.option.header.lines.count": "1"
+        columns:
+          - name: id
+            data_type: bigint
+          - name: name
+            data_type: string
+          - name: age
+            data_type: bigint
+
+      # Parquet external table example
+      - name: ext_table_parquet
+        external:
+          location: "oss://bucket/path"
+          stored_as: parquet
+          partitions:
+            - name: dp
+              data_type: string
+              vals:
+                macro: dbt.dates_in_range
+                args:
+                  start_date_str: "20250205"
+                  end_date_str: "{{modules.datetime.date.today().strftime('%Y%m%d')}}"
+                  in_fmt: "%Y%m%d"
+                  out_fmt: "%Y%m%d"
+              path_macro: dbt_external_tables.year_month_day
+        columns:
+          - name: id
+            data_type: bigint
+          - name: name
+            data_type: string
+          - name: age
+            data_type: bigint
+
+      # JSON external table example
+      - name: ext_table_json
+        external:
+          location: "oss://bucket/path"
+          stored_as: textfile
+          partitions:
+            - name: pt_date
+              data_type: string
+              vals:
+                macro: dbt.dates_in_range
+                args:
+                  start_date_str: "20250101"
+                  end_date_str: "{{modules.datetime.date.today().strftime('%Y%m%d')}}"
+                  in_fmt: "%Y%m%d"
+                  out_fmt: "%Y%m%d"
+              path_macro: dbt_external_tables.year_month_day
+        columns:
+          - name: msg
+            data_type: string
