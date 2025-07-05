@@ -2,6 +2,7 @@
 **/target/
 **/dbt_modules/
 **/dbt_packages/
+**/dbt_internal_packages/
 **/logs/
 **/env/
 **/venv/

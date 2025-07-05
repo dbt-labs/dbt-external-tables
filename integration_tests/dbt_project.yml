@@ -1,4 +1,3 @@
-
 name: 'dbt_external_tables_integration_tests'
 version: '1.0'
 
@@ -11,15 +10,13 @@ analysis-paths: ["analysis"]
 test-paths: ["tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
-
-target-path: "target"
 clean-targets:
   - "target"
   - "dbt_packages"
 
 flags:
-  send_anonymous_usage_stats: False
-  use_colors: True
+  send_anonymous_usage_stats: false
+  use_colors: true
 
 dispatch:
   - macro_namespace: dbt_external_tables
