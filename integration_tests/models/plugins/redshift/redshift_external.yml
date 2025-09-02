@@ -40,6 +40,16 @@ sources:
               path_macro: dbt_external_tables.key_value
         columns: *cols-of-the-people
         tests: *equal-to-the-people
+      
+      # partitioned but NO vals -> should create the table & skip partition DDL
+      - name: people_csv_partitioned_novals
+        external:
+          <<: *csv-people
+          partitions:
+            - name: section
+              data_type: varchar
+              path_macro: dbt_external_tables.key_value
+        columns: *cols-of-the-people
         
       # ensure that all partitions are created
       - name: people_csv_multipartitioned
@@ -87,3 +97,12 @@ sources:
           partitions: *parts-of-the-people
         columns: *cols-of-the-people
         tests: *equal-to-the-people
+
+      - name: people_json_partitioned_novals
+        external:
+          <<: *json-people
+          partitions:
+            - name: section
+              data_type: varchar
+              path_macro: dbt_external_tables.key_value
+        columns: *cols-of-the-people
