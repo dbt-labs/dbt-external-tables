@@ -165,8 +165,10 @@ sources:
           - name: last_name
             data_type: varchar(64)
           - name: email
-            alias: email_alias
             data_type: varchar(64)
+            config:
+              meta:
+                alias: email_alias
         tests:
           - dbt_utils.equality:
               arguments:
@@ -191,9 +193,11 @@ sources:
             data_type: varchar(64)
           - name: email_domain
             data_type: varchar(64)
-            alias: EMAIL_DOMAIN
             quote: true
-            expression: split_part(value:email::VARCHAR, '@', 2)
+            config:
+              meta:
+                alias: EMAIL_DOMAIN
+                expression: split_part(value:email::VARCHAR, '@', 2)
         tests:
           - dbt_utils.equality:
               arguments:
