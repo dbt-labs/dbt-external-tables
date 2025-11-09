@@ -17,15 +17,20 @@
 
 
 {% macro get_ff(file_format) %}
-    {%- set ff_opt_dict = parse_ff(file_format) -%}
-    {%- set ff_name = ff_opt_dict.get('format_name', none) if ff_opt_dict else file_format -%}
+    {# 
+        Returns a dictionary of file format options.
+        If file_format is an inline definition, parses it directly.
+        If file_format is a named format reference, fetches its DDL and parses that.
+    #}
+    {%- set parsed = parse_ff(file_format) -%}
 
-    {%- if ff_name -%}
-        {% set get_ddl_query = "select get_ddl('FILE_FORMAT', '" ~ ff_name ~ "') as ddl" %}
-        {# {% do log('get_ddl_query: ' ~ get_ddl_query, info=True) %} #}
-        {% set ddl_result = run_query(get_ddl_query) %}
-        {% set ddl_str = ddl_result.columns[0].values()[0] %}
-        {% set ff_opt_dict = parse_ff(ddl_str) %}
-    {% endif %}
-    {{ return(ff_opt_dict) }}
+    {# If parsing returned empty dict, it is a named format. Fetch DDL and re-parse #}
+    {%- if not parsed -%}
+        {% set ddl_query = "select get_ddl('FILE_FORMAT', '" ~ file_format ~ "') as ddl" %}
+        {% set ddl_result = run_query(ddl_query) %}
+        {% set ddl_string = ddl_result.columns[0].values()[0] %}
+        {%- set parsed = parse_ff(ddl_string) -%}
+    {%- endif -%}
+    
+    {{ return(parsed) }}
 {% endmacro %}
