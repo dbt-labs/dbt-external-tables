@@ -10,28 +10,26 @@
     {%- set is_csv_ff = ff_opt_dict['type']|default('csv')|lower == 'csv' -%}
 
     {%- if infer_schema -%}
-        {# Initialize inferring file format #}
-        {%- set inferring_ff_name = ff_name -%}
+        {# Initialize inference file format #}
+        {%- set inference_ff_name = ff_name -%}
         {% if not ff_name or is_csv_ff %}
             {# INFER_SCHEMA requires a named file format, and different header options for CSVs. #}
             {# Create a temporary file format with the correct options. #}
-            {%- set inferring_ff_name = '_temp_ff_' ~ source_node.source_name ~ '_' ~ source_node.name -%}
+            {%- set inference_ff_name = '_temp_ff_' ~ source_node.source_name ~ '_' ~ source_node.name -%}
             {% set temp_ff_opt_dict = ff_opt_dict.copy() %}
             {% if is_csv_ff %}
                 {% do temp_ff_opt_dict.pop('skip_header', none) %}
                 {% do temp_ff_opt_dict.update({'parse_header': true}) %}
             {% endif %}
             {%- set file_format_query %}
-                create or replace temporary file format {{inferring_ff_name}} 
+                create or replace temporary file format {{inference_ff_name}} 
                     {{ temp_ff_opt_dict.items() | map('join', '=') | join(' ') }}
             {%- endset -%}
-            {# {% do log('running file_format_query: ' ~ file_format_query, info=True) %} #}
             {% do run_query(file_format_query) %}
-            {# {% do log('successfully created!', info=True) %} #}
         {%- endif -%}
 
         {% set query_infer_schema %}
-            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{inferring_ff_name}}', ignore_case=> {{ ignore_case }}) )
+            select * from table( infer_schema( location=>'{{external.location}}', file_format=>'{{inference_ff_name}}', ignore_case=> {{ ignore_case }}) )
         {% endset %}
 
         {% set columns_infer = run_query(query_infer_schema) %}
