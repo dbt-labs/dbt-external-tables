@@ -4,7 +4,7 @@
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
     {%- set infer_schema = external.infer_schema -%}
-    {%- set ignore_case = external.ignore_case or false  -%}
+    {%- set ignore_case = external.ignore_case or true  -%}
 
     {%- set ff_opt_dict = dbt_external_tables.get_ff(external.file_format) -%}
     {%- set is_csv_ff = ff_opt_dict['type']|default('csv')|lower == 'csv' -%}

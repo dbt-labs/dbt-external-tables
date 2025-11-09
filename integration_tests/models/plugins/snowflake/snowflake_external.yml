@@ -43,7 +43,6 @@ sources:
         external:
           <<: *csv-people
           infer_schema: true
-          ignore_case: true
         tests: *equal-to-the-people
 
       - name: people_json_unpartitioned
@@ -83,7 +82,6 @@ sources:
         external:
           <<: *json-people
           infer_schema: true
-          ignore_case: true
         tests: *equal-to-the-people
         
       # just to test syntax
@@ -147,7 +145,6 @@ sources:
         external: 
           <<: *parquet-people
           infer_schema: true
-          ignore_case: true
         tests: *equal-to-the-people
 
       - name: people_parquet_infer_schema_partitioned
@@ -155,7 +152,6 @@ sources:
           <<: *parquet-people
           partitions: *parts-of-the-people
           infer_schema: true
-          ignore_case: true
         tests: *equal-to-the-people
 
       - name: people_parquet_infer_schema_partitioned_and_column_desc
@@ -163,7 +159,6 @@ sources:
           <<: *parquet-people
           partitions: *parts-of-the-people
           infer_schema: true
-          ignore_case: true
         tests: *equal-to-the-people
         columns:
           - name: id
