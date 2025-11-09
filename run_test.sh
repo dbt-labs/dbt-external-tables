@@ -19,7 +19,7 @@ if [[ ! -f $VENV ]]; then
         echo "Installing dbt-$1"
         pip install dbt-$1 --upgrade --pre
         # remove the protobuf installation when all the dbt-provider packaged are updated with dbt core 1.7.9
-        pip install protobuf==4.25.3
+        # pip install protobuf==4.25.3
     fi
 fi
 
@@ -37,6 +37,7 @@ echo "Starting integration tests"
 set -eo pipefail
 dbt deps --target $1
 dbt seed --full-refresh --target $1
+dbt run --target $1
 dbt run-operation prep_external --target $1
 dbt run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target $1
 dbt run-operation dbt_external_tables.stage_external_sources --target $1

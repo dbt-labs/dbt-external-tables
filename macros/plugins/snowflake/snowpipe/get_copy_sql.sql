@@ -3,8 +3,11 @@
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
-    {%- set is_csv = dbt_external_tables.is_csv(external.file_format) %}
     {%- set copy_options = external.snowpipe.get('copy_options', none) -%}
+    {%- set ff_opt_dict = dbt_external_tables.get_ff(external.file_format) -%}
+    {%- set is_csv = ff_opt_dict['type']|default('csv')|lower == 'csv' -%}
+
+
 
     {%- if explicit_transaction -%} begin; {%- endif %}
 

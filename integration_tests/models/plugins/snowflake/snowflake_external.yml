@@ -133,6 +133,7 @@ sources:
         external: 
           <<: *parquet-people
           infer_schema: true
+          ignore_case: true
         tests: *equal-to-the-people
 
       - name: people_parquet_infer_schema_partitioned
@@ -140,6 +141,7 @@ sources:
           <<: *parquet-people
           partitions: *parts-of-the-people
           infer_schema: true
+          ignore_case: true
         tests: *equal-to-the-people
 
       - name: people_parquet_infer_schema_partitioned_and_column_desc
@@ -147,12 +149,14 @@ sources:
           <<: *parquet-people
           partitions: *parts-of-the-people
           infer_schema: true
+          ignore_case: true
         tests: *equal-to-the-people
         columns:
           - name: id
             description: "the unique ID for people"
 
         # test for column aliasing
+
       - name: people_csv_aliased
         external: *csv-people
         columns:
@@ -175,6 +179,7 @@ sources:
                 - email_alias
 
         # test for column expression
+
       - name: people_json_expression
         external: *json-people
         columns:
@@ -200,7 +205,6 @@ sources:
                 - last_name
                 - email
                 - email_domain
-
 
       - name: people_parquet_infer_schema_ignore_case_unpartitioned
         external: 

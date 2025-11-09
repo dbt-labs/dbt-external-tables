@@ -1,21 +1,3 @@
-{% macro parse_ff(file_format) %}
-    {# Remove outer parenthesis and whitespaces within option assignment expressions #}
-    {%- set ff_ddl = modules.re.sub('^\(|\)$|;$', '', file_format|trim) -%}
-    {# Extract key=value pairs using regex. Handles values enclosed in parentheses or single quotes
-         - Identifiers -> `\S+`
-         - Quote string (escape-safe) -> `'(?:''|[^'])*'`
-         - Parenthesis expressions -> `\(.*?\)`
-    #}
-    {%- set ff_opt_pairs = modules.re.findall("(\w+)\s*=\s*(\(.*?\)|'(?:''|[^'])*'|\S+)", ff_ddl, modules.re.S) -%}
-    {# Consolidate case #}
-    {%- set ff_opt_dict = dict() -%}
-    {% for key, value in ff_opt_pairs %}
-        {% do ff_opt_dict.update({key|lower: value}) %}
-    {% endfor %}
-    {{ return(ff_opt_dict) }}
-{% endmacro %}
-
-
 {% macro snowflake__create_external_table(source_node) %}
 
     {%- set columns = source_node.columns.values() -%}
@@ -24,18 +6,7 @@
     {%- set infer_schema = external.infer_schema -%}
     {%- set ignore_case = external.ignore_case or false  -%}
 
-    {%- set ff_opt_dict = parse_ff(external.file_format) -%}
-    {%- set ff_name = ff_opt_dict.get('format_name', none) -%}
-    
-    {%- if ff_name -%}
-        {% set ff_name = ff_opt_dict['format_name'] %}
-        {% set get_ddl_query = "select get_ddl('FILE_FORMAT', " ~ ff_name ~ ") as ddl" %}
-        {% do log('get_ddl_query: ' ~ get_ddl_query, info=True) %}
-        {% set ddl_result = run_query(get_ddl_query) %}
-        {% set ddl_str = ddl_result.columns[0].values()[0] %}
-        {% set ff_opt_dict = parse_ff(ddl_str) %}
-    {% endif %}
-    {{ log('ff: ' ~ ff_opt_dict, info=True) }}
+    {%- set ff_opt_dict = dbt_external_tables.get_ff(external.file_format) -%}
     {%- set is_csv_ff = ff_opt_dict['type']|default('csv')|lower == 'csv' -%}
 
     {%- if infer_schema -%}
@@ -54,9 +25,9 @@
                 create or replace temporary file format {{inferring_ff_name}} 
                     {{ temp_ff_opt_dict.items() | map('join', '=') | join(' ') }}
             {%- endset -%}
-            {% do log('running file_format_query: ' ~ file_format_query, info=True) %}
+            {# {% do log('running file_format_query: ' ~ file_format_query, info=True) %} #}
             {% do run_query(file_format_query) %}
-            {% do log('successfully created!', info=True) %}
+            {# {% do log('successfully created!', info=True) %} #}
         {%- endif -%}
 
         {% set query_infer_schema %}
@@ -94,6 +65,7 @@
                 {%- elif 'alias' in column -%}
                     {{column.alias}}
                 {%- elif column_quoted == '"VALUE"' -%}
+                    {# Avoid using reserved word 'VALUE' as alias #}
                     "_VALUE"
                 {%- else -%}
                     {{column_quoted}}
@@ -134,7 +106,7 @@
     {% if external.table_format -%} table_format = '{{external.table_format}}' {%- endif %}
 {% endset %}
 {#  #}
-{{ log('ddl: ' ~ ddl, info=True) }}
+{# {{ log('ddl: ' ~ ddl, info=True) }} #}
 
 {{ ddl }};
 
