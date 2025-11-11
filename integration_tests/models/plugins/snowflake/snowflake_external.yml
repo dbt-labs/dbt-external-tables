@@ -39,6 +39,12 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
+      - name: people_csv_infer_schema
+        external:
+          <<: *csv-people
+          infer_schema: true
+        tests: *equal-to-the-people
+
       - name: people_json_unpartitioned
         external: &json-people
           location: '@{{ target.schema }}.dbt_external_tables_testing/json'
@@ -70,6 +76,12 @@ sources:
             auto_ingest: false
             copy_options: ''
         columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
+      - name: people_json_infer_schema
+        external:
+          <<: *json-people
+          infer_schema: true
         tests: *equal-to-the-people
         
       # just to test syntax
@@ -153,6 +165,7 @@ sources:
             description: "the unique ID for people"
 
         # test for column aliasing
+
       - name: people_csv_aliased
         external: *csv-people
         columns:
@@ -175,6 +188,7 @@ sources:
                 - email_alias
 
         # test for column expression
+
       - name: people_json_expression
         external: *json-people
         columns:
@@ -200,7 +214,6 @@ sources:
                 - last_name
                 - email
                 - email_domain
-
 
       - name: people_parquet_infer_schema_ignore_case_unpartitioned
         external: 
