@@ -17,10 +17,12 @@
         {%- for column in columns -%}
             {%- set col_expression -%}
                 {%- if is_csv -%}nullif(${{loop.index}},''){# special case: get columns by ordinal position #}
+                {%- elif column.expression -%}{{ column.expression }}{# special case: quote column names #}
+                {%- elif column.quote -%}nullif($1:{{ adapter.quote(column.name) }},''){# special case: quote column names #}
                 {%- else -%}nullif($1:{{column.name}},''){# standard behavior: get columns by name #}
                 {%- endif -%}
             {%- endset -%}
-            {{col_expression}}::{{column.data_type}} as {{column.name}},
+            {{col_expression}}::{{column.data_type}} as {{ adapter.quote(column.name) if column.quote else column.name}},
         {% endfor -%}
         {% endif %}
             metadata$filename::varchar as metadata_filename,
