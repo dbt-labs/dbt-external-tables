@@ -6,6 +6,13 @@
     {% set create_external_stage_and_file_format %}
     
         begin;
+        drop external table if exists {{target.database}}.{{target.schema}}.people_parquet_column_list_ignore_case_partitioned;
+        drop external table if exists {{target.database}}.{{target.schema}}.people_parquet_column_list_partitioned;
+        drop external table if exists {{target.database}}.{{target.schema}}.people_parquet_column_list_unpartitioned;
+        drop external table if exists {{target.database}}.{{target.schema}}.people_parquet_infer_schema_ignore_case_unpartitioned;
+        drop external table if exists {{target.database}}.{{target.schema}}.people_parquet_infer_schema_partitioned;
+        drop external table if exists {{target.database}}.{{target.schema}}.people_parquet_infer_schema_partitioned_and_column_desc;
+        drop external table if exists {{target.database}}.{{target.schema}}.people_parquet_infer_schema_unpartitioned;
         create or replace stage
             {{ external_stage }}
             url = 's3://dbt-external-tables-testing';
