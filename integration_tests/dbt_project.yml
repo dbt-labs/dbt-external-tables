@@ -19,6 +19,7 @@ clean-targets:
 flags:
   send_anonymous_usage_stats: False
   use_colors: True
+  require_generic_test_arguments_property: true
 
 dispatch:
   - macro_namespace: dbt_external_tables
