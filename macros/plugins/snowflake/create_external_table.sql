@@ -35,6 +35,10 @@
                         {{adapter.quote(column.alias)}}
                     {%- elif 'alias' in column -%}
                         {{column.alias}}
+                    {%- elif 'alias' in column.meta and column.quote -%}
+                        {{adapter.quote(column.meta.alias)}}
+                    {%- elif 'alias' in column.meta -%}
+                        {{column.meta.alias}}
                     {%- else -%}
                         {{column_quoted}}
                     {%- endif -%}
@@ -42,6 +46,8 @@
                 {%- set col_expression -%}
                     {%- if column.expression -%}
                         {{column.expression}}
+                    {%- elif 'expression' in column.meta -%}
+                        {{column.meta.expression}}
                     {%- else -%}
                         {%- if ignore_case -%}
                         {%- set col_id = 'value:c' ~ loop.index if is_csv else 'GET_IGNORE_CASE($1, ' ~ "'"~ column_quoted ~"'"~ ')' -%}

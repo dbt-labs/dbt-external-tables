@@ -27,12 +27,13 @@ sources:
             data_type: varchar(64)
         tests: &equal-to-the-people
           - dbt_external_tables_integration_tests.tsql_equality:
-              compare_model: ref('people')
-              compare_columns:
-                - id
-                - first_name
-                - last_name
-                - email
+              arguments:
+                compare_model: ref('people')
+                compare_columns:
+                  - id
+                  - first_name
+                  - last_name
+                  - email
 
       - name: people_csv_partitioned
         external:
