@@ -2,9 +2,10 @@
 **/target/
 **/dbt_modules/
 **/dbt_packages/
+**/dbt_internal_packages/
 **/logs/
 **/env/
 **/venv/
 **/test.env
 integration_tests/vars.env
-dbt_internal_packages/
+integration_tests/.user.yml
