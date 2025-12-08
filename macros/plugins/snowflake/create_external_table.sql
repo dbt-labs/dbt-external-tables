@@ -31,17 +31,17 @@
             {%- for column in columns %}
                 {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
                 {%- set column_alias -%}
-                    {%- if 'alias' in column and column.quote -%}
-                        {{adapter.quote(column.alias)}}
-                    {%- elif 'alias' in column -%}
-                        {{column.alias}}
+                    {%- if 'alias' in column.config.meta and column.quote -%}
+                        {{adapter.quote(column.meta.alias)}}
+                    {%- elif 'alias' in column.config.meta -%}
+                        {{column.meta.alias}}
                     {%- else -%}
                         {{column_quoted}}
                     {%- endif -%}
                 {%- endset %}
                 {%- set col_expression -%}
-                    {%- if column.expression -%}
-                        {{column.expression}}
+                    {%- if column.meta.expression -%}
+                        {{column.meta.expression}}
                     {%- else -%}
                         {%- if ignore_case -%}
                         {%- set col_id = 'value:c' ~ loop.index if is_csv else 'GET_IGNORE_CASE($1, ' ~ "'"~ column_quoted ~"'"~ ')' -%}

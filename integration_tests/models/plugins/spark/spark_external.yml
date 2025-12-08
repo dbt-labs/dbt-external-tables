@@ -25,12 +25,13 @@ sources:
             data_type: string
         tests: &equal-to-the-people
           - dbt_utils.equality:
-              compare_model: ref('people')
-              compare_columns:
-                - id
-                - first_name
-                - last_name
-                - email
+              arguments:
+                compare_model: ref('people')
+                compare_columns:
+                  - id
+                  - first_name
+                  - last_name
+                  - email
 
       - name: people_csv_partitioned_using
         external:

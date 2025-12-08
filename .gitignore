@@ -7,3 +7,4 @@
 **/venv/
 **/test.env
 integration_tests/vars.env
+dbt_internal_packages/
