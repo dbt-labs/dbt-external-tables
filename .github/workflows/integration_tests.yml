@@ -15,7 +15,7 @@ jobs:
       max-parallel: 3
       matrix:
         python-version: [ "3.11"] # "3.10", "3.12"]
-        dbt-version: ["1.10.6"] # "1.6.0", , "1.8.0b1"]
+        dbt-version: ["1.10.0"] # "1.6.0", , "1.8.0b1"]
         data-platform: ["redshift", "snowflake", "bigquery"]
 
     steps:
