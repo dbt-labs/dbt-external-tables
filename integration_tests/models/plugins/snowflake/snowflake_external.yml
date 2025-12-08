@@ -224,7 +224,7 @@ sources:
                   - id
                   - first_name
                   - last_name
-                  - email         
+                  - email
 
       - name: people_parquet_column_list_ignore_case_partitioned
         external: 
