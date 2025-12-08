@@ -1,5 +1,24 @@
 # Changelog
 
+## dbt-external-tables v0.12.0
+
+## What's Changed
+* send it by @dataders in https://github.com/dbt-labs/dbt-external-tables/pull/342
+* Feature: Support for Snowflake Iceberg tables (AWS Glue as the Iceberg catalog) by @LProcopi15 in https://github.com/dbt-labs/dbt-external-tables/pull/341
+* Add `refresh_on_create` option by @krishbox in https://github.com/dbt-labs/dbt-external-tables/pull/349
+* move reading Iceberg to dbt-experimental-features repo by @dataders in https://github.com/dbt-labs/dbt-external-tables/pull/355
+* Fix typo in macro by @b-per in https://github.com/dbt-labs/dbt-external-tables/pull/357
+* Pin GitHub Actions to specific SHAs (2 actions in 1 files) by @ddk-dbt in https://github.com/dbt-labs/dbt-external-tables/pull/372
+* Drop external tables in CI so that stage and file format can be re-created by @dbeatty10 in https://github.com/dbt-labs/dbt-external-tables/pull/377
+* Compatibility with Fusion by @dbeatty10 in https://github.com/dbt-labs/dbt-external-tables/pull/386
+
+## New Contributors
+* @LProcopi15 made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/341
+* @krishbox made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/349
+* @ddk-dbt made their first contribution in https://github.com/dbt-labs/dbt-external-tables/pull/372
+
+**Full Changelog**: https://github.com/dbt-labs/dbt-external-tables/compare/0.11.1...0.12.0
+
 ## dbt-external-tables v0.11.0
 
 ### Synapse & SQL Server
