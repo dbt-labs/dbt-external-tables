@@ -17,8 +17,8 @@ clean-targets:
   - "dbt_packages"
 
 flags:
-  send_anonymous_usage_stats: False
-  use_colors: True
+  send_anonymous_usage_stats: false
+  use_colors: true
   require_generic_test_arguments_property: true
 
 dispatch:
