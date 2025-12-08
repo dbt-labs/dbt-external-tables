@@ -12,7 +12,6 @@ test-paths: ["tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
 
-target-path: "target"
 clean-targets:
   - "target"
   - "dbt_packages"
