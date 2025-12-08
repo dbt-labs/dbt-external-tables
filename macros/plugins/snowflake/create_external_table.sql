@@ -31,16 +31,22 @@
             {%- for column in columns %}
                 {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
                 {%- set column_alias -%}
-                    {%- if 'alias' in column.config.meta and column.quote -%}
+                    {%- if 'alias' in column and column.quote -%}
+                        {{adapter.quote(column.alias)}}
+                    {%- elif 'alias' in column -%}
+                        {{column.alias}}
+                    {%- elif 'alias' in column.meta and column.quote -%}
                         {{adapter.quote(column.meta.alias)}}
-                    {%- elif 'alias' in column.config.meta -%}
+                    {%- elif 'alias' in column.meta -%}
                         {{column.meta.alias}}
                     {%- else -%}
                         {{column_quoted}}
                     {%- endif -%}
                 {%- endset %}
                 {%- set col_expression -%}
-                    {%- if column.meta.expression -%}
+                    {%- if column.expression -%}
+                        {{column.expression}}
+                    {%- elif 'expression' in column.meta -%}
                         {{column.meta.expression}}
                     {%- else -%}
                         {%- if ignore_case -%}
