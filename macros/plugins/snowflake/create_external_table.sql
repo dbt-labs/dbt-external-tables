@@ -62,15 +62,16 @@
             {% endfor %}
         {% else %}
         {%- for column in columns_infer %}
+                {%- set column_quoted = adapter.quote(column[0]) if infer_schema == 'quote' else column[0] %}
                 {%- set col_expression -%}
                 {%- if ignore_case -%}
-                    {%- set col_id = 'GET_IGNORE_CASE($1, ' ~ "'"~ column[0] ~"'"~ ')' -%}
+                    {%- set col_id = 'GET_IGNORE_CASE($1, ' ~ "'"~ column_quoted ~"'"~ ')' -%}
                 {%- else -%}
-                    {%- set col_id = 'value:' ~ column[0] -%}
+                    {%- set col_id = 'value:' ~ column_quoted -%}
                 {%- endif -%}
                     (case when is_null_value({{col_id}}) or lower({{col_id}}) = 'null' then null else {{col_id}} end)
                 {%- endset %}
-                {{column[0]}} {{column[1]}} as ({{col_expression}}::{{column[1]}})
+                {{column_quoted}} {{column[1]}} as ({{col_expression}}::{{column[1]}})
                 {{- ',' if not loop.last -}}
             {% endfor %}
         {%- endif -%}
