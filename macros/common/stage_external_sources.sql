@@ -33,7 +33,7 @@
         
     {% endfor %}
     
-    {% if sources_to_stage|length == 0 %}
+    {% if sources_to_stage|length == 0 and execute %}
         {% do log('No external sources selected', info = true) %}
     {% endif %}
             
