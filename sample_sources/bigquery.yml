@@ -26,6 +26,7 @@ sources:
           - name: app_id
             data_type: varchar(255)
             description: "Application ID"
+            mode: REQUIRED
           - name: domain_sessionidx
             data_type: int
             description: "A visit / session index"
@@ -58,3 +59,40 @@ sources:
               - 'gs://bucket_a/path/*'
               - 'gs://bucket_b/path/*'
               - 'gs://bucket_c/more/specific/path/file.csv'
+
+
+  - name: users
+    schema: users
+    tables:
+      - name: users
+        external:
+          location: gs://my-prod-bucket/users.jsonl
+          options:
+            format: JSON
+        columns:
+        - name: id
+          data_type: INTEGER
+          mode: REQUIRED
+          description: >
+            User ID from the prod database
+        - name: name
+          data_type: STRING
+          description: "User full name"
+        - name: addresses
+          data_type: STRUCT
+          mode: REPEATED
+          description: A list of addresses where the user has lived
+          fields:
+            - name: city
+              data_type: STRING
+              description: "City name"
+            - name: address
+              data_type: STRING
+              description: "Street address"
+            - name: postal_code
+              data_type: STRING
+              description: "Postal code"
+            - name: country
+              data_type: STRING
+              description: "Country name"
+          
