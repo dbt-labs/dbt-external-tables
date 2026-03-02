@@ -93,6 +93,15 @@ sources:
             data_type: varchar(255)
             description: "Platform"
           ...
+
+        # Use `meta` to pass custom column properties (e.g. alias, expression)
+        columns:
+          - name: raw_timestamp
+            data_type: timestamp
+            config:
+              meta:
+                alias: event_timestamp       # rename the column in the external table
+                expression: TO_TIMESTAMP(...) # custom SQL expression instead of default value extraction
 ```
 
 The `stage_external_sources` macro will use this YAML config to compile and 
