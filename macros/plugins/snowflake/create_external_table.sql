@@ -25,7 +25,14 @@
     {%- if columns or partitions or infer_schema -%}
     (
         {%- if partitions -%}{%- for partition in partitions %}
-            {{partition.name}} {{partition.data_type}} as {{partition.expression}}{{- ',' if not loop.last or columns|length > 0 or infer_schema -}}
+            {%- set part_expression -%}
+                {%- if partition.expression -%}
+                    {{partition.expression}}
+                {%- elif 'expression' in partition.meta -%}
+                    {{partition.meta.expression}}
+                {%- endif -%}
+            {%- endset %}
+            {{partition.name}} {{partition.data_type}} as {{part_expression}}{{- ',' if not loop.last or columns|length > 0 or infer_schema -}}
         {%- endfor -%}{%- endif -%}
         {%- if not infer_schema -%}
             {%- for column in columns %}
