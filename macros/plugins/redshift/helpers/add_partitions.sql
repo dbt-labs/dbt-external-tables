@@ -20,12 +20,12 @@
 #}
 {% macro redshift_alter_table_add_partitions(source_node, partitions) %}
 
-  {{ log("Generating ADD PARTITION statement for partition set between " 
-         ~ partitions[0]['path'] ~ " and " ~ (partitions|last)['path']) }}
-
   {% set ddl = [] %}
   
   {% if partitions|length > 0 %}
+
+    {{ log("Generating ADD PARTITION statement for partition set between " 
+           ~ partitions[0]['path'] ~ " and " ~ (partitions|last)['path']) }}
   
     {% set alter_table_add %}
         alter table {{source(source_node.source_name, source_node.name)}} add if not exists 
