@@ -7,7 +7,11 @@
             value variant,
         {% else -%}
         {%- for column in columns -%}
-            {{column.name}} {{column.data_type}},
+            {%- if column.quote -%}
+                {{ adapter.quote(column.name) }} {{column.data_type}},
+            {% else %}
+                {{column.name}} {{column.data_type}},
+            {% endif %}
         {% endfor -%}
         {% endif %}
             metadata_filename varchar,
