@@ -32,7 +32,11 @@
         ) {% endif -%}
         {% endif %}
         {% if connection_name %}
-            with connection `{{ connection_name }}`
+            {% if connection_name | upper == 'DEFAULT' %}
+                with connection DEFAULT
+            {% else %}
+                with connection `{{ connection_name }}`
+            {% endif %}
         {% endif %}
         options (
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
