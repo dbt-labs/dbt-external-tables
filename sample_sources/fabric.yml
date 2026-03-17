@@ -1,0 +1,126 @@
+version: 2
+
+sources:
+  - name: marketo
+    schema: source_marketo
+    loader: ADLSblob
+    tables:
+      - name: lead_activities
+        description: |
+          from raw DW.
+        external:          
+          # Ending location with `**` will recurse through subfolders
+          location: /marketing/Marketo/LeadActivities/**
+          # Optional. When `true`, the WITH clause will include the column ordinal based on the source.yml. Default is `false`.
+          # Setting this option overrides matching columns by name.
+          use_column_ordinal: true
+          ## OPENROWSET <bulk_options>: https://learn.microsoft.com/en-us/sql/t-sql/functions/openrowset-bulk-transact-sql?view=fabric
+          DATA_SOURCE:  MY_DATA_SOURCE
+          FORMAT:  CSV
+          FIELDTERMINATOR: '|'
+          FIELDQUOTE: ''
+          ESCAPECHAR: \
+          HEADER_ROW: 'TRUE'
+          CODEPAGE: 
+          DATAFILETYPE:
+          PARSER_VERSION:
+          MAXERRORS:
+          ERRORFILE:
+          FIRSTROW:
+          LASTROW:
+          ROWS_PER_BATCH:
+        columns:
+          - name: id
+            description: unique Activity ID
+            data_type: int
+          - name: leadId
+            description: Lead ID
+            data_type: int
+          - name: activityDate
+            description: date of activity
+            data_type: varchar(255)
+          - name: activityTypeId
+            description: unique identifier for type of activity
+            data_type: int
+          - name: campaignId
+            description: Campaign under which activity took place
+            data_type: int
+          - name: primaryAttributeValueId
+            description: the main attribute for given activity type
+            data_type: int
+          - name: primaryAttributeValue
+            description: what value was taken
+            data_type: varchar(255)
+
+# Generated SQL with `use_column_ordinal = false` (default):
+#
+# create view "source_marketo"."lead_activities" as
+# select
+#     "id",
+#     "leadId",
+#     "activityDate",
+#     "activityTypeId",
+#     "campaignId",
+#     "primaryAttributeValueId",
+#     "primaryAttributeValue"
+# from
+# openrowset
+# (BULK '/marketing/Marketo/LeadActivities/**',
+#     DATA_SOURCE ='MY_DATA_SOURCE',
+#     FORMAT ='CSV',
+#     FIELDTERMINATOR ='|',
+#     FIELDQUOTE ='',
+#     ESCAPECHAR ='\',
+#     HEADER_ROW =TRUE
+#         
+# ) with (
+#     "id" int ,
+#     "leadId" int ,
+#     "activityDate" varchar(255) ,
+#     "activityTypeId" int ,
+#     "campaignId" int ,
+#     "primaryAttributeValueId" int ,
+#     "primaryAttributeValue" varchar(255) 
+# )
+
+# Generated SQL with `use_column_ordinal = true `:
+#
+# create view "source_marketo"."lead_activities" as
+# select
+#     "id",
+#     "leadId",
+#     "activityDate",
+#     "activityTypeId",
+#     "campaignId",
+#     "primaryAttributeValueId",
+#     "primaryAttributeValue"
+# from
+# openrowset
+# (BULK '/marketing/Marketo/LeadActivities/**',
+#     DATA_SOURCE ='MY_DATA_SOURCE',
+#     FORMAT ='CSV',
+#     FIELDTERMINATOR ='|',
+#     FIELDQUOTE ='',
+#     ESCAPECHAR ='\',
+#     HEADER_ROW =TRUE
+#         
+# ) with (
+#     "id" int 1,
+#     "leadId" int 2,
+#     "activityDate" varchar(255) 3,
+#     "activityTypeId" int 4,
+#     "campaignId" int 5,
+#     "primaryAttributeValueId" int 6,
+#     "primaryAttributeValue" varchar(255) 7
+# )
+
+# If you're working with both Synapse and Fabric, you may specify a configuration section for each.
+# Insert an additional section under `external` using `target.type`. E.g.:
+# 
+#   external:
+#     synapse:
+#       <existing synapse external table config>
+#     fabric:
+#       <new fabric external table config>
+#
+# `target.type`-specific configurations take precedence over the generic `external` configuration.
