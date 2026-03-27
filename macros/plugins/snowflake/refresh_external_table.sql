@@ -13,7 +13,7 @@
 
         {% set ddl %}
         begin;
-        alter external table {{source(source_node.source_name, source_node.name)}} refresh;
+        alter external table {{source(source_node.source_name, source_node.name).render()}} refresh;
         commit;
         {% endset %}
         

@@ -21,7 +21,7 @@
 {# This assumes you have already created an external stage #}
 
 {% set ddl %}
-    create or replace external table {{source(source_node.source_name, source_node.name)}}
+    create or replace external table {{source(source_node.source_name, source_node.name).render()}}
     {%- if columns or partitions or infer_schema -%}
     (
         {%- if partitions -%}{%- for partition in partitions %}
