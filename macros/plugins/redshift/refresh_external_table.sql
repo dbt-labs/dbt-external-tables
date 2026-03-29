@@ -4,6 +4,11 @@
 
     {%- if partitions -%}
     
+        {%- set missing = partitions | selectattr('vals','undefined') | list -%}
+        {%- if missing and (missing|length) > 0 -%}
+            {% do return([]) %}
+        {%- endif -%}
+    
         {%- set part_len = partitions|length -%}
     
         {%- set get_partitions_sql -%}
