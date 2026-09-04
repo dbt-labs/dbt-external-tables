@@ -5,6 +5,7 @@
     {%- set options = external.options -%}
     {%- set non_string_options = ['max_staleness'] %}
 
+    {%- set connection_name = none -%}
     {% if options is mapping and options.get('connection_name', none) %}
         {% set connection_name = options.pop('connection_name') %}
     {% endif %}
