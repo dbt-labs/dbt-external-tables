@@ -18,7 +18,8 @@ on:
 
 jobs:
   run-tests:
-      uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@v1
+      # TODO: temp point to main to test synapse changes
+      uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@main
       with:
         # redshift
         REDSHIFT_HOST: ${{ vars.REDSHIFT_HOST }}
