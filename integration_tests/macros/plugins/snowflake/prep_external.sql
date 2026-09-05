@@ -17,7 +17,7 @@
             {{ external_stage }}
             url = 's3://dbt-external-tables-testing';
         
-        create or replace file format {{ parquet_file_format }} type = parquet;
+        create or alter file format {{ parquet_file_format }} type = parquet;
         commit;
             
     {% endset %}
