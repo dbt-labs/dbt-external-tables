@@ -14,6 +14,7 @@ This package provides:
 * Spark
 * Synapse
 * Azure SQL
+* Teradata [docs](https://github.com/Teradata/dbt-teradata/blob/main/README.md#dbt-external-tables)
 
 ![sample docs](etc/sample_docs.png)
 
