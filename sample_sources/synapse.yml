@@ -23,9 +23,10 @@ sources:
           quoted_identifier: true
 
         # Cross database query (i.e. RDBMS) Azure SQL ONLY
-          data_source: AEDW # made with TYPE= 'RDBMS'
-          schema_name: Business
-          object_name: LeadActivities
+        # use instead of the above
+          # data_source: AEDW # made with TYPE= 'RDBMS'
+          # schema_name: Business
+          # object_name: LeadActivities
 
         columns:
           - name: id
