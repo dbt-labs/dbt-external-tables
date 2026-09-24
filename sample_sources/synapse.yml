@@ -22,11 +22,6 @@ sources:
           ansi_nulls: true
           quoted_identifier: true
 
-        # Cross database query (i.e. RDBMS) Azure SQL ONLY
-          data_source: AEDW # made with TYPE= 'RDBMS'
-          schema_name: Business
-          object_name: LeadActivities
-
         columns:
           - name: id
             description: unique Activity ID
@@ -49,6 +44,15 @@ sources:
           - name: primaryAttributeValue
             description: what value was taken
             data_type: varchar(255)
+
+      # alternatively, if your external data source was created with TYPE = 'RDBMS'
+      # (cross-database query, Azure SQL ONLY), use schema_name/object_name
+      # instead of location/file_format -- do not combine the two styles
+      - name: lead_activities_rdbms
+        external:
+          data_source: AEDW # made with TYPE= 'RDBMS'
+          schema_name: Business
+          object_name: LeadActivities
 
 # SET ANSI_NULLS ON;
 # SET QUOTED_IDENTIFIER ON;
