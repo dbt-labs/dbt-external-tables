@@ -45,8 +45,9 @@ sources:
             description: what value was taken
             data_type: varchar(255)
 
-      # Cross database query (i.e. RDBMS) Azure SQL ONLY
-      # use schema_name/object_name instead of location/file_format
+      # alternatively, if your external data source was created with TYPE = 'RDBMS'
+      # (cross-database query, Azure SQL ONLY), use schema_name/object_name
+      # instead of location/file_format -- do not combine the two styles
       - name: lead_activities_rdbms
         external:
           data_source: AEDW # made with TYPE= 'RDBMS'
