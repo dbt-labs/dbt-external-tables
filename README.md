@@ -70,7 +70,8 @@ sources:
             This source table is actually a set of files in external storage.
             The dbt-external-tables package provides handy macros for getting
             those files queryable, just in time for modeling.
-                            
+        config:
+          enabled:          # optional: allows for external table to be disabled, defaults to true
         external:
           location:         # required: S3 file path, GCS file path, Snowflake stage, Synapse data source
           

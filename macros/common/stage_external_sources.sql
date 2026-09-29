@@ -5,7 +5,7 @@
     {% set source_nodes = graph.sources.values() if graph.sources else [] %}
     
     {% for node in source_nodes %}
-        {% if node.external %}
+        {% if node.external and node.config.get('enabled', true) %}
             
             {% if select %}
             
