@@ -1,5 +1,5 @@
 name: 'dbt_external_tables'
-version: '0.8.0'
+version: '0.12.2'
 config-version: 2
 require-dbt-version: [">=1.0.0", "<3.0.0"]
 macro-paths: ["macros"]
