@@ -18,7 +18,7 @@ on:
 
 jobs:
   run-tests:
-      uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@v1
+      uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@v2
       with:
         # redshift
         REDSHIFT_HOST: ${{ vars.REDSHIFT_HOST }}
@@ -48,6 +48,7 @@ jobs:
       secrets:
         DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
         SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.DBT_ENV_SECRET_SNOWFLAKE_PASS }}
+        DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
+        DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}
         BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}
         DBT_ENV_SECRET_SYNAPSE_CLIENT_SECRET: ${{ secrets.DBT_ENV_SECRET_SYNAPSE_CLIENT_SECRET }}
