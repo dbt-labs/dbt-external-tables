@@ -18,8 +18,7 @@ on:
 
 jobs:
   run-tests:
-      # TODO: switch back to @v1 once dbt-labs/dbt-package-testing#51 is merged and tagged
-      uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@a1ff7cc9cbba3ceaf945b5ad9b31745ad1bd2688
+      uses: dbt-labs/dbt-package-testing/.github/workflows/run_tox.yml@v1
       with:
         # redshift
         REDSHIFT_HOST: ${{ vars.REDSHIFT_HOST }}
@@ -49,7 +48,6 @@ jobs:
       secrets:
         DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
         SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-        DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
-        DBT_ENV_SECRET_SNOWFLAKE_PKEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PKEY_PASSPHRASE }}
+        DBT_ENV_SECRET_SNOWFLAKE_PASS: ${{ secrets.DBT_ENV_SECRET_SNOWFLAKE_PASS }}
         BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}
         DBT_ENV_SECRET_SYNAPSE_CLIENT_SECRET: ${{ secrets.DBT_ENV_SECRET_SYNAPSE_CLIENT_SECRET }}
