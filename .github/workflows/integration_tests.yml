@@ -17,13 +17,13 @@ jobs:
         python-version: [ "3.11"] # "3.10", "3.12"]
         dbt-version: ["1.10.0"] # "1.6.0", , "1.8.0b1"]
         data-platform: ["redshift", "snowflake", "bigquery"]
-      include:
-        - data-platform: snowflake
-          adapter-version: "1.10.0"
-        - data-platform: bigquery
-          adapter-version: "1.10.0"
-        - data-platform: redshift
-          adapter-version: "1.9.0"
+        include:
+          - data-platform: snowflake
+            adapter-version: "1.10.0"
+          - data-platform: bigquery
+            adapter-version: "1.10.0"
+          - data-platform: redshift
+            adapter-version: "1.9.0"
 
     steps:
     - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # actions/checkout@v3
