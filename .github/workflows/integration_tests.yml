@@ -47,8 +47,6 @@ jobs:
         dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
         dbt test --target ${{ matrix.data-platform }}
       env:
-
-        env: 
         # redshift
         REDSHIFT_HOST: ${{ secrets.REDSHIFT_HOST }}
         REDSHIFT_USER: ${{ secrets.REDSHIFT_USER }}
