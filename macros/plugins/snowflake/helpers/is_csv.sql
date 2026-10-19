@@ -11,7 +11,7 @@ you should only specify one or the other when creating an external table.
 
 #}
 
-    {% set ff_ltrimmed = file_format|lower|replace(' ','') %}
+    {% set ff_ltrimmed = file_format|lower|replace(' ','')|replace("'",'') %}
 
     {% if 'type=' in ff_ltrimmed %}
     

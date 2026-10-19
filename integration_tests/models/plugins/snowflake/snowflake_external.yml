@@ -40,6 +40,13 @@ sources:
         columns: *cols-of-the-people
         tests: *equal-to-the-people
 
+      - name: people_csv_unpartitioned_quoted_type
+        external:
+          <<: *csv-people
+          file_format: "( type = 'csv' skip_header = 1 )"
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
       - name: people_json_unpartitioned
         external: &json-people
           location: '@{{ target.schema }}.dbt_external_tables_testing/json'
