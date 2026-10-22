@@ -242,6 +242,36 @@ sources:
                   - first_name
                   - last_name
                   - email
+
+      - name: test_column_reconciliation
+        external:
+          location: '@{{ target.schema }}.dbt_external_tables_testing/csv'
+          file_format: '(TYPE = CSV SKIP_HEADER = 1)'
+          auto_refresh: false
+          refresh_on_create: false
+        columns:
+          - name: id
+            data_type: int
+          - name: extra_value
+            data_type: varchar(64)
+            config:
+              meta:
+                alias: customer_alias
+          - name: MixedCaseColumn
+            data_type: varchar(64)
+            quote: true
+          - name: quoted_alias_test
+            data_type: varchar(64)
+            quote: true
+            config:
+              meta:
+                alias: CustomerAlias
+          - name: custom_expression
+            data_type: varchar(64)
+            config:
+              meta:
+                expression: "VALUE:c5"
+
       # temporarily disabled until we can properly address Iceberg tables
       # - name: people_iceberg_no_optional_configs
       #   external: &iceberg-people
