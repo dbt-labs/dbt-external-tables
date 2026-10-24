@@ -1,0 +1,56 @@
+version: 2
+sources:
+  - name: teradata_external
+    schema: "{{ target.schema }}"
+    loader: S3
+
+    tables:
+      # csv file format example
+      - name: people_csv
+        external: 
+          location: "/s3/s3.amazonaws.com/dbt-external-tables-testing/csv/"
+          file_format: "TEXTFILE"
+          row_format: '{"field_delimiter":",","record_delimiter":"\n","character_set":"LATIN"}'
+          using: |
+            PATHPATTERN  ('$var1/$section/$var3')
+          tbl_properties: |
+            MAP = TD_MAP1
+            ,EXTERNAL SECURITY  MyAuthObj
+          partitions:
+            - name: section
+              data_type: CHAR(1)
+        columns:
+          - name: id
+            data_type: int
+          - name: first_name
+            data_type: varchar(64)
+          - name: last_name
+            data_type: varchar(64)
+          - name: email
+            data_type: varchar(64)
+
+      # json file format example
+      - name: people_json
+        external:
+          location: '/s3/s3.amazonaws.com/dbt-external-tables-testing/json/'
+          using: |
+            STOREDAS('TEXTFILE')
+            ROWFORMAT('{"record_delimiter":"\n", "character_set":"cs_value"}')
+            PATHPATTERN  ('$var1/$section/$var3')
+          tbl_properties: |
+            MAP = TD_MAP1
+            ,EXTERNAL SECURITY  MyAuthObj
+          partitions:
+            - name: section
+              data_type: CHAR(1)
+      
+      # parquet file format example
+      - name: people_pq
+        external:
+          location: "/s3/s3.amazonaws.com/dbt-external-tables-testing/parquet/"
+          using: |
+            STOREDAS('PARQUET')
+            PATHPATTERN  ('$var1/$section/$var3')
+          tbl_properties: |
+            MAP = TD_MAP1
+            ,EXTERNAL SECURITY  MyAuthObj
