@@ -1,67 +1,9 @@
 # Security Policy
 
-## Reporting a Vulnerability
+This repository follows the [dbt Labs security reporting and disclosure policy](https://github.com/dbt-labs/.github/blob/main/SECURITY.md), including its scope, response expectations, and disclosure guidelines.
 
-If you believe you have found a security vulnerability in this project, we encourage you to report it responsibly. **Please do not open a public GitHub issue for security vulnerabilities.**
+Do not report vulnerabilities through public GitHub issues, pull requests, or discussions.
 
-### How to Report
+For vulnerabilities in this repository, use [GitHub private vulnerability reporting](https://github.com/dbt-labs/dbt-external-tables/security/advisories/new).
 
-Use GitHub's built-in private vulnerability reporting to submit your report:
-
-1. Navigate to the **Security** tab of this repository.
-2. Click **"Report a vulnerability"** under **Private vulnerability reporting**.
-3. Fill out the advisory form with as much detail as possible.
-
-Alternatively, you can go directly to:
-
-```
-https://github.com/dbt-labs/dbt-external-tables/security/advisories/new
-```
-
-### What to Include
-
-To help us understand and resolve the issue quickly, please include:
-
-- A description of the vulnerability and its potential impact.
-- Step-by-step instructions to reproduce the issue.
-- The affected version(s) of the project.
-- Any relevant logs, screenshots, or proof-of-concept code.
-- Your suggested severity (Critical, High, Medium, Low) if you have one.
-
-Because dbt-external-tables generates SQL statements and handles database connection parameters, please pay special attention to:
-
-- SQL injection vectors through external table definitions or source configurations.
-- Credential exposure through logging or error messages.
-- Path traversal in file location parameters.
-
-### What to Expect
-
-- **Acknowledgment:** We will acknowledge receipt of your report within **3 business days**.
-- **Updates:** We will provide status updates as we investigate, typically within **10 business days**.
-- **Resolution:** Once a fix is ready, we will coordinate disclosure with you before making any public announcement.
-
-### Scope
-
-This policy applies to the latest supported release of this project. If you are unsure whether a version is still supported, please include the version details in your report and we will let you know.
-
-### Guidelines
-
-We ask that you:
-
-- Give us a reasonable amount of time to address the issue before making any public disclosure.
-- Make a good-faith effort to avoid disrupting the project, its infrastructure, or its users during your research.
-- Do not access, modify, or delete data that does not belong to you.
-
-## Supported Versions
-
-| Version | Supported |
-| ------- | --------- |
-| Latest  | Yes       |
-
-For questions about which versions are actively maintained, please refer to the project's release documentation.
-
-## Thank You
-
-We appreciate the security research community's efforts in helping keep dbt Labs and our users safe. Responsible disclosure makes the open-source ecosystem stronger for everyone.
-
-For urgent or critical issues, please reach out to the [dbt Labs Security Team](mailto:security+ghreport@dbtlabs.com).
+Include the affected version or commit, impact, reproduction steps, and a proof of concept where available. For platform or website vulnerabilities, follow the reporting route in the organization policy.
