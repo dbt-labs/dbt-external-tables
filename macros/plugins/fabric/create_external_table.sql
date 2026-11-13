@@ -2,14 +2,28 @@
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
+    {%- set not_null_columns = [] -%}
+    {# Parsed columns do not retain schema tests; dbt stores them in graph.nodes. #}
+    {% if execute %}
+        {% for node in graph.nodes.values() %}
+            {% if node.resource_type == 'test'
+                and node.test_metadata is defined and node.test_metadata
+                and node.test_metadata.name == 'not_null'
+                and node.test_metadata.namespace in [none, 'dbt']
+                and source_node.unique_id in node.depends_on.nodes
+                and node.config.enabled
+                and not node.config.where %}
+                {% do not_null_columns.append(node.column_name) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 
     {% if external.ansi_nulls is true -%} SET ANSI_NULLS ON; {%- endif %}
     {% if external.quoted_identifier is true -%} SET QUOTED_IDENTIFIER ON; {%- endif %}
 
     create external table {{source(source_node.source_name, source_node.name)}} (
         {% for column in columns %}
-            {# TODO set nullity based on schema tests?? #}
-            {%- set nullity = 'NOT NULL' if 'not_null' in column.tests else 'NULL'-%}
+            {%- set nullity = 'NOT NULL' if column.name in not_null_columns or adapter.quote(column.name) in not_null_columns else 'NULL'-%}
             {{adapter.quote(column.name)}} {{column.data_type}} {{nullity}}
             {{- ',' if not loop.last -}}
         {% endfor %}
