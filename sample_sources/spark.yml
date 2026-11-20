@@ -37,3 +37,15 @@ sources:
           - name: contexts
             data_type: string
             description: "Contexts attached to event by Tracker"
+
+- name: event_inferred_schema
+        description: "Snowplow events stored as partitioned parquet files in HDFS with inferred schema"
+        external:
+          # File path can contain partitions such as: hdfs://.../events/my_partition=2022-03-01/events1.parquet
+          # These partitions are excluded from 'location'.
+          location: 'hdfs://.../events/'
+          using: parquet
+
+          # Setting recover_partitions to true causes partitions to be refreshed,
+          # even though partitions are not explicitly specified.
+          recover_partitions: true
