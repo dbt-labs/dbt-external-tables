@@ -1,4 +1,4 @@
-{% macro redshift__refresh_external_table(source_node) %}
+{% macro redshift__refresh_external_table(source_node, relation) %}
 
     {%- set partitions = source_node.external.get('partitions',[]) -%}
 
@@ -65,7 +65,7 @@
             {%- endfor -%}
         {%- endif -%}
     
-        {%- set ddl = dbt_external_tables.redshift_alter_table_add_partitions(source_node, finals) -%}
+        {%- set ddl = dbt_external_tables.redshift_alter_table_add_partitions(source_node, relation, finals) -%}
         {{ return(ddl) }}
     
     {% else %}

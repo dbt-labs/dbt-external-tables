@@ -1,30 +1,11 @@
-{% macro bigquery__get_external_build_plan(source_node) %}
-
-    {% set build_plan = [] %}
-    
-    {% set old_relation = adapter.get_relation(
-        database = source_node.database,
-        schema = source_node.schema,
-        identifier = source_node.identifier
-    ) %}
-    
-    {% set create_or_replace = (old_relation is none or var('ext_full_refresh', false)) %}
-
-    {% if create_or_replace %}
-        {% if not dbt_external_tables.create_external_schema(source_node)|length %}
-            {% set build_plan = build_plan + [
-                dbt_external_tables.create_external_table(source_node)
-            ] %}
-        {% else %}
-            {% set build_plan = build_plan + [
-                dbt_external_tables.create_external_schema(source_node),
-                dbt_external_tables.create_external_table(source_node)
-            ] %}
-        {% endif %}
+{% macro bigquery__get_external_build_plan(source_node, relation) %}
+    {% set old_relation = load_relation(relation) %}
+    {% if old_relation is none or var('ext_full_refresh', false) %}
+        {% set sql = [dbt_external_tables.create_external_table(source_node, relation)] %}
     {% else %}
-        {% set build_plan = build_plan + dbt_external_tables.refresh_external_table(source_node) %}
+        {% set sql = dbt_external_tables.refresh_external_table(source_node, relation) %}
     {% endif %}
 
-    {% do return(build_plan) %}
-
+    {# Column descriptions and policy tags also need updates when there is no DDL. #}
+    {% do return({'sql': sql, 'post_macro': 'dbt_external_tables.bigquery__update_external_table_columns'}) %}
 {% endmacro %}

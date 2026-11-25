@@ -1,4 +1,4 @@
-{% macro snowflake_get_copy_sql(source_node, explicit_transaction=false) %}
+{% macro snowflake_get_copy_sql(source_node, relation, explicit_transaction=false) %}
 {# This assumes you have already created an external stage #}
 
     {%- set columns = source_node.columns.values() -%}
@@ -8,7 +8,7 @@
 
     {%- if explicit_transaction -%} begin; {%- endif %}
 
-    copy into {{source(source_node.source_name, source_node.name)}}
+    copy into {{ relation }}
     from (
         select
         {% if columns|length == 0 %}

@@ -2,69 +2,63 @@ name: Integration Testing
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dbt_version:
+        description: Published dbt v2 version with per-node operation plan support
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
   build:
-
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
-      max-parallel: 3
+      fail-fast: false
       matrix:
-        python-version: [ "3.11"] # "3.10", "3.12"]
-        dbt-version: ["1.10.0"] # "1.6.0", , "1.8.0b1"]
-        data-platform: ["redshift", "snowflake", "bigquery"]
-        include:
-          - data-platform: snowflake
-            adapter-version: "1.10.0"
-          - data-platform: bigquery
-            adapter-version: "1.10.0"
-          - data-platform: redshift
-            adapter-version: "1.9.0"
+        data-platform: [redshift, snowflake, bigquery]
 
     steps:
-    - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566  # actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dbt-${{ matrix.data-platform }}~=${{ matrix.dbt-version }}
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install "dbt-${{ matrix.data-platform }}~=${{ matrix['adapter-version'] }}" "dbt-core~=${{ matrix.dbt-version }}"
-    - name: run integration_tests project on ${{ matrix.data-platform }}
-      run: |
-        cd integration_tests
-        export DBT_PROFILES_DIR=.
-        dbt deps --target ${{ matrix.data-platform }}
-        dbt seed --full-refresh --target ${{ matrix.data-platform }}
-        dbt run --target ${{ matrix.data-platform }}
-        dbt run-operation prep_external --target ${{ matrix.data-platform }}
-        dbt -d run-operation dbt_external_tables.stage_external_sources --vars 'ext_full_refresh: true' --target ${{ matrix.data-platform }}
-        dbt run-operation dbt_external_tables.stage_external_sources --target ${{ matrix.data-platform }}
-        dbt test --target ${{ matrix.data-platform }}
-      env:
-        # redshift
-        REDSHIFT_HOST: ${{ secrets.REDSHIFT_HOST }}
-        REDSHIFT_USER: ${{ secrets.REDSHIFT_USER }}
-        DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
-        REDSHIFT_PORT: ${{ secrets.REDSHIFT_PORT }}
-        REDSHIFT_DATABASE: ${{ secrets.REDSHIFT_DATABASE }}
-        REDSHIFT_SPECTRUM_IAM_ROLE: ${{ secrets.REDSHIFT_SPECTRUM_IAM_ROLE }}
-        REDSHIFT_SCHEMA: "dbt_external_tables_integration_tests_redshift"
-        #snowflake
-        SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-        SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-        DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY }}
-        DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}
-        SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-        SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
-        SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
-        SNOWFLAKE_SCHEMA: "dbt_external_tables_integration_tests_snowflake"
-        # bigquery
-        BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
-        BIGQUERY_SCHEMA: "dbt_external_tables_integration_tests_bigquery"
-        BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}
+      - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Install the pinned dbt v2 CLI
+        env:
+          DBT_FUSION_VERSION: ${{ inputs.dbt_version || vars.DBT_FUSION_VERSION }}
+        run: |
+          if [[ ! "$DBT_FUSION_VERSION" =~ ^2\.[0-9]+\.[0-9]+[A-Za-z0-9.+-]*$ ]]; then
+            echo 'Set DBT_FUSION_VERSION to an exact published dbt v2 version that supports per-node operation plans.' >&2
+            exit 1
+          fi
+          curl -fsSL https://public.cdn.getdbt.com/fs/install/install.sh -o "$RUNNER_TEMP/install-dbt.sh"
+          sh "$RUNNER_TEMP/install-dbt.sh" --version "$DBT_FUSION_VERSION" --prefix "$RUNNER_TEMP/dbt-fusion"
+
+      - name: Run package integration tests
+        env:
+          DBT_TEST_BIN: ${{ runner.temp }}/dbt-fusion/bin/dbt
+          DBT_TEST_TARGET: ${{ matrix.data-platform }}
+          REDSHIFT_HOST: ${{ vars.REDSHIFT_HOST || secrets.REDSHIFT_HOST }}
+          REDSHIFT_USER: ${{ vars.REDSHIFT_USER || secrets.REDSHIFT_USER }}
+          DBT_ENV_SECRET_REDSHIFT_PASS: ${{ secrets.DBT_ENV_SECRET_REDSHIFT_PASS }}
+          REDSHIFT_PORT: ${{ vars.REDSHIFT_PORT || secrets.REDSHIFT_PORT }}
+          REDSHIFT_DATABASE: ${{ vars.REDSHIFT_DATABASE || secrets.REDSHIFT_DATABASE }}
+          REDSHIFT_SPECTRUM_IAM_ROLE: ${{ secrets.REDSHIFT_SPECTRUM_IAM_ROLE }}
+          REDSHIFT_SCHEMA: integration_tests_redshift_${{ github.run_number }}_${{ github.run_attempt }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ vars.SNOWFLAKE_USER || secrets.SNOWFLAKE_USER }}
+          DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY: ${{ secrets.SNOWFLAKE_PRIVATE_KEY || secrets.DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY }}
+          DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PASSPHRASE || secrets.DBT_ENV_SECRET_SNOWFLAKE_PRIVATE_KEY_PASSPHRASE }}
+          SNOWFLAKE_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE || secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_ROLE: ${{ vars.SNOWFLAKE_ROLE || secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_DATABASE: ${{ vars.SNOWFLAKE_DATABASE || secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: integration_tests_snowflake_${{ github.run_number }}_${{ github.run_attempt }}
+          BIGQUERY_PROJECT: ${{ vars.BIGQUERY_PROJECT }}
+          BIGQUERY_SCHEMA: integration_tests_bigquery_${{ github.run_number }}_${{ github.run_attempt }}
+          BIGQUERY_KEYFILE_JSON: ${{ secrets.BIGQUERY_KEYFILE_JSON }}
+        run: bash ./run_test.sh "$DBT_TEST_TARGET"

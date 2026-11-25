@@ -1,7 +1,7 @@
-{% macro redshift__dropif(node) %}
+{% macro redshift__dropif(source_node, relation) %}
     
     {% set ddl %}
-        drop table if exists {{source(node.source_name, node.name)}} cascade
+        drop table if exists {{ relation }} cascade
     {% endset %}
     
     {{return(ddl)}}

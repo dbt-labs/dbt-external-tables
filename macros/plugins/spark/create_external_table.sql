@@ -1,4 +1,4 @@
-{% macro spark__create_external_table(source_node) %}
+{% macro spark__create_external_table(source_node, relation) %}
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
@@ -15,7 +15,7 @@
     {%- endif -%}
 
 {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
-    create table {{source(source_node.source_name, source_node.name)}} 
+    create table {{ relation }}
     {%- if columns | length > 0 %} (
         {% for column in columns_and_partitions %}
             {{column.name}} {{column.data_type}}

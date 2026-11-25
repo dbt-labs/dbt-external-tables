@@ -1,4 +1,4 @@
-{% macro snowflake_refresh_snowpipe(source_node) %}
+{% macro snowflake_refresh_snowpipe(source_node, relation) %}
 
     {% set snowpipe = source_node.external.snowpipe %}
     {% set auto_ingest = snowpipe.get('auto_ingest', false) if snowpipe is mapping %}
@@ -10,7 +10,7 @@
     {% else %}
     
         {% set ddl %}
-        alter pipe {{source(source_node.source_name, source_node.name)}} refresh
+        alter pipe {{ relation }} refresh
         {% endset %}
         
         {{ return([ddl]) }}

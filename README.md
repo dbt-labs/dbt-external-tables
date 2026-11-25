@@ -6,14 +6,15 @@ This package provides:
 * Macros to create/replace external tables and refresh their partitions, using the metadata provided in your `.yml` file source definitions
 * Snowflake-specific macros to create, backfill, and refresh snowpipes, using the same metadata
 
-## Supported databases
+## Adapter implementations
 
 * Redshift (Spectrum)
-* Snowflake
+* Snowflake (external tables and Snowpipe)
 * BigQuery
 * Spark
-* Synapse
-* Azure SQL
+* Fabric
+
+Your dbt v2 build must include the adapter for your target. See [dbt v2 supported data platforms](https://docs.getdbt.com/docs/supported-data-platforms?version=2) for availability.
 
 ![sample docs](etc/sample_docs.png)
 
@@ -21,54 +22,49 @@ This package provides:
 
 Follow the instructions at [hub.getdbt.com](https://hub.getdbt.com/dbt-labs/dbt_external_tables/latest/) on how to modify your `packages.yml` and run `dbt deps`.
 
+This version requires a dbt v2 (Fusion) build with `run-operation --per-node`. BigQuery also requires support for a per-node operation plan with a post-SQL macro. Check for `--per-node` with `dbt run-operation --help`. The [integration test guide](integration_tests) explains how to test with a compatible build.
+
 ## Syntax
 
-The `stage_external_sources` macro is the primary point of entry when using this package. It has two operational modes: standard and "full refresh."
+Run `dbt_external_tables.stage` once for each source table you select. A standard run creates missing external tables and refreshes existing tables according to the adapter and source configuration. Set `ext_full_refresh: true` to replace the selected tables.
 
 ```bash
-# iterate through all source nodes, create if missing, refresh metadata
-$ dbt run-operation stage_external_sources
+# Create missing external tables and refresh existing ones
+dbt run-operation dbt_external_tables.stage --per-node --select 'source:*'
 
-# iterate through all source nodes, create or replace (+ refresh if necessary)
-$ dbt run-operation stage_external_sources --vars "ext_full_refresh: true"
+# Recreate the selected external tables
+dbt run-operation dbt_external_tables.stage --per-node --select 'source:*' --vars 'ext_full_refresh: true'
 ```
 
-The `stage_external_sources` macro accepts a limited node selection syntax similar to
-[snapshotting source freshness](https://docs.getdbt.com/docs/running-a-dbt-project/command-line-interface/source/#specifying-sources-to-snapshot):
+Use `--threads` to set the concurrency limit. Select each physical table or pipe once so the operations can run independently. dbt skips selected nodes without an `external` source definition and records a result per selected node in `target/run_results.json`.
+
+### Migrating existing staging jobs
+
+Replace calls to `stage_external_sources` with `dbt_external_tables.stage --per-node`. Translate the former `--args` selection into dbt's [source selectors](https://docs.getdbt.com/reference/node-selection/methods#source).
 
 ```bash
-# stage all Snowplow and Logs external sources:
-$ dbt run-operation stage_external_sources --args "select: snowplow logs"
+# Stage all external tables in the snowplow and logs sources
+dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow source:logs --threads 8
 
-# stage a particular external source table:
-$ dbt run-operation stage_external_sources --args "select: snowplow.event"
+# Stage one external source table
+dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow.event
 ```
 
-### Parallel staging preview for Snowflake
+If you called the old macro from `on-run-start` or another hook, move staging to a separate job step before the command that consumes the sources.
 
-With a dbt Fusion build that supports `run-operation --per-node`, use dbt selectors to stage independent Snowflake external tables concurrently. Each selected table has its own result in `target/run_results.json`.
-
-```bash
-dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow --threads 8
-dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow.event --threads 4 --vars 'ext_full_refresh: true'
-```
-
-Create the target schemas and external stages before starting the command. Select one source per physical table, and use `--threads` to set the concurrency limit. The default run creates missing tables and refreshes existing tables according to their `auto_refresh` setting. `ext_full_refresh: true` replaces the selected tables.
-
-The preview skips selected nodes without an `external` source definition. Use `stage_external_sources` for Snowpipes and adapters other than Snowflake. Keep those sources out of the preview selection. Projects with custom build-plan dispatch can keep using the serial command or provide a per-node `snowflake__stage` override.
+For project overrides, `ADAPTER__stage(node)` remains the per-node entry point. Build-plan and SQL-generating overrides take `(source_node, relation)`. Use `relation` to target the exact selected source. Return the SQL in execution order. BigQuery uses a structured plan with `sql` and `post_macro` keys to update column metadata after DDL, including when the SQL list is empty. To migrate a custom column metadata override, return its qualified macro name in `post_macro`. The macro accepts `node` and uses `this` to address the selected relation.
 
 ## Setup
 
-The macros assume that you:
-1. Have already created your database's required scaffolding for external resources:
-  - an external stage (Snowflake)
-  - an external schema + S3 bucket (Redshift Spectrum)
-  - an external data source and file format (Synapse)
-  - an external data source and databse-scoped credential (Azure SQL)
-  - a Google Cloud Storage bucket (BigQuery)
-  - an accessible set of files (Spark)
-2. Have the appropriate permissions on to create tables using that scaffolding
-3. Have already created the database/project and/or schema/dataset in which dbt will create external tables (or snowpiped tables)
+Before staging, create the target database and schema or project and dataset. Set up the platform's required external resources and grant dbt permission to create and refresh tables in the target.
+
+Prepare the external resources for your target.
+
+- An external stage for Snowflake
+- An external schema and S3 bucket for Redshift Spectrum
+- An external data source and file format for Fabric
+- A Google Cloud Storage bucket for BigQuery
+- An accessible set of files for Spark
 
 ## Spec
 
@@ -85,7 +81,7 @@ sources:
             those files queryable, just in time for modeling.
                             
         external:
-          location:         # required: S3 file path, GCS file path, Snowflake stage, Synapse data source
+          location:         # required: S3 or GCS file path, Snowflake stage, or file path for a Fabric external data source
           
           ...               # database-specific properties of external table
           
@@ -117,25 +113,12 @@ sources:
                 expression: TO_TIMESTAMP(...) # custom SQL expression instead of default value extraction
 ```
 
-The `stage_external_sources` macro will use this YAML config to compile and 
-execute the appropriate `create`, `refresh`, and/or `drop` commands:
-
-```
-19:01:48 + 1 of 1 START external source spectrum.my_partitioned_tbl
-19:01:48 + 1 of 1 (1) drop table if exists "db"."spectrum"."my_partitioned_tbl"
-19:01:48 + 1 of 1 (1) DROP TABLE
-19:01:48 + 1 of 1 (2) create external table "db"."spectrum"."my_partitioned_tbl"...
-19:01:48 + 1 of 1 (2) CREATE EXTERNAL TABLE
-19:01:48 + 1 of 1 (3) alter table "db"."spectrum"."my_partitioned_tbl"...
-19:01:49 + 1 of 1 (3) ALTER EXTERNAL TABLE
-```
+The per-node macro uses this configuration to build the SQL for each external table. dbt executes the statements in order for each source.
 
 ## Resources
 
 * [`sample_sources`](sample_sources): detailed example source specs, with annotations, for each database's implementation
-* [`sample_analysis`](sample_analysis): a "dry run" version of the compiled DDL/DML that
-`stage_external_sources` runs as an operation
-* [`tested specs`](integration_tests/models/plugins): source spec variations that are confirmed to work on each database, via integration tests
+* [`integration test fixtures`](integration_tests/models/plugins): source spec variations used by the integration tests
 
 If you encounter issues using this package or have questions, please check the [open issues](https://github.com/dbt-labs/dbt-external-tables/issues), as there's a chance it's a known limitation or work in progress. If not, you can:
 - open a new issue to report a bug or suggest an enhancement

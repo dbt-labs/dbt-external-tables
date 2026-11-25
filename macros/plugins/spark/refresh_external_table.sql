@@ -1,7 +1,7 @@
-{% macro spark__refresh_external_table(source_node) %}
+{% macro spark__refresh_external_table(source_node, relation) %}
     
     {% set refresh %}
-        refresh table {{source(source_node.source_name, source_node.name)}}
+        refresh table {{ relation }}
     {% endset %}
     
     {% do return([refresh]) %}
