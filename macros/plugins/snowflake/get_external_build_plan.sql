@@ -1,10 +1,5 @@
 {% macro snowflake__get_external_build_plan(source_node) %}
-    {% set old_relation = adapter.get_relation(
-        database=this.database,
-        schema=this.schema,
-        identifier=this.identifier
-    ) %}
-    {% set create_or_replace = old_relation is none or var('ext_full_refresh', false) %}
+    {% set create_or_replace = var('ext_full_refresh', false) or not dbt_external_tables.snowflake_external_relation_exists() %}
 
     {% if source_node.external.get('snowpipe', none) is not none %}
         {% if create_or_replace %}

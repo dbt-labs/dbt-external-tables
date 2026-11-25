@@ -29,6 +29,18 @@ sources:
                   - last_name
                   - email
 
+      - name: people_csv_quoted
+        identifier: 'Quoted People'
+        quoting:
+          identifier: true
+        external:
+          <<: *csv-people
+          auto_refresh: false
+          # Warm staging must refresh the existing table to expose its rows.
+          refresh_on_create: false
+        columns: *cols-of-the-people
+        tests: *equal-to-the-people
+
       - name: people_csv_partitioned
         external:
           <<: *csv-people
