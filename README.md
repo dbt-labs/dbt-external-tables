@@ -49,13 +49,13 @@ $ dbt run-operation stage_external_sources --args "select: snowplow.event"
 With a dbt Fusion build that supports `run-operation --per-node`, use dbt selectors to stage independent Snowflake external tables concurrently. Each selected table has its own result in `target/run_results.json`.
 
 ```bash
-dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow.event --threads 4
+dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow --threads 8
 dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow.event --threads 4 --vars 'ext_full_refresh: true'
 ```
 
 Create the target schemas and external stages before starting the command. Select one source per physical table, and use `--threads` to set the concurrency limit. The default run creates missing tables and refreshes existing tables according to their `auto_refresh` setting. `ext_full_refresh: true` replaces the selected tables.
 
-The preview skips selected nodes without an `external` source definition. Use `stage_external_sources` for Snowpipes and adapters other than Snowflake. Keep those sources out of the preview selection.
+The preview skips selected nodes without an `external` source definition. Use `stage_external_sources` for Snowpipes and adapters other than Snowflake. Keep those sources out of the preview selection. Projects with custom build-plan dispatch can keep using the serial command or provide a per-node `snowflake__stage` override.
 
 ## Setup
 
