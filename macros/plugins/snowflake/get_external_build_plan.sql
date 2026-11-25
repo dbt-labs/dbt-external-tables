@@ -1,11 +1,11 @@
-{% macro snowflake__get_external_build_plan(source_node) %}
+{% macro snowflake__get_external_build_plan(source_node, relation=none) %}
 
     {% set build_plan = [] %}
     
     {% set old_relation = adapter.get_relation(
-        database = source_node.database,
-        schema = source_node.schema,
-        identifier = source_node.identifier
+        database = relation.database if relation is not none else source_node.database,
+        schema = relation.schema if relation is not none else source_node.schema,
+        identifier = relation.identifier if relation is not none else source_node.identifier
     ) %}
     
     {% set create_or_replace = (old_relation is none or var('ext_full_refresh', false)) %}
@@ -25,6 +25,14 @@
 
     {% else %}
     
+        {% if relation is not none %}
+            {# Per-node staging uses precreated schemas and the exact selected relation. #}
+            {% if create_or_replace %}
+                {% do return([dbt_external_tables.snowflake__create_external_table(source_node, relation=relation)]) %}
+            {% endif %}
+            {% do return(dbt_external_tables.snowflake__refresh_external_table(source_node, relation=relation)) %}
+        {% endif %}
+
         {% if create_or_replace %}
             {% set build_plan = build_plan + [
                 dbt_external_tables.create_external_schema(source_node),
