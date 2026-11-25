@@ -10,7 +10,7 @@
     {% else %}
     
         {% set ddl %}
-        alter pipe {{source(source_node.source_name, source_node.name)}} refresh
+        alter pipe {{ this }} refresh
         {% endset %}
         
         {{ return([ddl]) }}

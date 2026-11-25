@@ -1,9 +1,9 @@
-{% macro fabric__dropif(node) %}
+{% macro fabric__dropif(source_node) %}
     
     {% set ddl %}
-      if object_id ('{{source(node.source_name, node.name)}}') is not null
+      if object_id ('{{ dbt.escape_single_quotes(this.render()) }}') is not null
         begin
-        drop external table {{source(node.source_name, node.name)}}
+        drop external table {{ this }}
         end
     {% endset %}
     

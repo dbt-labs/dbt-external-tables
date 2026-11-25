@@ -8,7 +8,7 @@
 
     {%- if explicit_transaction -%} begin; {%- endif %}
 
-    copy into {{source(source_node.source_name, source_node.name)}}
+    copy into {{ this }}
     from (
         select
         {% if columns|length == 0 %}

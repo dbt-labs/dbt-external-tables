@@ -7,7 +7,7 @@
 {# https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_EXTERNAL_TABLE.html #}
 {# This assumes you have already created an external schema #}
 
-    create external table {{source(source_node.source_name, source_node.name)}} (
+    create external table {{ this }} (
         {% for column in columns %}
             {{adapter.quote(column.name)}} {{column.data_type}}
             {{- ',' if not loop.last -}}

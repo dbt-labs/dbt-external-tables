@@ -6,7 +6,7 @@
     {% if external.ansi_nulls is true -%} SET ANSI_NULLS ON; {%- endif %}
     {% if external.quoted_identifier is true -%} SET QUOTED_IDENTIFIER ON; {%- endif %}
 
-    create external table {{source(source_node.source_name, source_node.name)}} (
+    create external table {{ this }} (
         {% for column in columns %}
             {# TODO set nullity based on schema tests?? #}
             {%- set nullity = 'NOT NULL' if 'not_null' in columns.tests else 'NULL'-%}

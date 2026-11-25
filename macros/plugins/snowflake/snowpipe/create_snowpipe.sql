@@ -4,7 +4,7 @@
     {%- set snowpipe = external.snowpipe -%}
 
 {# https://docs.snowflake.com/en/sql-reference/sql/create-pipe.html #}
-    create or replace pipe {{source(source_node.source_name, source_node.name)}}
+    create or replace pipe {{ this }}
         {% if snowpipe.auto_ingest -%} auto_ingest = {{snowpipe.auto_ingest}} {%- endif %}
         {% if snowpipe.aws_sns_topic -%} aws_sns_topic = '{{snowpipe.aws_sns_topic}}' {%- endif %}
         {% if snowpipe.integration -%} integration = '{{snowpipe.integration}}' {%- endif %}

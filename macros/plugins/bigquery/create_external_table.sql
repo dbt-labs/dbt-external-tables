@@ -15,7 +15,7 @@
     -#}
     {%- set connection_name = none -%}
     {% if options is mapping and options.get('connection_name', none) %}
-        {% set connection_name = options.pop('connection_name') %}
+        {% set connection_name = options.get('connection_name') %}
     {% endif %}
     
     {%- set uris = [] -%}
@@ -25,7 +25,7 @@
         {%- set uris = [external.location] -%}
     {%- endif -%}
 
-    create or replace external table {{source(source_node.source_name, source_node.name)}}
+    create or replace external table {{ this }}
         {%- if columns -%}(
             {% for column in columns %}
                 {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}
@@ -50,7 +50,7 @@
         options (
             uris = [{%- for uri in uris -%} '{{uri}}' {{- "," if not loop.last}} {%- endfor -%}]
             {%- if options is mapping -%}
-            {%- for key, value in options.items() if key != 'uris' %}
+            {%- for key, value in options.items() if key not in ('uris', 'connection_name') %}
                 {%- if value is string and key not in non_string_options -%}
                 , {{key}} = '{{value}}'
                 {%- else -%}

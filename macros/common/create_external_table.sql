@@ -3,5 +3,5 @@
 {% endmacro %}
 
 {% macro default__create_external_table(source_node) %}
-    {{ exceptions.raise_compiler_error("External table creation is not implemented for the default adapter") }}
+    {% do exceptions.raise_compiler_error('External table creation is not implemented for adapter ' ~ target.type ~ '.') %}
 {% endmacro %}

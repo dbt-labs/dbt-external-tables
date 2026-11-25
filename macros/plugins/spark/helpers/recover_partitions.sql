@@ -3,7 +3,7 @@
 
     {%- if source_node.external.partitions and source_node.external.using and source_node.external.using|lower != 'delta' -%}
         {% set ddl %}
-            ALTER TABLE {{ source(source_node.source_name, source_node.name) }} RECOVER PARTITIONS
+            ALTER TABLE {{ this }} RECOVER PARTITIONS
         {% endset %}
     {%- else -%}
         {% set ddl = none %}

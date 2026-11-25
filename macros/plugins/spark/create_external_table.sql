@@ -15,7 +15,7 @@
     {%- endif -%}
 
 {# https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html #}
-    create table {{source(source_node.source_name, source_node.name)}} 
+    create table {{ this }}
     {%- if columns | length > 0 %} (
         {% for column in columns_and_partitions %}
             {{column.name}} {{column.data_type}}

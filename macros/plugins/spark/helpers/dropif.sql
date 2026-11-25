@@ -1,7 +1,7 @@
-{% macro spark__dropif(node) %}
+{% macro spark__dropif(source_node) %}
     
     {% set ddl %}
-        drop table if exists {{source(node.source_name, node.name)}}
+        drop table if exists {{ this }}
     {% endset %}
     
     {{return(ddl)}}
