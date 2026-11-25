@@ -52,7 +52,7 @@ dbt run-operation dbt_external_tables.stage --per-node --select source:snowplow.
 
 If you called the old macro from `on-run-start` or another hook, move staging to a separate job step before the command that consumes the sources.
 
-For project overrides, `ADAPTER__stage(node)` remains the per-node entry point. Build-plan and SQL-generating overrides take `(source_node, relation)`. Use `relation` to target the exact selected source. Return the SQL in execution order. BigQuery uses a structured plan with `sql` and `post_macro` keys to update column metadata after DDL, including when the SQL list is empty. To migrate a custom column metadata override, return its qualified macro name in `post_macro`. The macro accepts `node` and uses `this` to address the selected relation.
+For project overrides, `ADAPTER__stage(node)` remains the per-node entry point. Build-plan and SQL-generating overrides take `source_node` and use `this` for the exact selected relation. Return the SQL in execution order. BigQuery uses a structured plan with `sql` and `post_macro` keys to update column metadata after DDL, including when the SQL list is empty. To migrate a custom column metadata override, return its qualified macro name in `post_macro`. The macro accepts `node` and uses `this` to address the selected relation.
 
 ## Setup
 

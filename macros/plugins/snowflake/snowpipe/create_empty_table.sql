@@ -1,8 +1,8 @@
-{% macro snowflake_create_empty_table(source_node, relation) %}
+{% macro snowflake_create_empty_table(source_node) %}
 
     {%- set columns = source_node.columns.values() %}
 
-    create or replace table {{ relation }} (
+    create or replace table {{ this }} (
         {% if columns|length == 0 %}
             value variant,
         {% else -%}

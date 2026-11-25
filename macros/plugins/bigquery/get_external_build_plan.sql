@@ -1,9 +1,9 @@
-{% macro bigquery__get_external_build_plan(source_node, relation) %}
-    {% set old_relation = load_relation(relation) %}
+{% macro bigquery__get_external_build_plan(source_node) %}
+    {% set old_relation = load_relation(this) %}
     {% if old_relation is none or var('ext_full_refresh', false) %}
-        {% set sql = [dbt_external_tables.create_external_table(source_node, relation)] %}
+        {% set sql = [dbt_external_tables.create_external_table(source_node)] %}
     {% else %}
-        {% set sql = dbt_external_tables.refresh_external_table(source_node, relation) %}
+        {% set sql = dbt_external_tables.refresh_external_table(source_node) %}
     {% endif %}
 
     {# Column descriptions and policy tags also need updates when there is no DDL. #}

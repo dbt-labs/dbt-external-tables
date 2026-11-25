@@ -10,5 +10,5 @@
 {% endmacro %}
 
 {% macro default__stage(node) %}
-    {% do return(dbt_external_tables.get_external_build_plan(node, this)) %}
+    {% do return(dbt_external_tables.get_external_build_plan(node)) %}
 {% endmacro %}

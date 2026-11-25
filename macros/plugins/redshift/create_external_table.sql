@@ -1,4 +1,4 @@
-{% macro redshift__create_external_table(source_node, relation) %}
+{% macro redshift__create_external_table(source_node) %}
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
@@ -7,7 +7,7 @@
 {# https://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_EXTERNAL_TABLE.html #}
 {# This assumes you have already created an external schema #}
 
-    create external table {{ relation }} (
+    create external table {{ this }} (
         {% for column in columns %}
             {{adapter.quote(column.name)}} {{column.data_type}}
             {{- ',' if not loop.last -}}

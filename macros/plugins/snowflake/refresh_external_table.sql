@@ -1,4 +1,4 @@
-{% macro snowflake__refresh_external_table(source_node, relation) %}
+{% macro snowflake__refresh_external_table(source_node) %}
 
     {% set external = source_node.external %}
     
@@ -10,7 +10,7 @@
 
         {% set ddl %}
         begin;
-        alter external table {{ relation }} refresh;
+        alter external table {{ this }} refresh;
         commit;
         {% endset %}
         

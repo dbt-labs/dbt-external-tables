@@ -1,4 +1,4 @@
-{% macro bigquery__create_external_table(source_node, relation) %}
+{% macro bigquery__create_external_table(source_node) %}
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
     {%- set partitions = external.partitions -%}
@@ -25,7 +25,7 @@
         {%- set uris = [external.location] -%}
     {%- endif -%}
 
-    create or replace external table {{ relation }}
+    create or replace external table {{ this }}
         {%- if columns -%}(
             {% for column in columns %}
                 {%- set column_quoted = adapter.quote(column.name) if column.quote else column.name %}

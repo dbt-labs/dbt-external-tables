@@ -1,5 +1,5 @@
 
-{% macro redshift_alter_table_add_partitions(source_node, relation, partitions) %}
+{% macro redshift_alter_table_add_partitions(source_node, partitions) %}
   {% set ddl = [] %}
   {% if not partitions %}
     {% do log('No partitions to be added') %}
@@ -10,7 +10,7 @@
     {% do log('Generating ADD PARTITION statement for partition set between '
         ~ partition_batch[0]['path'] ~ ' and ' ~ (partition_batch | last)['path']) %}
     {% set sql %}
-      alter table {{ relation }} add if not exists
+      alter table {{ this }} add if not exists
       {% for partition in partition_batch %}
         partition ({%- for part in partition.partition_by -%}{{ part.name }}='{{ part.value }}'{{ ', ' if not loop.last }}{%- endfor -%})
         location '{{ source_node.external.location }}/{{ partition.path }}/'

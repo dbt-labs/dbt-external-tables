@@ -1,4 +1,4 @@
-{% macro snowflake__create_external_table(source_node, relation) %}
+{% macro snowflake__create_external_table(source_node) %}
 
     {%- set columns = source_node.columns.values() -%}
     {%- set external = source_node.external -%}
@@ -21,7 +21,7 @@
 {# This assumes you have already created an external stage #}
 
 {% set ddl %}
-    create or replace external table {{ relation }}
+    create or replace external table {{ this }}
     {%- if columns or partitions or infer_schema -%}
     (
         {%- if partitions -%}{%- for partition in partitions %}
